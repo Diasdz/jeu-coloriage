@@ -173,7 +173,7 @@
       border-radius: 16px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
       cursor: pointer;
-      background: #fafaf8;
+      background: #eceef2;
     }
 
     .info-panel {
@@ -256,14 +256,14 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(250, 250, 248, 0.98);
+      background: rgba(236, 238, 242, 0.98);
       backdrop-filter: blur(4px);
       padding: 20px 32px;
       border-radius: 60px;
       text-align: center;
       z-index: 10;
       pointer-events: none;
-      border: 1px solid #e0e4e8;
+      border: 1px solid #d0d4dc;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
       white-space: nowrap;
     }
@@ -620,19 +620,19 @@
       if (opposite[newDir] !== direction) nextDirection = newDir;
     }
 
-    // DESSIN FINAL : fond légèrement grisé, grille bien visible
+    // DESSIN FINAL : fond plus gris, grille bien visible et marquée
     function drawBoard() {
       ctx.clearRect(0, 0, 400, 400);
       
-      // Fond gris très clair (plus doux que blanc pur)
-      ctx.fillStyle = '#F5F6F8';
+      // Fond gris moyen-doux
+      ctx.fillStyle = '#E8EAEE';
       ctx.fillRect(0, 0, 400, 400);
       
-      // Grille plus visible
+      // Grille bien visible avec traits plus épais
       for (let i = 0; i <= BOARD_SIZE; i++) {
         ctx.beginPath();
-        ctx.strokeStyle = '#D8DCE4';
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = '#C8CCD4';
+        ctx.lineWidth = 1.2;
         ctx.moveTo(i * CELL_SIZE, 0);
         ctx.lineTo(i * CELL_SIZE, 400);
         ctx.stroke();
@@ -640,6 +640,12 @@
         ctx.lineTo(400, i * CELL_SIZE);
         ctx.stroke();
       }
+      
+      // Lignes plus foncées sur les bords pour délimiter
+      ctx.beginPath();
+      ctx.strokeStyle = '#A8B0BC';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(0, 0, 400, 400);
       
       // Pomme vive avec reflet
       ctx.beginPath();
@@ -662,20 +668,26 @@
         const s = snake[i];
         const x = s.x * CELL_SIZE, y = s.y * CELL_SIZE;
         
-        // Corps
-        ctx.fillStyle = i === 0 ? '#4A5C66' : '#6C7E8C';
+        // Corps avec ombre légère
+        ctx.fillStyle = i === 0 ? '#3A4C56' : '#5C6E7C';
         ctx.shadowBlur = 0;
         ctx.beginPath();
         ctx.roundRect(x + 1.5, y + 1.5, 17, 17, 6);
         ctx.fill();
         
-        // Texture
-        ctx.fillStyle = i === 0 ? '#9EB0BC' : '#AFC0CC';
+        // Texture (écailles)
+        ctx.fillStyle = i === 0 ? '#8EA0AC' : '#9EB0BC';
         ctx.beginPath();
-        ctx.arc(x + 10, y + 10, 3, 0, 2 * Math.PI);
+        ctx.arc(x + 10, y + 10, 3.2, 0, 2 * Math.PI);
         ctx.fill();
         
-        // Yeux
+        // Détail plus foncé sur le dos
+        ctx.fillStyle = i === 0 ? '#2C3E48' : '#4C5E6C';
+        ctx.beginPath();
+        ctx.ellipse(x + 10, y + 8, 3, 1.8, 0, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Yeux expressifs
         if (i === 0) {
           ctx.fillStyle = '#FFFFFF';
           ctx.beginPath();
@@ -684,7 +696,7 @@
           ctx.beginPath();
           ctx.arc(x + 7, y + 7, 2.2, 0, 2 * Math.PI);
           ctx.fill();
-          ctx.fillStyle = '#1A2A30';
+          ctx.fillStyle = '#0A1A20';
           ctx.beginPath();
           ctx.arc(x + 13.2, y + 6.5, 1.2, 0, 2 * Math.PI);
           ctx.fill();
@@ -692,13 +704,13 @@
           ctx.arc(x + 7.2, y + 6.5, 1.2, 0, 2 * Math.PI);
           ctx.fill();
           
-          // Reflet
-          ctx.fillStyle = '#FFFFFFDD';
+          // Reflet brillant
+          ctx.fillStyle = '#FFFFFFEE';
           ctx.beginPath();
-          ctx.arc(x + 13.8, y + 5.8, 0.6, 0, 2 * Math.PI);
+          ctx.arc(x + 13.8, y + 5.8, 0.7, 0, 2 * Math.PI);
           ctx.fill();
           ctx.beginPath();
-          ctx.arc(x + 7.8, y + 5.8, 0.6, 0, 2 * Math.PI);
+          ctx.arc(x + 7.8, y + 5.8, 0.7, 0, 2 * Math.PI);
           ctx.fill();
           
           // Langue
@@ -709,6 +721,27 @@
             ctx.lineTo(x + 23, y + 11);
             ctx.lineTo(x + 18, y + 12);
             ctx.fill();
+          } else if (direction === 'left') {
+            ctx.fillStyle = '#E56A4A';
+            ctx.beginPath();
+            ctx.moveTo(x + 2, y + 10);
+            ctx.lineTo(x - 3, y + 11);
+            ctx.lineTo(x + 2, y + 12);
+            ctx.fill();
+          } else if (direction === 'up') {
+            ctx.fillStyle = '#E56A4A';
+            ctx.beginPath();
+            ctx.moveTo(x + 10, y + 2);
+            ctx.lineTo(x + 11, y - 3);
+            ctx.lineTo(x + 12, y + 2);
+            ctx.fill();
+          } else if (direction === 'down') {
+            ctx.fillStyle = '#E56A4A';
+            ctx.beginPath();
+            ctx.moveTo(x + 10, y + 18);
+            ctx.lineTo(x + 11, y + 23);
+            ctx.lineTo(x + 12, y + 18);
+            ctx.fill();
           }
         }
       }
@@ -716,16 +749,16 @@
       // Message pause
       if (isPaused && isGameRunning && !isWaitingForStart && !isGameOver) {
         ctx.font = '500 20px "Segoe UI", system-ui';
-        ctx.fillStyle = '#B0B6C0';
+        ctx.fillStyle = '#98A0AC';
         ctx.fillText('⏸ PAUSE', 160, 195);
       }
       
-      // Infos
+      // Informations
       ctx.font = '400 10px monospace';
-      ctx.fillStyle = '#B0B8C2';
+      ctx.fillStyle = '#A8B0BC';
       ctx.fillText(diffName, 10, 22);
       if (wallTeleport) { ctx.fillStyle = '#8FB08C'; ctx.fillText('🌀', 10, 38); }
-      ctx.fillStyle = '#B8C0CA';
+      ctx.fillStyle = '#B0B8C4';
       ctx.fillText(gameSpeed + 'ms', 10, 52);
     }
 
