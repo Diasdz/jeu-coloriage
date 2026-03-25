@@ -501,6 +501,7 @@
     }
 
     function resetGame() {
+      // Réinitialiser complètement le jeu
       snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }, { x: 7, y: 10 }];
       direction = 'right';
       nextDirection = 'right';
@@ -688,13 +689,18 @@
       else if (key === 'ArrowRight') changeDirection('right', e);
       else if (key === ' ' || key === 'Space') {
         e.preventDefault();
-        if (isWaitingForStart) {
-          startGame();
-        } else if (isGameOver) {
+        // Logique simplifiée : une seule touche Espace
+        if (isGameOver) {
+          // Si game over, on reset directement
           resetGame();
+        } else if (isWaitingForStart) {
+          // Si en attente de start, on démarre
+          startGame();
         } else if (!isGameRunning) {
+          // Si le jeu n'est pas en cours (autre état), on reset
           resetGame();
         } else {
+          // Sinon, on gère la pause
           isPaused = !isPaused;
           pauseBtn.textContent = isPaused ? '▶ JOUER' : '⏸ PAUSE';
           statusElement.textContent = isPaused ? '⏸ PAUSE' : '▶ EN JEU';
