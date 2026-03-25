@@ -12,6 +12,10 @@
       user-select: none;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       min-height: 100vh;
       background: linear-gradient(135deg, #0a2f1a 0%, #051a0a 100%);
@@ -40,6 +44,7 @@
       display: none;
       max-width: 500px;
       width: 100%;
+      animation: fadeIn 0.3s ease;
     }
 
     .game-wrapper {
@@ -121,6 +126,10 @@
       background: #5a3a1a;
       margin-bottom: 15px;
       width: 100%;
+      box-shadow: 0 4px 0 #3a2a1a;
+    }
+    .back-btn:hover {
+      background: #7a5a3a;
     }
 
     @keyframes fadeIn {
@@ -338,6 +347,17 @@
     }
     window.addEventListener('keydown', preventArrowScroll);
 
+    // Fonction pour scroller en haut de la page
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+      // Forcer le focus sur le body pour éviter tout décalage
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }
+
     // Générer de la nourriture
     function generateRandomFood() {
       for (let i = 0; i < 2000; i++) {
@@ -545,6 +565,14 @@
       // Afficher le jeu, cacher le menu
       menuContainer.style.display = 'none';
       gameContainer.style.display = 'block';
+      
+      // SCROLLER EN HAUT DE LA PAGE pour voir le jeu en entier !
+      scrollToTop();
+      
+      // Donner le focus au canvas pour capter les touches immédiatement
+      canvas.focus();
+      canvas.setAttribute('tabindex', '0');
+      canvas.style.outline = 'none';
     }
 
     // Retour au menu
@@ -553,6 +581,7 @@
       gameLoop = null;
       menuContainer.style.display = 'block';
       gameContainer.style.display = 'none';
+      scrollToTop();
     }
 
     // Événements
