@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>🐍 Snake - Version Mobile</title>
+  <title>🐍 Snake - Version Mobile Optimisée</title>
   <style>
     * {
       margin: 0;
@@ -21,12 +21,12 @@
       align-items: center;
       font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
       padding: 12px;
-      touch-action: pan-x pan-y;
+      touch-action: pan-y;
     }
 
     /* MENU PRINCIPAL */
     .menu-container {
-      max-width: 500px;
+      max-width: 450px;
       width: 100%;
       background: rgba(250, 252, 248, 0.95);
       backdrop-filter: blur(8px);
@@ -58,7 +58,6 @@
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      letter-spacing: -0.5px;
     }
     .menu-header p {
       color: #7a8a7a;
@@ -147,7 +146,7 @@
       color: #9aae9a;
     }
 
-    /* ZONE DE JEU - VERSION MOBILE */
+    /* ZONE DE JEU - VERSION MOBILE OPTIMISÉE */
     .game-container {
       display: none;
       max-width: 100%;
@@ -254,46 +253,71 @@
       font-size: 14px;
     }
 
-    /* TOUCH CONTROLS - POUR SMARTPHONE */
+    /* TOUCH CONTROLS - COMPACTES ET PROCHES DU JEU */
+    .touch-controls {
+      display: flex;
+      justify-content: center;
+      margin-top: 16px;
+      gap: 20px;
+    }
+    .touch-btn {
+      background: linear-gradient(135deg, #f0f8f0, #e8f0e8);
+      border: 2px solid #c8dcc8;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      font-size: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.08s linear;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      touch-action: manipulation;
+      font-weight: bold;
+    }
+    .touch-btn:active {
+      transform: scale(0.92);
+      background: #d8e8d8;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Disposition en croix compacte */
     .touch-controls {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-top: 20px;
-      gap: 10px;
+      gap: 12px;
     }
     .touch-row {
       display: flex;
       gap: 20px;
       justify-content: center;
     }
-    .touch-btn {
-      background: linear-gradient(135deg, #f0f8f0, #e8f0e8);
-      border: 1px solid #c8dcc8;
-      width: 65px;
-      height: 65px;
-      border-radius: 50%;
-      font-size: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.1s ease;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      touch-action: manipulation;
+    .touch-btn.up, .touch-btn.down {
+      width: 70px;
+      height: 70px;
     }
-    .touch-btn:active {
-      transform: scale(0.92);
-      background: #d8e8d8;
-    }
+    
     @media (max-width: 480px) {
+      .touch-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 32px;
+      }
+      .touch-row {
+        gap: 16px;
+      }
+    }
+    
+    @media (max-width: 380px) {
       .touch-btn {
         width: 55px;
         height: 55px;
         font-size: 28px;
       }
       .touch-row {
-        gap: 15px;
+        gap: 12px;
       }
     }
 
@@ -454,15 +478,15 @@
       </div>
       <div class="speed-info" id="speedInfo"></div>
       
-      <!-- TOUCH CONTROLS POUR SMARTPHONE -->
+      <!-- TOUCH CONTROLS COMPACTES - FLÈCHES GROUPÉES PROCHE DU JEU -->
       <div class="touch-controls">
         <div class="touch-row">
-          <div class="touch-btn" data-dir="up">⬆️</div>
+          <div class="touch-btn up" data-dir="up">⬆️</div>
         </div>
         <div class="touch-row">
-          <div class="touch-btn" data-dir="left">⬅️</div>
-          <div class="touch-btn" data-dir="down">⬇️</div>
-          <div class="touch-btn" data-dir="right">➡️</div>
+          <div class="touch-btn left" data-dir="left">⬅️</div>
+          <div class="touch-btn down" data-dir="down">⬇️</div>
+          <div class="touch-btn right" data-dir="right">➡️</div>
         </div>
       </div>
     </div>
@@ -474,7 +498,7 @@
       <h3>📜 RÈGLES</h3>
       <ul>
         <li><span>🐍</span> Mange les pommes pour grandir</li>
-        <li><span>👆</span> Touche l'écran ou utilise les flèches</li>
+        <li><span>👆</span> Touche les flèches ou l'écran</li>
         <li><span>🌀</span> Mode FACILE : traverse les murs !</li>
         <li><span>💀</span> Mode MOYEN/DIFICILE : murs mortels</li>
         <li><span>⏸</span> Appuie sur PAUSE ou tape l'écran</li>
@@ -498,9 +522,7 @@
     const BOARD_SIZE = 20;
     let CELL_SIZE = 20;
 
-    // Adapter la taille du canvas pour mobile
     function resizeCanvas() {
-      const container = canvas.parentElement;
       const maxWidth = Math.min(window.innerWidth - 40, 400);
       canvas.style.width = `${maxWidth}px`;
       canvas.style.height = `${maxWidth}px`;
@@ -704,7 +726,6 @@
       ctx.lineWidth = 2;
       ctx.strokeRect(2, 2, canvas.width - 4, canvas.height - 4);
       
-      // Pomme
       ctx.beginPath();
       ctx.arc(food.x * CELL_SIZE + CELL_SIZE/2, food.y * CELL_SIZE + CELL_SIZE/2, CELL_SIZE/2.6, 0, 2 * Math.PI);
       ctx.fillStyle = '#E85A3A';
@@ -716,7 +737,6 @@
       ctx.fillStyle = '#7FAA6A';
       ctx.fillRect(food.x * CELL_SIZE + CELL_SIZE - 6, food.y * CELL_SIZE + 4, 4, 6);
       
-      // Serpent
       for (let i = 0; i < snake.length; i++) {
         const s = snake[i];
         const x = s.x * CELL_SIZE, y = s.y * CELL_SIZE;
@@ -823,7 +843,6 @@
       scrollToTop();
     }
 
-    // Événements
     document.querySelectorAll('.card').forEach(card => {
       card.addEventListener('click', () => {
         const difficulty = card.getAttribute('data-diff');
@@ -845,7 +864,6 @@
       }
     };
 
-    // Touches tactiles
     document.querySelectorAll('.touch-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -859,7 +877,6 @@
       });
     });
 
-    // Tap sur le canvas pour démarrer/reprendre (mobile)
     canvas.addEventListener('click', (e) => {
       e.preventDefault();
       if (isWaitingForStart) startGame();
