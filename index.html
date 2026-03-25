@@ -51,7 +51,7 @@
     #img-title { font-size: 16px; font-weight: 700; color: var(--primary); }
 
     #canvas-wrap { background: #fff; border: 2.5px solid var(--border); border-radius: var(--radius); overflow: hidden; width: 100%; position: relative; box-shadow: 0 4px 20px rgba(83,74,183,0.1); }
-    #canvas-wrap svg { width: 100%; height: auto; display: block; cursor: crosshair; background: #FFF9F0; }
+    #canvas-wrap svg { width: 100%; height: auto; display: block; cursor: crosshair; background: white; }
 
     #progress-wrap { width: 100%; }
     #progress-bar-bg { background: #e9e6ff; border-radius: 10px; height: 10px; overflow: hidden; }
@@ -142,161 +142,136 @@ function toggleMusic(){
 let savedFills = {};
 let currentColor=COLORS[0],currentTool='fill',currentIdx=null,fills={},currentTab='all';
 
-// ---- IMAGES : LION RÉALISTE (TOUT EN BLANC AU DÉPART) ----
+// ---- IMAGES : LION RÉALISTE AVEC CONTOURS NOIRS ----
 const IMAGES = [
-// LION RÉALISTE POUR ENFANTS - Version à colorier (toutes les zones sont blanches)
-{cat:'animaux', title:'Lion', clickable:['criniere','visage','museau','nez','oeilG','oeilD','pupilleG','pupilleD','sourcilG','sourcilD','bouche','moustacheG1','moustacheG2','moustacheG3','moustacheD1','moustacheD2','moustacheD3','mèche1','mèche2','refletG','refletD','joueG','joueD'], full:`
-<defs>
-  <radialGradient id="criniereGrad">
-    <stop offset="0%" stop-color="#F4B860"/>
-    <stop offset="50%" stop-color="#E09D3E"/>
-    <stop offset="100%" stop-color="#C47A2A"/>
-  </radialGradient>
-  <radialGradient id="visageGrad">
-    <stop offset="0%" stop-color="#FFE4B5"/>
-    <stop offset="80%" stop-color="#F5D89C"/>
-    <stop offset="100%" stop-color="#E8C87A"/>
-  </radialGradient>
-  <radialGradient id="nezGrad">
-    <stop offset="0%" stop-color="#FFA07A"/>
-    <stop offset="100%" stop-color="#E85A3A"/>
-  </radialGradient>
-  <radialGradient id="oeilGrad">
-    <stop offset="0%" stop-color="#FDF5E6"/>
-    <stop offset="100%" stop-color="#F5E0C4"/>
-  </radialGradient>
-  <linearGradient id="museauGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-    <stop offset="0%" stop-color="#FFE8C8"/>
-    <stop offset="100%" stop-color="#F5D8A8"/>
-  </linearGradient>
-</defs>
-<!-- Ombre (non coloriable, reste grise) -->
-<ellipse cx="50" cy="88" rx="38" ry="12" fill="#D4C4A8" opacity="0.3"/>
+// LION RÉALISTE POUR ENFANTS - Tous les contours en noir
+{cat:'animaux', title:'Lion', clickable:['criniere','visage','museau','nez','oeilG','oeilD','pupilleG','pupilleD','sourcilG','sourcilD','bouche','moustacheG1','moustacheG2','moustacheG3','moustacheD1','moustacheD2','moustacheD3','mèche1','mèche2','joueG','joueD','narineG','narineD'], full:`
+<!-- Ombre douce (non coloriable) -->
+<ellipse cx="50" cy="88" rx="38" ry="12" fill="#CCCCCC" opacity="0.3" stroke="none"/>
 <!-- Crinière -->
-<path id="criniere" d="M50 28 Q20 24 15 40 Q10 55 18 72 Q26 88 50 88 Q74 88 82 72 Q90 55 85 40 Q80 24 50 28Z" fill="white" stroke="#A55A1A" stroke-width="1.8"/>
+<path id="criniere" d="M50 28 Q20 24 15 40 Q10 55 18 72 Q26 88 50 88 Q74 88 82 72 Q90 55 85 40 Q80 24 50 28Z" fill="white" stroke="#000000" stroke-width="2"/>
 <!-- Visage -->
-<ellipse id="visage" cx="50" cy="54" rx="22" ry="24" fill="white" stroke="#C47A2A" stroke-width="1.5"/>
+<ellipse id="visage" cx="50" cy="54" rx="22" ry="24" fill="white" stroke="#000000" stroke-width="1.8"/>
 <!-- Museau -->
-<ellipse id="museau" cx="50" cy="60" rx="14" ry="12" fill="white" stroke="#B87A3A" stroke-width="1.2"/>
+<ellipse id="museau" cx="50" cy="60" rx="14" ry="12" fill="white" stroke="#000000" stroke-width="1.5"/>
 <!-- Nez -->
-<path id="nez" d="M46 60 L50 66 L54 60 L50 62 Z" fill="white" stroke="#B8421A" stroke-width="1"/>
-<!-- Narines (petits détails) -->
-<ellipse cx="47.5" cy="61" rx="1.2" ry="1" fill="white" stroke="#B8421A" stroke-width="0.5"/>
-<ellipse cx="52.5" cy="61" rx="1.2" ry="1" fill="white" stroke="#B8421A" stroke-width="0.5"/>
+<path id="nez" d="M46 60 L50 66 L54 60 L50 62 Z" fill="white" stroke="#000000" stroke-width="1.2"/>
+<!-- Narines -->
+<ellipse id="narineG" cx="47.5" cy="61" rx="1.2" ry="1" fill="white" stroke="#000000" stroke-width="0.8"/>
+<ellipse id="narineD" cx="52.5" cy="61" rx="1.2" ry="1" fill="white" stroke="#000000" stroke-width="0.8"/>
 <!-- Yeux -->
-<ellipse id="oeilG" cx="38" cy="48" rx="4.5" ry="5.5" fill="white" stroke="#5A3A1A" stroke-width="1.2"/>
-<circle id="pupilleG" cx="37" cy="48" r="2" fill="white" stroke="#2C2C1A" stroke-width="1"/>
+<ellipse id="oeilG" cx="38" cy="48" rx="4.5" ry="5.5" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="pupilleG" cx="37" cy="48" r="2" fill="white" stroke="#000000" stroke-width="1"/>
 <circle id="refletG" cx="36" cy="46.5" r="0.8" fill="white" stroke="none"/>
-<ellipse id="oeilD" cx="62" cy="48" rx="4.5" ry="5.5" fill="white" stroke="#5A3A1A" stroke-width="1.2"/>
-<circle id="pupilleD" cx="61" cy="48" r="2" fill="white" stroke="#2C2C1A" stroke-width="1"/>
+<ellipse id="oeilD" cx="62" cy="48" rx="4.5" ry="5.5" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="pupilleD" cx="61" cy="48" r="2" fill="white" stroke="#000000" stroke-width="1"/>
 <circle id="refletD" cx="60" cy="46.5" r="0.8" fill="white" stroke="none"/>
 <!-- Sourcils -->
-<path id="sourcilG" d="M32 42 L38 44 L32 46" fill="none" stroke="#8B5A2A" stroke-width="1.2" stroke-linecap="round"/>
-<path id="sourcilD" d="M68 42 L62 44 L68 46" fill="none" stroke="#8B5A2A" stroke-width="1.2" stroke-linecap="round"/>
+<path id="sourcilG" d="M32 42 L38 44 L32 46" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round"/>
+<path id="sourcilD" d="M68 42 L62 44 L68 46" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round"/>
 <!-- Bouche -->
-<path id="bouche" d="M44 67 Q50 73 56 67" fill="none" stroke="#B85A2A" stroke-width="1.8" stroke-linecap="round"/>
-<path d="M45 68 Q50 71 55 68" fill="none" stroke="#D87A4A" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+<path id="bouche" d="M44 67 Q50 73 56 67" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
 <!-- Moustaches -->
-<path id="moustacheG1" d="M26 57 L38 56" stroke="#C49A6A" stroke-width="1" stroke-linecap="round"/>
-<path id="moustacheG2" d="M26 60 L38 59" stroke="#C49A6A" stroke-width="1" stroke-linecap="round"/>
-<path id="moustacheG3" d="M26 63 L38 62" stroke="#C49A6A" stroke-width="1" stroke-linecap="round"/>
-<path id="moustacheD1" d="M74 57 L62 56" stroke="#C49A6A" stroke-width="1" stroke-linecap="round"/>
-<path id="moustacheD2" d="M74 60 L62 59" stroke="#C49A6A" stroke-width="1" stroke-linecap="round"/>
-<path id="moustacheD3" d="M74 63 L62 62" stroke="#C49A6A" stroke-width="1" stroke-linecap="round"/>
-<!-- Joues (points de lumière) -->
-<circle id="joueG" cx="42" cy="62" r="1.2" fill="white" stroke="none" opacity="0.7"/>
-<circle id="joueD" cx="58" cy="62" r="1.2" fill="white" stroke="none" opacity="0.7"/>
+<path id="moustacheG1" d="M26 57 L38 56" stroke="#000000" stroke-width="1.2" stroke-linecap="round"/>
+<path id="moustacheG2" d="M26 60 L38 59" stroke="#000000" stroke-width="1.2" stroke-linecap="round"/>
+<path id="moustacheG3" d="M26 63 L38 62" stroke="#000000" stroke-width="1.2" stroke-linecap="round"/>
+<path id="moustacheD1" d="M74 57 L62 56" stroke="#000000" stroke-width="1.2" stroke-linecap="round"/>
+<path id="moustacheD2" d="M74 60 L62 59" stroke="#000000" stroke-width="1.2" stroke-linecap="round"/>
+<path id="moustacheD3" d="M74 63 L62 62" stroke="#000000" stroke-width="1.2" stroke-linecap="round"/>
+<!-- Joues -->
+<circle id="joueG" cx="42" cy="62" r="1.5" fill="white" stroke="#000000" stroke-width="0.8"/>
+<circle id="joueD" cx="58" cy="62" r="1.5" fill="white" stroke="#000000" stroke-width="0.8"/>
 <!-- Mèches de crinière -->
-<path id="mèche1" d="M42 34 L44 28 L48 32" fill="none" stroke="#E09D3E" stroke-width="1.5" stroke-linecap="round"/>
-<path id="mèche2" d="M58 34 L56 28 L52 32" fill="none" stroke="#E09D3E" stroke-width="1.5" stroke-linecap="round"/>
+<path id="mèche1" d="M42 34 L44 28 L48 32" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round"/>
+<path id="mèche2" d="M58 34 L56 28 L52 32" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round"/>
 `},
 
 // GRENOUILLE
 {cat:'animaux', title:'Grenouille', clickable:['r0','r1','r2','r3','r4','r5','r6'], full:`
-<path id="r3" d="M20 75 Q25 85 35 80 Q40 90 50 88 Q60 90 65 80 Q75 85 80 75" fill="white" stroke="#333" stroke-width="2.5"/>
-<ellipse id="r0" cx="50" cy="58" rx="28" ry="22" fill="white" stroke="#333" stroke-width="2.5"/>
-<circle id="r1" cx="36" cy="32" r="10" fill="white" stroke="#333" stroke-width="2.5"/>
-<circle id="r2" cx="64" cy="32" r="10" fill="white" stroke="#333" stroke-width="2.5"/>
-<circle id="r4" cx="36" cy="32" r="5" fill="white" stroke="#333" stroke-width="1.5"/>
-<circle id="r5" cx="64" cy="32" r="5" fill="white" stroke="#333" stroke-width="1.5"/>
-<path id="r6" d="M42 62 Q50 68 58 62" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+<path id="r3" d="M20 75 Q25 85 35 80 Q40 90 50 88 Q60 90 65 80 Q75 85 80 75" fill="white" stroke="#000000" stroke-width="2.5"/>
+<ellipse id="r0" cx="50" cy="58" rx="28" ry="22" fill="white" stroke="#000000" stroke-width="2.5"/>
+<circle id="r1" cx="36" cy="32" r="10" fill="white" stroke="#000000" stroke-width="2.5"/>
+<circle id="r2" cx="64" cy="32" r="10" fill="white" stroke="#000000" stroke-width="2.5"/>
+<circle id="r4" cx="36" cy="32" r="5" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="r5" cx="64" cy="32" r="5" fill="white" stroke="#000000" stroke-width="1.5"/>
+<path id="r6" d="M42 62 Q50 68 58 62" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
 `, clickable:['r0','r1','r2','r3','r4','r5','r6']},
 
 {cat:'animaux', title:'Chien', clickable:['r0','r1','r2','r3','r4','r5','r6','r7','r8'], full:`
-<ellipse id="r0" cx="50" cy="52" rx="26" ry="22" fill="white" stroke="#333" stroke-width="2.5"/>
-<ellipse id="r1" cx="50" cy="38" rx="20" ry="18" fill="white" stroke="#333" stroke-width="2.5"/>
-<ellipse id="r2" cx="32" cy="32" rx="9" ry="14" fill="white" stroke="#333" stroke-width="2"/>
-<ellipse id="r3" cx="68" cy="32" rx="9" ry="14" fill="white" stroke="#333" stroke-width="2"/>
-<circle id="r5" cx="43" cy="36" r="3" fill="white" stroke="#333" stroke-width="1.5"/>
-<circle id="r6" cx="57" cy="36" r="3" fill="white" stroke="#333" stroke-width="1.5"/>
-<ellipse id="r7" cx="50" cy="43" rx="4" ry="3" fill="white" stroke="#333" stroke-width="1.5"/>
-<path id="r8" d="M44 47 Q50 53 56 47" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
-<path id="r4" d="M72 58 Q82 50 85 60 Q82 70 72 65Z" fill="white" stroke="#333" stroke-width="2"/>
+<ellipse id="r0" cx="50" cy="52" rx="26" ry="22" fill="white" stroke="#000000" stroke-width="2.5"/>
+<ellipse id="r1" cx="50" cy="38" rx="20" ry="18" fill="white" stroke="#000000" stroke-width="2.5"/>
+<ellipse id="r2" cx="32" cy="32" rx="9" ry="14" fill="white" stroke="#000000" stroke-width="2"/>
+<ellipse id="r3" cx="68" cy="32" rx="9" ry="14" fill="white" stroke="#000000" stroke-width="2"/>
+<circle id="r5" cx="43" cy="36" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="r6" cx="57" cy="36" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
+<ellipse id="r7" cx="50" cy="43" rx="4" ry="3" fill="white" stroke="#000000" stroke-width="1.5"/>
+<path id="r8" d="M44 47 Q50 53 56 47" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+<path id="r4" d="M72 58 Q82 50 85 60 Q82 70 72 65Z" fill="white" stroke="#000000" stroke-width="2"/>
 `, clickable:['r0','r1','r2','r3','r4','r5','r6','r7','r8']},
 
 {cat:'animaux', title:'Éléphant', clickable:['r0','r1','r2','r3','r4','r5','r6'], full:`
-<ellipse id="r0" cx="50" cy="55" rx="32" ry="28" fill="white" stroke="#333" stroke-width="2.5"/>
-<ellipse id="r1" cx="50" cy="35" rx="22" ry="18" fill="white" stroke="#333" stroke-width="2.5"/>
-<ellipse id="r2" cx="25" cy="28" rx="10" ry="16" fill="white" stroke="#333" stroke-width="2"/>
-<ellipse id="r3" cx="75" cy="28" rx="10" ry="16" fill="white" stroke="#333" stroke-width="2"/>
-<path id="r4" d="M42 45 Q38 60 35 70 Q38 75 42 70 Q44 62 46 52" fill="white" stroke="#333" stroke-width="2.5"/>
-<circle id="r5" cx="44" cy="32" r="3" fill="white" stroke="#333" stroke-width="1.5"/>
-<circle id="r6" cx="56" cy="32" r="3" fill="white" stroke="#333" stroke-width="1.5"/>
+<ellipse id="r0" cx="50" cy="55" rx="32" ry="28" fill="white" stroke="#000000" stroke-width="2.5"/>
+<ellipse id="r1" cx="50" cy="35" rx="22" ry="18" fill="white" stroke="#000000" stroke-width="2.5"/>
+<ellipse id="r2" cx="25" cy="28" rx="10" ry="16" fill="white" stroke="#000000" stroke-width="2"/>
+<ellipse id="r3" cx="75" cy="28" rx="10" ry="16" fill="white" stroke="#000000" stroke-width="2"/>
+<path id="r4" d="M42 45 Q38 60 35 70 Q38 75 42 70 Q44 62 46 52" fill="white" stroke="#000000" stroke-width="2.5"/>
+<circle id="r5" cx="44" cy="32" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="r6" cx="56" cy="32" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
 `, clickable:['r0','r1','r2','r3','r4','r5','r6']},
 
 {cat:'animaux', title:'Lapin', clickable:['r0','r1','r2','r3','r4','r5','r6'], full:`
-<ellipse id="r0" cx="50" cy="60" rx="24" ry="26" fill="white" stroke="#333" stroke-width="2.5"/>
-<ellipse id="r1" cx="50" cy="40" rx="18" ry="17" fill="white" stroke="#333" stroke-width="2.5"/>
-<ellipse id="r2" cx="37" cy="16" rx="7" ry="18" fill="white" stroke="#333" stroke-width="2"/>
-<ellipse id="r3" cx="63" cy="16" rx="7" ry="18" fill="white" stroke="#333" stroke-width="2"/>
-<circle id="r4" cx="43" cy="38" r="3" fill="white" stroke="#333" stroke-width="1.5"/>
-<circle id="r5" cx="57" cy="38" r="3" fill="white" stroke="#333" stroke-width="1.5"/>
-<circle id="r6" cx="50" cy="44" r="3" fill="white" stroke="#333" stroke-width="1.5"/>
+<ellipse id="r0" cx="50" cy="60" rx="24" ry="26" fill="white" stroke="#000000" stroke-width="2.5"/>
+<ellipse id="r1" cx="50" cy="40" rx="18" ry="17" fill="white" stroke="#000000" stroke-width="2.5"/>
+<ellipse id="r2" cx="37" cy="16" rx="7" ry="18" fill="white" stroke="#000000" stroke-width="2"/>
+<ellipse id="r3" cx="63" cy="16" rx="7" ry="18" fill="white" stroke="#000000" stroke-width="2"/>
+<circle id="r4" cx="43" cy="38" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="r5" cx="57" cy="38" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="r6" cx="50" cy="44" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
 `, clickable:['r0','r1','r2','r3','r4','r5','r6']},
 
 {cat:'animaux', title:'Poisson', clickable:['r0','r1','r2','r3','r4','r5'], full:`
-<ellipse id="r0" cx="46" cy="50" rx="30" ry="20" fill="white" stroke="#333" stroke-width="2.5"/>
-<path id="r1" d="M76 50 Q90 35 95 50 Q90 65 76 50Z" fill="white" stroke="#333" stroke-width="2.5"/>
-<circle id="r2" cx="25" cy="45" r="7" fill="white" stroke="#333" stroke-width="2"/>
-<circle id="r3" cx="23" cy="43" r="3" fill="white" stroke="#333" stroke-width="1.5"/>
-<path id="r4" d="M42 45 Q46 55 52 45" fill="none" stroke="#333" stroke-width="1.5"/>
-<path id="r5" d="M52 45 Q56 55 62 45" fill="none" stroke="#333" stroke-width="1.5"/>
+<ellipse id="r0" cx="46" cy="50" rx="30" ry="20" fill="white" stroke="#000000" stroke-width="2.5"/>
+<path id="r1" d="M76 50 Q90 35 95 50 Q90 65 76 50Z" fill="white" stroke="#000000" stroke-width="2.5"/>
+<circle id="r2" cx="25" cy="45" r="7" fill="white" stroke="#000000" stroke-width="2"/>
+<circle id="r3" cx="23" cy="43" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
+<path id="r4" d="M42 45 Q46 55 52 45" fill="none" stroke="#000000" stroke-width="1.5"/>
+<path id="r5" d="M52 45 Q56 55 62 45" fill="none" stroke="#000000" stroke-width="1.5"/>
 `, clickable:['r0','r1','r2','r3','r4','r5']},
 
 {cat:'animaux', title:'Oiseau', clickable:['r0','r1','r2','r3','r4','r5','r6','r7','r8'], full:`
-<ellipse id="r0" cx="50" cy="55" rx="25" ry="20" fill="white" stroke="#333" stroke-width="2.5"/>
-<circle id="r1" cx="50" cy="32" rx="17" ry="16" fill="white" stroke="#333" stroke-width="2.5"/>
-<path id="r2" d="M20 45 Q10 35 15 25 Q25 28 30 40Z" fill="white" stroke="#333" stroke-width="2"/>
-<path id="r3" d="M80 45 Q90 35 85 25 Q75 28 70 40Z" fill="white" stroke="#333" stroke-width="2"/>
-<path id="r4" d="M44 30 Q50 26 56 30" fill="white" stroke="#333" stroke-width="2"/>
-<circle id="r5" cx="45" cy="29" r="3" fill="white" stroke="#333" stroke-width="1.5"/>
-<circle id="r6" cx="55" cy="29" r="3" fill="white" stroke="#333" stroke-width="1.5"/>
-<line id="r7" x1="44" y1="70" x2="40" y2="85" stroke="#333" stroke-width="2.5"/>
-<line id="r8" x1="56" y1="70" x2="60" y2="85" stroke="#333" stroke-width="2.5"/>
+<ellipse id="r0" cx="50" cy="55" rx="25" ry="20" fill="white" stroke="#000000" stroke-width="2.5"/>
+<circle id="r1" cx="50" cy="32" rx="17" ry="16" fill="white" stroke="#000000" stroke-width="2.5"/>
+<path id="r2" d="M20 45 Q10 35 15 25 Q25 28 30 40Z" fill="white" stroke="#000000" stroke-width="2"/>
+<path id="r3" d="M80 45 Q90 35 85 25 Q75 28 70 40Z" fill="white" stroke="#000000" stroke-width="2"/>
+<path id="r4" d="M44 30 Q50 26 56 30" fill="white" stroke="#000000" stroke-width="2"/>
+<circle id="r5" cx="45" cy="29" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="r6" cx="55" cy="29" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
+<line id="r7" x1="44" y1="70" x2="40" y2="85" stroke="#000000" stroke-width="2.5"/>
+<line id="r8" x1="56" y1="70" x2="60" y2="85" stroke="#000000" stroke-width="2.5"/>
 `, clickable:['r0','r1','r2','r3','r4','r5','r6','r7','r8']},
 
 {cat:'animaux', title:'Tortue', clickable:['r0','r1','r2','r3','r4','r5','r6'], full:`
-<ellipse id="r0" cx="50" cy="52" rx="30" ry="24" fill="white" stroke="#333" stroke-width="2.5"/>
-<ellipse id="r1" cx="50" cy="48" rx="20" ry="16" fill="white" stroke="#333" stroke-width="2"/>
-<ellipse id="r2" cx="50" cy="30" rx="10" ry="8" fill="white" stroke="#333" stroke-width="2"/>
-<circle id="r3" cx="46" cy="27" r="2.5" fill="white" stroke="#333" stroke-width="1.5"/>
-<circle id="r4" cx="54" cy="27" r="2.5" fill="white" stroke="#333" stroke-width="1.5"/>
-<line id="r5" x1="28" y1="60" x2="20" y2="70" stroke="#333" stroke-width="2"/>
-<line id="r6" x1="72" y1="60" x2="80" y2="70" stroke="#333" stroke-width="2"/>
+<ellipse id="r0" cx="50" cy="52" rx="30" ry="24" fill="white" stroke="#000000" stroke-width="2.5"/>
+<ellipse id="r1" cx="50" cy="48" rx="20" ry="16" fill="white" stroke="#000000" stroke-width="2"/>
+<ellipse id="r2" cx="50" cy="30" rx="10" ry="8" fill="white" stroke="#000000" stroke-width="2"/>
+<circle id="r3" cx="46" cy="27" r="2.5" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="r4" cx="54" cy="27" r="2.5" fill="white" stroke="#000000" stroke-width="1.5"/>
+<line id="r5" x1="28" y1="60" x2="20" y2="70" stroke="#000000" stroke-width="2"/>
+<line id="r6" x1="72" y1="60" x2="80" y2="70" stroke="#000000" stroke-width="2"/>
 `, clickable:['r0','r1','r2','r3','r4','r5','r6']},
 
 {cat:'animaux', title:'Canard', clickable:['r0','r1','r2','r3','r4'], full:`
-<ellipse id="r0" cx="50" cy="60" rx="28" ry="20" fill="white" stroke="#333" stroke-width="2.5"/>
-<ellipse id="r1" cx="38" cy="35" rx="15" ry="17" fill="white" stroke="#333" stroke-width="2.5"/>
-<path id="r2" d="M26 33 Q18 28 16 35 Q18 42 26 38Z" fill="white" stroke="#333" stroke-width="2"/>
-<circle id="r3" cx="32" cy="30" r="3" fill="white" stroke="#333" stroke-width="1.5"/>
-<ellipse id="r4" cx="65" cy="65" rx="12" ry="6" fill="white" stroke="#333" stroke-width="2"/>
+<ellipse id="r0" cx="50" cy="60" rx="28" ry="20" fill="white" stroke="#000000" stroke-width="2.5"/>
+<ellipse id="r1" cx="38" cy="35" rx="15" ry="17" fill="white" stroke="#000000" stroke-width="2.5"/>
+<path id="r2" d="M26 33 Q18 28 16 35 Q18 42 26 38Z" fill="white" stroke="#000000" stroke-width="2"/>
+<circle id="r3" cx="32" cy="30" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
+<ellipse id="r4" cx="65" cy="65" rx="12" ry="6" fill="white" stroke="#000000" stroke-width="2"/>
 `, clickable:['r0','r1','r2','r3','r4']}
 ];
 
-// Ajout des images manquantes pour atteindre 50 (nature, véhicules, nourriture)
-const categoriesSuite = ['nature','nature','vehicules','vehicules','nourriture','nourriture'];
-const titresSuite = ['Arc-en-ciel','Arbre','Voiture','Avion','Glace','Pizza','Fleur','Montagne','Bateau','Train','Gâteau','Fraise'];
+// Ajout des images manquantes pour atteindre 50
+const categoriesSuite = ['nature','nature','vehicules','vehicules','nourriture','nourriture','nature','vehicules','nourriture'];
+const titresSuite = ['Arc-en-ciel','Arbre','Voiture','Avion','Glace','Pizza','Fleur','Bateau','Gâteau'];
 
 for(let i = IMAGES.length; i < 50; i++) {
   const cat = categoriesSuite[i % categoriesSuite.length];
@@ -305,7 +280,7 @@ for(let i = IMAGES.length; i < 50; i++) {
     cat: cat,
     title: title,
     clickable: ['z1','z2','z3','z4'],
-    full: `<ellipse id="z1" cx="50" cy="55" rx="28" ry="24" fill="white" stroke="#333" stroke-width="2.5"/><circle id="z2" cx="35" cy="42" r="12" fill="white" stroke="#333" stroke-width="2.5"/><circle id="z3" cx="65" cy="42" r="12" fill="white" stroke="#333" stroke-width="2.5"/><rect id="z4" x="42" y="68" width="16" height="18" rx="4" fill="white" stroke="#333" stroke-width="2.5"/>`
+    full: `<ellipse id="z1" cx="50" cy="55" rx="28" ry="24" fill="white" stroke="#000000" stroke-width="2.5"/><circle id="z2" cx="35" cy="42" r="12" fill="white" stroke="#000000" stroke-width="2.5"/><circle id="z3" cx="65" cy="42" r="12" fill="white" stroke="#000000" stroke-width="2.5"/><rect id="z4" x="42" y="68" width="16" height="18" rx="4" fill="white" stroke="#000000" stroke-width="2.5"/>`
   });
 }
 
