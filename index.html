@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>🐍 Snake - Édition Deluxe</title>
+  <title>🐍 Snake - Édition Minimaliste</title>
   <style>
     * {
       margin: 0;
@@ -18,335 +18,272 @@
 
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+      background: #f5f5f0;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+      font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
       padding: 20px;
-      position: relative;
-      overflow-x: hidden;
     }
 
-    /* Effet de particules animées en fond */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: radial-gradient(circle at 20% 40%, rgba(255,255,255,0.05) 1px, transparent 1px);
-      background-size: 30px 30px;
-      pointer-events: none;
-      animation: float 20s linear infinite;
-    }
-
-    @keyframes float {
-      0% { background-position: 0 0; }
-      100% { background-position: 100px 100px; }
-    }
-
-    /* MENU PRINCIPAL */
+    /* MENU PRINCIPAL - Minimaliste */
     .menu-container {
       max-width: 580px;
       width: 100%;
-      background: rgba(10, 25, 30, 0.75);
-      backdrop-filter: blur(12px);
-      border-radius: 56px;
-      padding: 35px 30px;
-      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
-      border: 1px solid rgba(100, 200, 150, 0.3);
-      animation: fadeInUp 0.6s ease;
+      background: #ffffff;
+      border-radius: 32px;
+      padding: 40px 35px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+      border: 1px solid #e8e8e5;
+      animation: fadeInUp 0.5s ease;
     }
 
     @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .menu-header {
       text-align: center;
-      margin-bottom: 35px;
+      margin-bottom: 40px;
     }
     .snake-icon {
-      font-size: 70px;
-      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
-      animation: wiggle 3s ease-in-out infinite;
-    }
-    @keyframes wiggle {
-      0%, 100% { transform: rotate(0deg); }
-      25% { transform: rotate(-5deg); }
-      75% { transform: rotate(5deg); }
+      font-size: 56px;
+      opacity: 0.7;
+      margin-bottom: 8px;
     }
     .menu-header h1 {
-      font-size: 52px;
-      background: linear-gradient(135deg, #F5E56B, #FFD966, #F5B84C);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      letter-spacing: 2px;
+      font-size: 42px;
+      font-weight: 600;
+      color: #2c2c2a;
+      letter-spacing: -0.5px;
       margin-top: 5px;
     }
     .menu-header p {
-      color: #9ec8b8;
-      font-size: 16px;
+      color: #8a8a85;
+      font-size: 15px;
       margin-top: 8px;
-      letter-spacing: 1px;
+      font-weight: 400;
     }
 
     .difficulty-cards {
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
       margin-bottom: 35px;
     }
 
     .card {
-      background: linear-gradient(135deg, rgba(20, 35, 40, 0.9), rgba(15, 25, 30, 0.9));
-      border-radius: 32px;
-      padding: 22px 28px;
+      background: #fafaf8;
+      border-radius: 24px;
+      padding: 20px 24px;
       cursor: pointer;
-      transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-      border: 1px solid rgba(255, 217, 102, 0.2);
+      transition: all 0.25s ease;
+      border: 1px solid #e5e5e0;
       display: flex;
       align-items: center;
-      gap: 22px;
-      position: relative;
-      overflow: hidden;
-    }
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-      transition: left 0.5s;
-    }
-    .card:hover::before {
-      left: 100%;
+      gap: 20px;
     }
     .card:hover {
-      transform: translateX(10px) scale(1.02);
-      border-color: #ffd966;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      transform: translateX(6px);
+      border-color: #ccc;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
     }
-    .card.easy:hover { border-color: #7bc47b; box-shadow: 0 10px 25px rgba(90, 158, 78, 0.3); }
-    .card.medium:hover { border-color: #f5b642; box-shadow: 0 10px 25px rgba(224, 157, 62, 0.3); }
-    .card.hard:hover { border-color: #ff6b6b; box-shadow: 0 10px 25px rgba(201, 42, 42, 0.3); }
     
     .card-icon {
-      font-size: 54px;
-      width: 80px;
+      font-size: 44px;
+      width: 70px;
       text-align: center;
-      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
+      opacity: 0.8;
     }
     .card-info { flex: 1; }
     .card-title {
-      font-size: 26px;
-      font-weight: bold;
+      font-size: 22px;
+      font-weight: 600;
       margin-bottom: 6px;
-      letter-spacing: 1px;
+      color: #2c2c2a;
     }
-    .card.easy .card-title { color: #a8e6a8; text-shadow: 0 0 5px rgba(90,158,78,0.5); }
-    .card.medium .card-title { color: #ffd966; text-shadow: 0 0 5px rgba(224,157,62,0.5); }
-    .card.hard .card-title { color: #ff9494; text-shadow: 0 0 5px rgba(201,42,42,0.5); }
+    .card.easy .card-title { color: #5a8a5a; }
+    .card.medium .card-title { color: #c98a3a; }
+    .card.hard .card-title { color: #b85a4a; }
     .card-desc {
       font-size: 13px;
-      color: #aac8bc;
-      margin-bottom: 10px;
+      color: #9a9a95;
+      margin-bottom: 8px;
     }
     .card-stats {
       display: flex;
-      gap: 15px;
+      gap: 12px;
       font-size: 12px;
     }
     .stat {
-      background: rgba(0, 0, 0, 0.5);
-      padding: 4px 14px;
-      border-radius: 30px;
-      color: #ffd966;
+      background: #f0f0eb;
+      padding: 4px 12px;
+      border-radius: 20px;
+      color: #6a6a65;
       font-weight: 500;
     }
-    .card.easy .stat { background: rgba(90, 158, 78, 0.4); color: #c8f0c8; }
-    .card.medium .stat { background: rgba(224, 157, 62, 0.4); color: #ffe0a3; }
-    .card.hard .stat { background: rgba(201, 42, 42, 0.4); color: #ffbcbc; }
+    .card.easy .stat { background: #e8f0e8; color: #5a8a5a; }
+    .card.medium .stat { background: #fff0e0; color: #c98a3a; }
+    .card.hard .stat { background: #ffe8e0; color: #b85a4a; }
 
     .rules-btn {
       width: 100%;
-      background: linear-gradient(135deg, rgba(30, 50, 45, 0.9), rgba(20, 35, 30, 0.9));
-      border: 1px solid #ffd966;
-      color: #ffd966;
+      background: #f5f5f0;
+      border: 1px solid #e0e0db;
+      color: #5a5a55;
       padding: 14px;
-      border-radius: 50px;
-      font-size: 16px;
-      font-weight: bold;
+      border-radius: 48px;
+      font-size: 15px;
+      font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.2s;
       font-family: inherit;
-      backdrop-filter: blur(4px);
     }
     .rules-btn:hover {
-      background: #ffd966;
-      color: #1a3a2a;
-      transform: scale(1.02);
-      box-shadow: 0 5px 20px rgba(255, 217, 102, 0.3);
+      background: #e8e8e3;
+      border-color: #ccc;
+      color: #2c2c2a;
     }
     .footer {
       text-align: center;
-      margin-top: 25px;
+      margin-top: 28px;
       font-size: 12px;
-      color: #7a9a8a;
+      color: #b0b0aa;
     }
 
-    /* ZONE DE JEU */
+    /* ZONE DE JEU - MINIMALISTE (fond blanc, serpent noir/gris) */
     .game-container {
       display: none;
       max-width: 550px;
       width: 100%;
-      animation: fadeInUp 0.5s ease;
+      animation: fadeInUp 0.4s ease;
     }
 
     .game-wrapper {
-      background: linear-gradient(145deg, #0f2a1a, #082010);
+      background: #ffffff;
       border-radius: 32px;
-      padding: 25px;
-      box-shadow: 0 25px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.05);
-      border: 1px solid rgba(255, 217, 102, 0.2);
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+      border: 1px solid #ecece8;
     }
 
     canvas {
       display: block;
       margin: 0 auto;
-      border-radius: 20px;
-      box-shadow: 0 0 0 4px #ffd966, 0 0 0 8px #b8860b, 0 15px 25px rgba(0,0,0,0.3);
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), inset 0 0 0 1px #ecece8;
       cursor: pointer;
-      transition: all 0.2s;
+      background: #ffffff;
     }
 
     .info-panel {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 25px;
-      gap: 15px;
+      margin-top: 24px;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
     .score-box, .highscore-box {
-      background: linear-gradient(135deg, #2a1f0f, #1e150a);
-      border-radius: 50px;
-      padding: 10px 24px;
+      background: #fafaf8;
+      border-radius: 40px;
+      padding: 8px 20px;
       text-align: center;
-      border: 1px solid #ffd96640;
-      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+      border: 1px solid #e8e8e5;
     }
     .score-label, .highscore-label {
-      color: #ffd966;
+      color: #8a8a85;
       font-size: 11px;
-      letter-spacing: 2px;
+      letter-spacing: 1px;
       text-transform: uppercase;
     }
     .score-value, .highscore-value {
-      color: #fff2c4;
-      font-size: 32px;
-      font-weight: bold;
-      line-height: 1;
-      text-shadow: 0 2px 3px rgba(0,0,0,0.3);
+      color: #2c2c2a;
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1.2;
     }
 
     .status {
-      background: linear-gradient(135deg, #1a3a2a, #0f2a1a);
+      background: #f5f5f0;
       padding: 8px 20px;
-      border-radius: 50px;
-      font-weight: bold;
-      color: #ffd966;
+      border-radius: 40px;
+      font-weight: 500;
+      color: #6a6a65;
       font-size: 13px;
-      border: 1px solid #ffd96660;
-      backdrop-filter: blur(4px);
+      border: 1px solid #e8e8e5;
     }
 
     button {
-      background: linear-gradient(135deg, #3a2a1a, #2a1f0f);
-      border: none;
-      color: #ffd966;
-      font-size: 14px;
-      font-weight: bold;
-      padding: 10px 22px;
-      border-radius: 50px;
+      background: #f5f5f0;
+      border: 1px solid #e0e0db;
+      color: #5a5a55;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 20px;
+      border-radius: 40px;
       cursor: pointer;
-      box-shadow: 0 4px 0 #5a3a1a;
+      transition: all 0.2s;
       font-family: inherit;
-      transition: all 0.1s;
-      border: 1px solid #ffd96640;
     }
-    button:active { transform: translateY(2px); box-shadow: 0 2px 0 #5a3a1a; }
-    .controls { display: flex; gap: 12px; }
+    button:hover {
+      background: #e8e8e3;
+      border-color: #ccc;
+    }
+    .controls { display: flex; gap: 10px; }
     .speed-info {
-      background: #0a1a0e;
-      padding: 6px 16px;
+      background: #fafaf8;
+      padding: 6px 14px;
       border-radius: 30px;
       font-size: 11px;
-      color: #b8e0a8;
+      color: #9a9a95;
       text-align: center;
-      margin-top: 15px;
-      border: 1px solid #5a8a4a;
+      margin-top: 16px;
+      border: 1px solid #ecece8;
     }
     .back-btn {
-      background: linear-gradient(135deg, #4a3a2a, #3a2a1a);
+      background: #f5f5f0;
       margin-bottom: 20px;
       width: 100%;
-      box-shadow: 0 4px 0 #2a1f0f;
+      border: 1px solid #e0e0db;
     }
-    .back-btn:hover { background: #6a4a2a; }
+    .back-btn:hover { background: #e8e8e3; }
 
     .overlay-message {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.92);
-      backdrop-filter: blur(12px);
-      padding: 25px 35px;
-      border-radius: 70px;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(4px);
+      padding: 20px 32px;
+      border-radius: 60px;
       text-align: center;
       z-index: 10;
       pointer-events: none;
-      border: 2px solid #ffd966;
-      animation: pulseGlow 1.5s infinite;
+      border: 1px solid #e0e0db;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
       white-space: nowrap;
     }
     .overlay-message span {
-      font-size: 56px;
+      font-size: 44px;
       display: block;
-      margin-bottom: 12px;
-      filter: drop-shadow(0 0 5px #ffd966);
+      margin-bottom: 8px;
+      opacity: 0.8;
     }
     .overlay-message p {
-      color: #ffd966;
-      font-size: 20px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      text-shadow: 0 0 5px rgba(0,0,0,0.5);
+      color: #4a4a45;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: -0.2px;
     }
     .overlay-message .small {
-      font-size: 13px;
-      margin-top: 10px;
-      opacity: 0.9;
-    }
-    @keyframes pulseGlow {
-      0% { box-shadow: 0 0 0 0 rgba(255, 217, 102, 0.4); border-color: #ffd966; }
-      50% { box-shadow: 0 0 20px 5px rgba(255, 217, 102, 0.6); border-color: #ffea8a; }
-      100% { box-shadow: 0 0 0 0 rgba(255, 217, 102, 0.4); border-color: #ffd966; }
+      font-size: 12px;
+      margin-top: 6px;
+      opacity: 0.6;
     }
     .canvas-wrapper {
       position: relative;
@@ -359,56 +296,56 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
       justify-content: center;
       align-items: center;
       z-index: 1000;
     }
     .modal-content {
-      background: linear-gradient(135deg, #1e2a2a, #0f1f1a);
-      border-radius: 48px;
-      padding: 35px;
-      max-width: 420px;
+      background: #ffffff;
+      border-radius: 32px;
+      padding: 32px;
+      max-width: 400px;
       width: 90%;
-      border: 2px solid #ffd966;
-      animation: fadeInUp 0.3s ease;
+      border: 1px solid #e8e8e5;
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.05);
     }
     .modal-content h3 {
-      color: #ffd966;
-      font-size: 32px;
-      margin-bottom: 25px;
+      color: #2c2c2a;
+      font-size: 28px;
+      margin-bottom: 24px;
       text-align: center;
+      font-weight: 600;
     }
     .modal-content ul {
-      color: #c5e1b5;
+      color: #6a6a65;
       list-style: none;
-      margin-bottom: 30px;
+      margin-bottom: 28px;
     }
     .modal-content li {
       padding: 10px 0;
-      border-bottom: 1px solid #3a6a4a;
+      border-bottom: 1px solid #ecece8;
       display: flex;
       align-items: center;
       gap: 12px;
-      font-size: 16px;
+      font-size: 15px;
     }
-    .modal-content li span { font-size: 24px; }
+    .modal-content li span { font-size: 22px; opacity: 0.7; }
     .close-modal {
-      background: #ffd966;
-      color: #1a3a2a;
-      border: none;
+      background: #f5f5f0;
+      border: 1px solid #e0e0db;
+      color: #4a4a45;
       padding: 12px;
-      border-radius: 50px;
-      font-weight: bold;
+      border-radius: 40px;
+      font-weight: 500;
       cursor: pointer;
       width: 100%;
-      font-size: 16px;
+      font-size: 15px;
       transition: all 0.2s;
     }
     .close-modal:hover {
-      transform: scale(1.02);
-      background: #ffea8a;
+      background: #e8e8e3;
     }
   </style>
 </head>
@@ -454,7 +391,7 @@
     <div class="footer">🎮 Utilise les flèches du clavier | ⏸ Espace pour pause | 🔄 R pour redémarrer</div>
   </div>
 
-  <!-- ZONE DE JEU -->
+  <!-- ZONE DE JEU - STYLE MINIMALISTE -->
   <div id="gameContainer" class="game-container">
     <div class="game-wrapper">
       <button class="back-btn" id="backToMenuBtn">← RETOUR AU MENU</button>
@@ -498,11 +435,11 @@
   </div>
 
   <script>
-    // Configuration des difficultés
+    // Configuration des difficultés - couleurs sobres
     const difficulties = {
-      easy: { speed: 150, wallTeleport: true, color: '#7bc47b', name: '🌿 FACILE', desc: 'Téléportation • Lent' },
-      medium: { speed: 100, wallTeleport: false, color: '#f5b642', name: '⚡ MOYEN', desc: 'Murs mortels • Normal' },
-      hard: { speed: 65, wallTeleport: false, color: '#ff6b6b', name: '🔥 DIFFICILE', desc: 'Murs mortels • Rapide' }
+      easy: { speed: 150, wallTeleport: true, color: '#6a8a6a', name: '🌿 FACILE', desc: 'Téléportation • Lent' },
+      medium: { speed: 100, wallTeleport: false, color: '#c88a4a', name: '⚡ MOYEN', desc: 'Murs mortels • Normal' },
+      hard: { speed: 65, wallTeleport: false, color: '#b85a4a', name: '🔥 DIFFICILE', desc: 'Murs mortels • Rapide' }
     };
 
     let snake, direction, nextDirection, food, score, highScore, gameLoop, isGameRunning, isPaused, isWaitingForStart, isGameOver;
@@ -513,7 +450,6 @@
     const BOARD_SIZE = 20;
     const CELL_SIZE = 20;
 
-    // DOM elements
     const menuContainer = document.getElementById('menuContainer');
     const gameContainer = document.getElementById('gameContainer');
     const scoreElement = document.getElementById('scoreValue');
@@ -535,9 +471,7 @@
     }
     window.addEventListener('keydown', preventArrowScroll);
 
-    function scrollToTop() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
     function generateRandomFood() {
       for (let i = 0; i < 2000; i++) {
@@ -685,102 +619,102 @@
       if (opposite[newDir] !== direction) nextDirection = newDir;
     }
 
+    // DESSIN MINIMALISTE : fond blanc, serpent noir/gris, pomme rouge sobre
     function drawBoard() {
       ctx.clearRect(0, 0, 400, 400);
-      // Fond dégradé
-      const grad = ctx.createLinearGradient(0, 0, 400, 400);
-      grad.addColorStop(0, '#1a4a2a');
-      grad.addColorStop(1, '#0f2a1a');
-      ctx.fillStyle = grad;
+      
+      // Fond blanc pur
+      ctx.fillStyle = '#FFFFFF';
       ctx.fillRect(0, 0, 400, 400);
       
-      // Grille fine
+      // Grille très subtile (gris clair)
       for (let i = 0; i <= BOARD_SIZE; i++) {
         ctx.beginPath();
-        ctx.strokeStyle = '#5a8a5a';
-        ctx.lineWidth = 0.5;
-        ctx.moveTo(i * CELL_SIZE, 0); ctx.lineTo(i * CELL_SIZE, 400); ctx.stroke();
-        ctx.moveTo(0, i * CELL_SIZE); ctx.lineTo(400, i * CELL_SIZE); ctx.stroke();
+        ctx.strokeStyle = '#EFEFEA';
+        ctx.lineWidth = 0.8;
+        ctx.moveTo(i * CELL_SIZE, 0);
+        ctx.lineTo(i * CELL_SIZE, 400);
+        ctx.stroke();
+        ctx.moveTo(0, i * CELL_SIZE);
+        ctx.lineTo(400, i * CELL_SIZE);
+        ctx.stroke();
       }
       
-      // Pomme avec dégradé et brillance
-      const appleGrad = ctx.createRadialGradient(food.x * CELL_SIZE + 7, food.y * CELL_SIZE + 7, 3, food.x * CELL_SIZE + 10, food.y * CELL_SIZE + 10, 10);
-      appleGrad.addColorStop(0, '#ff6b4a');
-      appleGrad.addColorStop(1, '#e84118');
+      // Pomme minimaliste (rouge sobre avec une feuille)
       ctx.beginPath();
-      ctx.arc(food.x * CELL_SIZE + 10, food.y * CELL_SIZE + 10, 8, 0, 2 * Math.PI);
-      ctx.fillStyle = appleGrad;
+      ctx.arc(food.x * CELL_SIZE + 10, food.y * CELL_SIZE + 10, 7, 0, 2 * Math.PI);
+      ctx.fillStyle = '#E05A3A';
       ctx.fill();
-      ctx.fillStyle = '#f9a825';
-      ctx.fillRect(food.x * CELL_SIZE + 13, food.y * CELL_SIZE + 6, 3, 6);
-      ctx.fillStyle = '#fff5e0';
+      ctx.fillStyle = '#C04A2A';
       ctx.beginPath();
-      ctx.arc(food.x * CELL_SIZE + 6, food.y * CELL_SIZE + 7, 1.8, 0, 2 * Math.PI);
+      ctx.arc(food.x * CELL_SIZE + 7, food.y * CELL_SIZE + 7, 2, 0, 2 * Math.PI);
       ctx.fill();
+      ctx.fillStyle = '#7A9A4A';
+      ctx.fillRect(food.x * CELL_SIZE + 13, food.y * CELL_SIZE + 5, 3, 5);
       
-      // Serpent avec dégradé et effet 3D
+      // Serpent minimaliste (dégradé gris/noir)
       for (let i = 0; i < snake.length; i++) {
         const s = snake[i];
         const x = s.x * CELL_SIZE, y = s.y * CELL_SIZE;
-        const snakeGrad = ctx.createLinearGradient(x, y, x + 18, y + 18);
-        if (i === 0) {
-          snakeGrad.addColorStop(0, diffColor);
-          snakeGrad.addColorStop(1, '#d89430');
-        } else {
-          snakeGrad.addColorStop(0, '#6aae4a');
-          snakeGrad.addColorStop(1, '#4a8e2a');
-        }
-        ctx.fillStyle = snakeGrad;
-        ctx.shadowBlur = 3;
-        ctx.shadowColor = '#1a3a0a';
+        
+        // Corps avec effet subtil
+        const intensity = i === 0 ? 0.2 : 0.4;
+        ctx.fillStyle = i === 0 ? '#3A3A38' : '#5A5A55';
+        ctx.shadowBlur = 0;
         ctx.beginPath();
-        ctx.roundRect(x + 1, y + 1, 18, 18, 6);
-        ctx.fill();
-        ctx.fillStyle = '#c8ffa8';
-        ctx.beginPath();
-        ctx.arc(x + 10, y + 10, 3.5, 0, 2 * Math.PI);
+        ctx.roundRect(x + 1.5, y + 1.5, 17, 17, 5);
         ctx.fill();
         
+        // Petite texture (points)
+        ctx.fillStyle = i === 0 ? '#6A6A65' : '#8A8A85';
+        ctx.beginPath();
+        ctx.arc(x + 10, y + 10, 3, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Yeux sur la tête
         if (i === 0) {
-          ctx.fillStyle = '#fff5e8';
+          ctx.fillStyle = '#FFFFFF';
           ctx.beginPath();
-          ctx.arc(x + 14, y + 7, 2.2, 0, 2 * Math.PI);
+          ctx.arc(x + 13, y + 7, 2, 0, 2 * Math.PI);
           ctx.fill();
           ctx.beginPath();
-          ctx.arc(x + 6, y + 7, 2.2, 0, 2 * Math.PI);
+          ctx.arc(x + 7, y + 7, 2, 0, 2 * Math.PI);
           ctx.fill();
-          ctx.fillStyle = '#2a1a0a';
+          ctx.fillStyle = '#1A1A1A';
           ctx.beginPath();
-          ctx.arc(x + 14.5, y + 6.5, 1, 0, 2 * Math.PI);
+          ctx.arc(x + 13.2, y + 6.5, 1, 0, 2 * Math.PI);
           ctx.fill();
           ctx.beginPath();
-          ctx.arc(x + 6.5, y + 6.5, 1, 0, 2 * Math.PI);
+          ctx.arc(x + 7.2, y + 6.5, 1, 0, 2 * Math.PI);
           ctx.fill();
+          
+          // Langue subtile
           if (direction === 'right') {
-            ctx.fillStyle = '#ff8866';
+            ctx.fillStyle = '#C05A4A';
             ctx.beginPath();
-            ctx.moveTo(x + 19, y + 10);
-            ctx.lineTo(x + 24, y + 12);
-            ctx.lineTo(x + 19, y + 14);
+            ctx.moveTo(x + 18, y + 10);
+            ctx.lineTo(x + 22, y + 11);
+            ctx.lineTo(x + 18, y + 12);
             ctx.fill();
           }
         }
       }
       ctx.shadowBlur = 0;
       
+      // Message pause minimaliste
       if (isPaused && isGameRunning && !isWaitingForStart && !isGameOver) {
-        ctx.font = 'bold 22px "Segoe UI"';
-        ctx.fillStyle = '#ffd966';
-        ctx.shadowBlur = 0;
-        ctx.fillText('⏸ PAUSE', 155, 190);
+        ctx.font = '500 20px "Segoe UI", system-ui';
+        ctx.fillStyle = '#9A9A95';
+        ctx.fillText('⏸ PAUSE', 160, 195);
       }
       
-      ctx.font = 'bold 11px monospace';
-      ctx.fillStyle = diffColor;
-      ctx.fillText(diffName, 10, 28);
-      if (wallTeleport) { ctx.fillStyle = '#aaffaa'; ctx.fillText('🌀 Téléportation', 10, 45); }
-      ctx.fillStyle = '#c8e8b8';
-      ctx.fillText('⚡ ' + gameSpeed + 'ms fixe', 10, 62);
+      // Informations de difficulté (discrètes)
+      ctx.font = '400 10px monospace';
+      ctx.fillStyle = '#B8B8B0';
+      ctx.fillText(diffName, 10, 22);
+      if (wallTeleport) { ctx.fillStyle = '#A8A89A'; ctx.fillText('🌀', 10, 38); }
+      ctx.fillStyle = '#C0C0B8';
+      ctx.fillText(gameSpeed + 'ms', 10, 52);
     }
 
     function initGame(difficultyKey) {
@@ -835,7 +769,6 @@
       scrollToTop();
     }
 
-    // Événements
     document.querySelectorAll('.card').forEach(card => {
       card.addEventListener('click', () => {
         const difficulty = card.getAttribute('data-diff');
