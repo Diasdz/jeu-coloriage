@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>🐍 Snake - Édition Minimaliste Équilibrée</title>
+  <title>🐍 Snake - Édition Équilibrée</title>
   <style>
     * {
       margin: 0;
@@ -18,7 +18,7 @@
 
     body {
       min-height: 100vh;
-      background: #e8e9ed;
+      background: #eef0f5;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -26,14 +26,14 @@
       padding: 20px;
     }
 
-    /* MENU PRINCIPAL - Épuré et doux */
+    /* MENU PRINCIPAL */
     .menu-container {
       max-width: 580px;
       width: 100%;
       background: #ffffff;
       border-radius: 32px;
       padding: 40px 35px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
       border: 1px solid #eef0f2;
       animation: fadeInUp 0.5s ease;
     }
@@ -55,7 +55,7 @@
     .menu-header h1 {
       font-size: 42px;
       font-weight: 600;
-      color: #2c2e33;
+      color: #2c3e44;
       letter-spacing: -0.5px;
       margin-top: 5px;
     }
@@ -142,7 +142,7 @@
     .rules-btn:hover {
       background: #ffffff;
       border-color: #d0d4dc;
-      color: #2c2e33;
+      color: #2c3e44;
     }
     .footer {
       text-align: center;
@@ -151,7 +151,7 @@
       color: #b2b8c2;
     }
 
-    /* ZONE DE JEU - Épurée, douce et lumineuse */
+    /* ZONE DE JEU */
     .game-container {
       display: none;
       max-width: 550px;
@@ -171,7 +171,7 @@
       display: block;
       margin: 0 auto;
       border-radius: 16px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), inset 0 0 0 1px #eef0f2;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
       cursor: pointer;
       background: #ffffff;
     }
@@ -199,7 +199,7 @@
       text-transform: uppercase;
     }
     .score-value, .highscore-value {
-      color: #2c2e33;
+      color: #2c3e44;
       font-size: 28px;
       font-weight: 600;
       line-height: 1.2;
@@ -230,7 +230,7 @@
     button:hover {
       background: #ffffff;
       border-color: #d0d4dc;
-      color: #2c2e33;
+      color: #2c3e44;
     }
     .controls { display: flex; gap: 10px; }
     .speed-info {
@@ -311,7 +311,7 @@
       box-shadow: 0 20px 35px rgba(0, 0, 0, 0.05);
     }
     .modal-content h3 {
-      color: #2c2e33;
+      color: #2c3e44;
       font-size: 28px;
       margin-bottom: 24px;
       text-align: center;
@@ -346,7 +346,7 @@
     .close-modal:hover {
       background: #ffffff;
       border-color: #d0d4dc;
-      color: #2c2e33;
+      color: #2c3e44;
     }
   </style>
 </head>
@@ -392,7 +392,7 @@
     <div class="footer">🎮 Utilise les flèches du clavier | ⏸ Espace pour pause | 🔄 R pour redémarrer</div>
   </div>
 
-  <!-- ZONE DE JEU - STYLE ÉPURÉ -->
+  <!-- ZONE DE JEU -->
   <div id="gameContainer" class="game-container">
     <div class="game-wrapper">
       <button class="back-btn" id="backToMenuBtn">← RETOUR AU MENU</button>
@@ -620,18 +620,18 @@
       if (opposite[newDir] !== direction) nextDirection = newDir;
     }
 
-    // DESSIN ÉPURÉ ET ÉQUILIBRÉ : fond blanc, serpent gris doux
+    // DESSIN FINAL : serpent contrasté, pomme vive
     function drawBoard() {
       ctx.clearRect(0, 0, 400, 400);
       
-      // Fond blanc pur
+      // Fond blanc
       ctx.fillStyle = '#FFFFFF';
       ctx.fillRect(0, 0, 400, 400);
       
-      // Grille très légère
+      // Grille discrète
       for (let i = 0; i <= BOARD_SIZE; i++) {
         ctx.beginPath();
-        ctx.strokeStyle = '#ECEDEF';
+        ctx.strokeStyle = '#E8EAEE';
         ctx.lineWidth = 0.8;
         ctx.moveTo(i * CELL_SIZE, 0);
         ctx.lineTo(i * CELL_SIZE, 400);
@@ -641,63 +641,67 @@
         ctx.stroke();
       }
       
-      // Pomme avec volume subtil
+      // Pomme vive
       ctx.beginPath();
       ctx.arc(food.x * CELL_SIZE + 10, food.y * CELL_SIZE + 10, 7.5, 0, 2 * Math.PI);
-      ctx.fillStyle = '#E56A4A';
+      ctx.fillStyle = '#E85A3A';
       ctx.fill();
-      ctx.fillStyle = '#C85A3A';
+      ctx.fillStyle = '#C84A2A';
       ctx.beginPath();
       ctx.arc(food.x * CELL_SIZE + 7, food.y * CELL_SIZE + 7, 2.2, 0, 2 * Math.PI);
       ctx.fill();
       ctx.fillStyle = '#7FAA6A';
       ctx.fillRect(food.x * CELL_SIZE + 13, food.y * CELL_SIZE + 5, 3, 5);
+      ctx.fillStyle = '#FFFFFFCC';
+      ctx.beginPath();
+      ctx.arc(food.x * CELL_SIZE + 6, food.y * CELL_SIZE + 6, 1.5, 0, 2 * Math.PI);
+      ctx.fill();
       
-      // Serpent avec nuances douces
+      // Serpent contrasté
       for (let i = 0; i < snake.length; i++) {
         const s = snake[i];
         const x = s.x * CELL_SIZE, y = s.y * CELL_SIZE;
         
-        // Corps avec dégradé doux
-        ctx.fillStyle = i === 0 ? '#6F7E8C' : '#8F9EAC';
+        // Corps plus contrasté
+        ctx.fillStyle = i === 0 ? '#4A5C66' : '#6C7E8C';
         ctx.shadowBlur = 0;
         ctx.beginPath();
         ctx.roundRect(x + 1.5, y + 1.5, 17, 17, 6);
         ctx.fill();
         
         // Texture subtile
-        ctx.fillStyle = i === 0 ? '#AFC0CC' : '#BFD0DC';
+        ctx.fillStyle = i === 0 ? '#9EB0BC' : '#AFC0CC';
         ctx.beginPath();
         ctx.arc(x + 10, y + 10, 3, 0, 2 * Math.PI);
         ctx.fill();
         
-        // Yeux expressifs
+        // Yeux
         if (i === 0) {
           ctx.fillStyle = '#FFFFFF';
           ctx.beginPath();
-          ctx.arc(x + 13, y + 7, 2, 0, 2 * Math.PI);
+          ctx.arc(x + 13, y + 7, 2.2, 0, 2 * Math.PI);
           ctx.fill();
           ctx.beginPath();
-          ctx.arc(x + 7, y + 7, 2, 0, 2 * Math.PI);
+          ctx.arc(x + 7, y + 7, 2.2, 0, 2 * Math.PI);
           ctx.fill();
-          ctx.fillStyle = '#2C3E44';
+          ctx.fillStyle = '#1A2A30';
           ctx.beginPath();
-          ctx.arc(x + 13.2, y + 6.5, 1, 0, 2 * Math.PI);
+          ctx.arc(x + 13.2, y + 6.5, 1.2, 0, 2 * Math.PI);
           ctx.fill();
           ctx.beginPath();
-          ctx.arc(x + 7.2, y + 6.5, 1, 0, 2 * Math.PI);
+          ctx.arc(x + 7.2, y + 6.5, 1.2, 0, 2 * Math.PI);
           ctx.fill();
           
-          // Petit reflet
-          ctx.fillStyle = '#FFFFFFCC';
+          // Reflet
+          ctx.fillStyle = '#FFFFFFDD';
           ctx.beginPath();
-          ctx.arc(x + 13.8, y + 5.8, 0.5, 0, 2 * Math.PI);
+          ctx.arc(x + 13.8, y + 5.8, 0.6, 0, 2 * Math.PI);
           ctx.fill();
           ctx.beginPath();
-          ctx.arc(x + 7.8, y + 5.8, 0.5, 0, 2 * Math.PI);
+          ctx.arc(x + 7.8, y + 5.8, 0.6, 0, 2 * Math.PI);
           ctx.fill();
           
-          // Langue discrète
+          // Langue
           if (direction === 'right') {
             ctx.fillStyle = '#E56A4A';
             ctx.beginPath();
@@ -716,7 +720,7 @@
         ctx.fillText('⏸ PAUSE', 160, 195);
       }
       
-      // Informations discrètes
+      // Infos
       ctx.font = '400 10px monospace';
       ctx.fillStyle = '#BCC4CC';
       ctx.fillText(diffName, 10, 22);
