@@ -20,6 +20,7 @@
       align-items: center;
       font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
       padding: 20px;
+      overflow: hidden; /* Empêche tout défilement de la page */
     }
 
     .game-container {
@@ -194,6 +195,7 @@
       font-size: 11px;
       color: #aac88a;
       text-align: center;
+      margin-top: 10px;
     }
 
     @media (max-width: 650px) {
@@ -318,6 +320,21 @@
   
   highscoreElement.textContent = highScore;
   
+  // === EMPÊCHER LE DÉFILEMENT DE LA PAGE AVEC LES FLÈCHES ===
+  function preventArrowScroll(e) {
+    const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'Space', 'Spacebar'];
+    if (keys.includes(e.key) || e.keyCode === 32 || (e.keyCode >= 37 && e.keyCode <= 40)) {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
+  }
+  
+  // Désactiver le défilement pour toute la page
+  window.addEventListener('keydown', preventArrowScroll);
+  // Également pour l'élément canvas pour être sûr
+  canvas.addEventListener('keydown', preventArrowScroll);
+  
   // === AUDIO ===
   function initAudio() {
     if (!audioCtx) {
@@ -418,7 +435,7 @@
     }
   }
   
-  // === MOUVEMENT DU SERPENT (vitesse constante, pas d'accélération) ===
+  // === MOUVEMENT DU SERPENT (vitesse constante) ===
   function moveSnake() {
     if (!isGameRunning || isPaused) return false;
     
@@ -453,7 +470,6 @@
         gameOver(true);
         return false;
       }
-      // ⚠️ AUCUNE AUGMENTATION DE VITESSE ICI !!!
     }
     
     const selfCollision = snake.slice(1).some(segment => segment.x === newHead.x && segment.y === newHead.y);
@@ -496,7 +512,6 @@
     isPaused = false;
     pauseBtn.textContent = '⏸ PAUSE';
     
-    // Vitesse constante selon difficulté (ne change jamais)
     gameSpeed = DIFFICULTY[currentDifficulty].speed;
     wallTeleport = (currentDifficulty === 'easy');
     
@@ -534,8 +549,12 @@
     drawBoard();
   }
   
-  // === DIRECTION ===
-  function changeDirection(newDir) {
+  // === DIRECTION (avec empêchement du défilement) ===
+  function changeDirection(newDir, event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     if (!isGameRunning || isPaused) return;
     const opposite = {
       'up': 'down', 'down': 'up', 'left': 'right', 'right': 'left'
@@ -638,7 +657,6 @@
       ctx.fillText('GAME OVER', 140, 190);
     }
     
-    // Affichage info difficulté
     ctx.font = 'bold 10px monospace';
     ctx.fillStyle = DIFFICULTY[currentDifficulty].color;
     ctx.fillText(DIFFICULTY[currentDifficulty].name, 10, 25);
@@ -668,14 +686,22 @@
     };
   }
   
-  // === ÉVÉNEMENTS ===
+  // === ÉVÉNEMENTS CLAVIER AVEC PREVENTDEFAULT ===
   window.addEventListener('keydown', (e) => {
     const key = e.key;
-    if (key === 'ArrowUp') changeDirection('up');
-    else if (key === 'ArrowDown') changeDirection('down');
-    else if (key === 'ArrowLeft') changeDirection('left');
-    else if (key === 'ArrowRight') changeDirection('right');
-    else if (key === ' ' || key === 'Space') {
+    
+    // Empêcher le défilement pour toutes les touches de direction
+    if (key === 'ArrowUp' || key === 'ArrowDown' || key === 'ArrowLeft' || key === 'ArrowRight' || 
+        key === ' ' || key === 'Space' || key === 'Spacebar') {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    if (key === 'ArrowUp') changeDirection('up', e);
+    else if (key === 'ArrowDown') changeDirection('down', e);
+    else if (key === 'ArrowLeft') changeDirection('left', e);
+    else if (key === 'ArrowRight') changeDirection('right', e);
+    else if (key === ' ' || key === 'Space' || key === 'Spacebar') {
       e.preventDefault();
       if (!isGameRunning) resetGame();
       else {
@@ -684,8 +710,23 @@
         statusElement.textContent = isPaused ? '⏸ PAUSE' : `▶ ${DIFFICULTY[currentDifficulty].name}`;
         drawBoard();
       }
-    } else if (key === 'r' || key === 'R') resetGame();
+    } else if (key === 'r' || key === 'R') {
+      e.preventDefault();
+      resetGame();
+    }
   });
+  
+  // Également bloquer les flèches sur le canvas
+  canvas.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  });
+  
+  // Rendre le canvas focusable pour capter les événements clavier
+  canvas.setAttribute('tabindex', '0');
+  canvas.style.outline = 'none';
   
   document.querySelectorAll('.arrow-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
