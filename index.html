@@ -485,6 +485,28 @@
       drawBoard();
     }
 
+    // Fonction pour redémarrer ET démarrer immédiatement
+    function restartAndStart() {
+      // Réinitialiser complètement le jeu
+      snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }, { x: 7, y: 10 }];
+      direction = 'right';
+      nextDirection = 'right';
+      score = 0;
+      isGameRunning = true;
+      isPaused = false;
+      isWaitingForStart = false;
+      isGameOver = false;
+      pauseBtn.textContent = '⏸ PAUSE';
+      statusElement.textContent = '▶ EN JEU';
+      updateUI();
+      generateRandomFood();
+      if (gameLoop) clearInterval(gameLoop);
+      gameLoop = setInterval(gameTick, gameSpeed);
+      drawBoard();
+      startMessage.style.display = 'none';
+      gameOverMessage.style.display = 'none';
+    }
+
     function startGame() {
       if (!isWaitingForStart) return;
       isWaitingForStart = false;
@@ -501,7 +523,7 @@
     }
 
     function resetGame() {
-      // Réinitialiser complètement le jeu
+      // Réinitialiser mais rester en mode attente
       snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }, { x: 7, y: 10 }];
       direction = 'right';
       nextDirection = 'right';
@@ -670,7 +692,7 @@
       if (isWaitingForStart) {
         startGame();
       } else if (isGameOver) {
-        resetGame();
+        restartAndStart();
       } else if (!isGameRunning) {
         resetGame();
       } else {
@@ -691,13 +713,12 @@
         e.preventDefault();
         // Logique simplifiée : une seule touche Espace
         if (isGameOver) {
-          // Si game over, on reset directement
-          resetGame();
+          // Si game over : on relance ET on démarre directement
+          restartAndStart();
         } else if (isWaitingForStart) {
           // Si en attente de start, on démarre
           startGame();
         } else if (!isGameRunning) {
-          // Si le jeu n'est pas en cours (autre état), on reset
           resetGame();
         } else {
           // Sinon, on gère la pause
