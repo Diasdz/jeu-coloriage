@@ -2,8 +2,8 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🐍 Snake - Jeu du Serpent</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>🐍 Snake - 3 Niveaux de Difficulté</title>
   <style>
     * {
       margin: 0;
@@ -14,20 +14,20 @@
 
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, #1a472a 0%, #0e2a1a 100%);
+      background: linear-gradient(135deg, #0a2f1a 0%, #051a0a 100%);
       display: flex;
       justify-content: center;
       align-items: center;
-      font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+      font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
       padding: 20px;
     }
 
     .game-container {
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.5);
       border-radius: 48px;
       padding: 20px;
       backdrop-filter: blur(4px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
     }
 
     .game-wrapper {
@@ -50,82 +50,114 @@
       justify-content: space-between;
       align-items: center;
       margin-top: 20px;
-      gap: 20px;
+      gap: 15px;
       flex-wrap: wrap;
     }
 
     .score-box {
       background: #2c1a0a;
       border-radius: 40px;
-      padding: 10px 24px;
-      box-shadow: inset 0 2px 5px rgba(0,0,0,0.3), 0 5px 10px rgba(0,0,0,0.2);
+      padding: 8px 20px;
+      text-align: center;
+      min-width: 100px;
     }
 
     .score-label {
       color: #ffd966;
-      font-size: 14px;
+      font-size: 12px;
       letter-spacing: 2px;
       font-weight: bold;
     }
 
     .score-value {
       color: #f5e56b;
-      font-size: 32px;
+      font-size: 28px;
       font-weight: bold;
       line-height: 1;
-      text-shadow: 0 2px 0 #5a3a0a;
     }
 
     .highscore-box {
       background: #1a2a0a;
       border-radius: 40px;
-      padding: 10px 24px;
+      padding: 8px 20px;
+      text-align: center;
     }
 
     .highscore-label {
       color: #8bc34a;
-      font-size: 12px;
-      letter-spacing: 2px;
+      font-size: 11px;
     }
 
     .highscore-value {
       color: #c5e1a5;
-      font-size: 28px;
+      font-size: 24px;
       font-weight: bold;
     }
 
+    .difficulty-selector {
+      display: flex;
+      gap: 10px;
+      background: #0f2a0f;
+      padding: 8px 16px;
+      border-radius: 60px;
+    }
+
+    .difficulty-btn {
+      background: #2a2a1a;
+      border: none;
+      color: #bcbc8c;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 6px 18px;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .difficulty-btn.active {
+      background: #ffaa33;
+      color: #2a2a0a;
+      box-shadow: 0 0 10px #ffaa33;
+    }
+
+    .difficulty-btn.easy:hover { background: #5a9e4e; color: white; }
+    .difficulty-btn.medium:hover { background: #e09d3e; color: white; }
+    .difficulty-btn.hard:hover { background: #c92a2a; color: white; }
+
     .controls {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
-      justify-content: center;
     }
 
     button {
       background: #2c1a0a;
       border: none;
       color: #ffd966;
-      font-size: 18px;
+      font-size: 14px;
       font-weight: bold;
-      padding: 10px 24px;
+      padding: 8px 18px;
       border-radius: 40px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.2s;
       font-family: inherit;
-      box-shadow: 0 5px 0 #5a3a1a;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      box-shadow: 0 4px 0 #5a3a1a;
     }
 
     button:active {
-      transform: translateY(3px);
+      transform: translateY(2px);
       box-shadow: 0 2px 0 #5a3a1a;
     }
 
-    button:hover {
-      background: #3e2a1a;
-      color: #ffe6a3;
+    .status {
+      background: #0f2a0a;
+      padding: 6px 16px;
+      border-radius: 40px;
+      font-weight: bold;
+      color: #ffd966;
+      font-size: 12px;
+      text-transform: uppercase;
     }
 
     .arrow-controls {
@@ -133,9 +165,7 @@
       flex-direction: column;
       align-items: center;
       gap: 8px;
-      background: rgba(0,0,0,0.4);
-      padding: 12px;
-      border-radius: 60px;
+      margin-top: 15px;
     }
 
     .arrow-row {
@@ -146,35 +176,22 @@
 
     .arrow-btn {
       background: #1f2a0a;
-      width: 55px;
-      height: 55px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
-      font-size: 28px;
+      font-size: 26px;
       padding: 0;
       justify-content: center;
-      box-shadow: 0 5px 0 #3a2a1a;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 0 #3a2a1a;
     }
 
-    .status {
-      background: #0f2a0a;
-      padding: 8px 20px;
-      border-radius: 40px;
-      font-weight: bold;
-      color: #ffd966;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-
-    @media (max-width: 600px) {
-      .arrow-btn {
-        width: 45px;
-        height: 45px;
-        font-size: 24px;
-      }
-      .score-value { font-size: 24px; }
-      .highscore-value { font-size: 22px; }
-      button { padding: 6px 16px; font-size: 14px; }
+    @media (max-width: 650px) {
+      .info-panel { justify-content: center; }
+      .difficulty-selector { order: 1; }
+      .arrow-btn { width: 45px; height: 45px; font-size: 22px; }
+      .score-value { font-size: 22px; }
     }
   </style>
 </head>
@@ -195,16 +212,21 @@
           <div class="highscore-value" id="highscoreValue">0</div>
         </div>
         
-        <div class="status" id="statusText">▶ JEU EN COURS</div>
+        <div class="difficulty-selector">
+          <button class="difficulty-btn easy" data-diff="easy">🌿 FACILE</button>
+          <button class="difficulty-btn medium active" data-diff="medium">⚡ MOYEN</button>
+          <button class="difficulty-btn hard" data-diff="hard">🔥 DIFFICILE</button>
+        </div>
+        
+        <div class="status" id="statusText">▶ EN JEU</div>
         
         <div class="controls">
-          <button id="restartBtn">🔄 NOUVELLE PARTIE</button>
+          <button id="restartBtn">🔄 NOUVEAU</button>
           <button id="pauseBtn">⏸ PAUSE</button>
         </div>
       </div>
       
-      <!-- Touches tactiles / mobiles -->
-      <div class="arrow-controls" style="margin-top: 20px;">
+      <div class="arrow-controls">
         <div class="arrow-row">
           <button class="arrow-btn" data-dir="up">⬆️</button>
         </div>
@@ -219,11 +241,21 @@
 </div>
 
 <script>
-  // Configuration
-  const BOARD_SIZE = 20;    // 20x20 grille
-  const CELL_SIZE = 20;      // pixels (400/20)
+  // === CONFIGURATION ===
+  const BOARD_SIZE = 20;
+  const CELL_SIZE = 20;
   const canvas = document.getElementById('snakeCanvas');
   const ctx = canvas.getContext('2d');
+  
+  // Niveaux de difficulté
+  const DIFFICULTY = {
+    easy: { speed: 140, wallCollision: false, speedIncrease: 1.2, color: '#5a9e4e', name: '🌿 FACILE' },
+    medium: { speed: 100, wallCollision: true, speedIncrease: 1.5, color: '#e09d3e', name: '⚡ MOYEN' },
+    hard: { speed: 70, wallCollision: true, speedIncrease: 2.2, color: '#c92a2a', name: '🔥 DIFFICILE' }
+  };
+  
+  let currentDifficulty = 'medium';
+  let gameSpeed = DIFFICULTY.medium.speed;
   
   // État du jeu
   let snake = [
@@ -232,7 +264,7 @@
     {x: 8, y: 10},
     {x: 7, y: 10}
   ];
-  let direction = 'right';    // direction actuelle
+  let direction = 'right';
   let nextDirection = 'right';
   let food = {x: 15, y: 10};
   let score = 0;
@@ -240,9 +272,11 @@
   let gameLoop = null;
   let isGameRunning = true;
   let isPaused = false;
-  let gameSpeed = 100;        // ms par frame
   
-  // Sons (Web Audio API)
+  // Murs spéciaux pour mode facile (téléportation)
+  let wallTeleport = false;
+  
+  // Sons
   let audioCtx = null;
   
   // DOM elements
@@ -254,7 +288,7 @@
   
   highscoreElement.textContent = highScore;
   
-  // Initialisation audio
+  // === AUDIO ===
   function initAudio() {
     if (!audioCtx) {
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -271,8 +305,8 @@
       gain.connect(audioCtx.destination);
       
       if (type === 'eat') {
-        oscillator.frequency.value = 523.25; // Do
-        gain.gain.setValueAtTime(0.15, now);
+        oscillator.frequency.value = 523.25;
+        gain.gain.setValueAtTime(0.12, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
         oscillator.start();
         oscillator.stop(now + 0.2);
@@ -292,11 +326,17 @@
         gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
         osc2.start(now + 0.2);
         osc2.stop(now + 0.7);
+      } else if (type === 'teleport') {
+        oscillator.frequency.value = 880;
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+        oscillator.start();
+        oscillator.stop(now + 0.1);
       }
     } catch(e) {}
   }
   
-  // Générer une nouvelle pomme à un endroit libre
+  // === GÉNÉRATION DE NOURRITURE ===
   function generateRandomFood() {
     const maxAttempts = 2000;
     for (let i = 0; i < maxAttempts; i++) {
@@ -307,7 +347,6 @@
         return true;
       }
     }
-    // Si presque plus de place, recherche exhaustive
     for (let y = 0; y < BOARD_SIZE; y++) {
       for (let x = 0; x < BOARD_SIZE; x++) {
         if (!snake.some(s => s.x === x && s.y === y)) {
@@ -316,10 +355,10 @@
         }
       }
     }
-    return false; // Victoire ! partie gagnée
+    return false;
   }
   
-  // Mise à jour du score affiché
+  // === MISE À JOUR UI ===
   function updateUI() {
     scoreElement.textContent = score;
     if (score > highScore) {
@@ -329,14 +368,35 @@
     }
   }
   
-  // Mouvement du serpent
+  // === GESTION DES MURS (téléportation pour mode facile) ===
+  function handleWallCollision(head) {
+    if (!wallTeleport) {
+      // Mode normal : collision = game over
+      if (head.x < 0 || head.x >= BOARD_SIZE || head.y < 0 || head.y >= BOARD_SIZE) {
+        return null;
+      }
+      return head;
+    } else {
+      // Mode facile : téléportation
+      let newHead = { ...head };
+      if (newHead.x < 0) newHead.x = BOARD_SIZE - 1;
+      if (newHead.x >= BOARD_SIZE) newHead.x = 0;
+      if (newHead.y < 0) newHead.y = BOARD_SIZE - 1;
+      if (newHead.y >= BOARD_SIZE) newHead.y = 0;
+      
+      if (newHead.x !== head.x || newHead.y !== head.y) {
+        playSound('teleport');
+      }
+      return newHead;
+    }
+  }
+  
+  // === MOUVEMENT DU SERPENT ===
   function moveSnake() {
     if (!isGameRunning || isPaused) return false;
     
-    // Appliquer la direction
     direction = nextDirection;
     
-    // Calcul de la nouvelle tête
     let newHead = { ...snake[0] };
     switch (direction) {
       case 'right': newHead.x += 1; break;
@@ -345,39 +405,40 @@
       case 'down': newHead.y += 1; break;
     }
     
-    // Vérifier si on mange la pomme
+    // Gestion des murs (téléportation facile / collision difficile)
+    const processedHead = handleWallCollision(newHead);
+    if (processedHead === null) {
+      gameOver(false);
+      return false;
+    }
+    newHead = processedHead;
+    
     const willEat = (newHead.x === food.x && newHead.y === food.y);
     
-    // Ajouter la nouvelle tête
     snake.unshift(newHead);
     if (!willEat) {
       snake.pop();
     } else {
-      // Augmenter score et générer nouvelle pomme
       score++;
       updateUI();
       playSound('eat');
       const success = generateRandomFood();
       if (!success) {
-        // Victoire : le serpent remplit tout le plateau !
         gameOver(true);
         return false;
       }
-      // Augmenter légèrement la vitesse (max speed = 60ms)
-      if (gameSpeed > 60) {
-        gameSpeed = Math.max(60, gameSpeed - 1.5);
+      
+      // Augmentation de vitesse selon difficulté
+      const speedIncrease = DIFFICULTY[currentDifficulty].speedIncrease;
+      const minSpeed = currentDifficulty === 'easy' ? 90 : (currentDifficulty === 'medium' ? 60 : 45);
+      if (gameSpeed > minSpeed) {
+        gameSpeed = Math.max(minSpeed, gameSpeed - speedIncrease);
         clearInterval(gameLoop);
         gameLoop = setInterval(gameTick, gameSpeed);
       }
     }
     
-    // Vérifier collision avec les murs
-    if (newHead.x < 0 || newHead.x >= BOARD_SIZE || newHead.y < 0 || newHead.y >= BOARD_SIZE) {
-      gameOver(false);
-      return false;
-    }
-    
-    // Vérifier collision avec soi-même
+    // Auto-collision
     const selfCollision = snake.slice(1).some(segment => segment.x === newHead.x && segment.y === newHead.y);
     if (selfCollision) {
       gameOver(false);
@@ -387,24 +448,24 @@
     return true;
   }
   
-  // Game Over
+  // === GAME OVER ===
   function gameOver(isVictory = false) {
     if (!isGameRunning) return;
     isGameRunning = false;
     if (gameLoop) clearInterval(gameLoop);
     gameLoop = null;
     playSound('gameover');
+    
     if (isVictory) {
-      statusElement.textContent = '🏆 VICTOIRE ! TU AS GAGNÉ ! 🏆';
+      statusElement.textContent = '🏆 VICTOIRE ! PARFAIT ! 🏆';
     } else {
       statusElement.textContent = '💀 GAME OVER 💀';
     }
     drawBoard(true);
   }
   
-  // Réinitialiser la partie
+  // === RÉINITIALISATION COMPLÈTE ===
   function resetGame() {
-    // Réinitialiser les variables
     snake = [
       {x: 10, y: 10},
       {x: 9, y: 10},
@@ -414,56 +475,66 @@
     direction = 'right';
     nextDirection = 'right';
     score = 0;
-    gameSpeed = 100;
     isGameRunning = true;
     isPaused = false;
     pauseBtn.textContent = '⏸ PAUSE';
-    statusElement.textContent = '▶ JEU EN COURS';
+    
+    // Appliquer la vitesse selon difficulté
+    gameSpeed = DIFFICULTY[currentDifficulty].speed;
+    wallTeleport = (currentDifficulty === 'easy');
     
     updateUI();
-    
-    // Générer une pomme valide
     generateRandomFood();
     
-    // Nettoyer l'ancien intervalle
     if (gameLoop) clearInterval(gameLoop);
     gameLoop = setInterval(gameTick, gameSpeed);
     
-    // Redessiner
+    statusElement.textContent = `▶ ${DIFFICULTY[currentDifficulty].name}`;
     drawBoard();
   }
   
-  // Tick du jeu (appelé à intervalle)
+  // === CHANGEMENT DE DIFFICULTÉ ===
+  function setDifficulty(level) {
+    currentDifficulty = level;
+    wallTeleport = (level === 'easy');
+    
+    // Mise à jour visuelle des boutons
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('data-diff') === level) {
+        btn.classList.add('active');
+      }
+    });
+    
+    resetGame();
+  }
+  
+  // === TICK DU JEU ===
   function gameTick() {
     if (!isGameRunning || isPaused) return;
     moveSnake();
     drawBoard();
   }
   
-  // Gestion des touches clavier
+  // === DIRECTION (avec anti-retour) ===
   function changeDirection(newDir) {
     if (!isGameRunning || isPaused) return;
-    
     const opposite = {
-      'up': 'down',
-      'down': 'up',
-      'left': 'right',
-      'right': 'left'
+      'up': 'down', 'down': 'up', 'left': 'right', 'right': 'left'
     };
-    
     if (opposite[newDir] !== direction) {
       nextDirection = newDir;
     }
   }
   
-  // DESSIN : graphismes réalistes et joyeux
+  // === DESSIN (effet réaliste avec couleurs de difficulté) ===
   function drawBoard(isGameOverDisplay = false) {
     ctx.clearRect(0, 0, 400, 400);
     
-    // Grille de fond
+    // Grille
     for (let i = 0; i <= BOARD_SIZE; i++) {
       ctx.beginPath();
-      ctx.strokeStyle = '#2c4a2c';
+      ctx.strokeStyle = '#2c5a2c';
       ctx.lineWidth = 0.5;
       ctx.moveTo(i * CELL_SIZE, 0);
       ctx.lineTo(i * CELL_SIZE, 400);
@@ -473,7 +544,7 @@
       ctx.stroke();
     }
     
-    // Dessin de la pomme (avec reflet)
+    // Pomme
     ctx.shadowBlur = 0;
     ctx.beginPath();
     ctx.arc(food.x * CELL_SIZE + CELL_SIZE/2, food.y * CELL_SIZE + CELL_SIZE/2, 8, 0, 2 * Math.PI);
@@ -484,35 +555,31 @@
     ctx.arc(food.x * CELL_SIZE + CELL_SIZE/2 - 2, food.y * CELL_SIZE + CELL_SIZE/2 - 2, 2, 0, 2 * Math.PI);
     ctx.fill();
     ctx.fillStyle = '#f9a825';
-    ctx.beginPath();
-    ctx.rect(food.x * CELL_SIZE + 8, food.y * CELL_SIZE + 5, 3, 5);
-    ctx.fill();
+    ctx.fillRect(food.x * CELL_SIZE + 8, food.y * CELL_SIZE + 5, 3, 5);
     ctx.fillStyle = 'white';
     ctx.beginPath();
     ctx.arc(food.x * CELL_SIZE + CELL_SIZE/2 - 3, food.y * CELL_SIZE + CELL_SIZE/2 - 3, 1.5, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Dessin du serpent avec dégradé et yeux
+    // Serpent
+    const diffColor = DIFFICULTY[currentDifficulty].color;
     for (let i = 0; i < snake.length; i++) {
       const seg = snake[i];
       const x = seg.x * CELL_SIZE;
       const y = seg.y * CELL_SIZE;
       
-      // Corps avec effet arrondi
-      ctx.fillStyle = i === 0 ? '#7cb518' : '#5a9e2e';
+      ctx.fillStyle = i === 0 ? diffColor : '#5a9e2e';
       ctx.shadowBlur = 2;
       ctx.shadowColor = '#1a3a0a';
       ctx.beginPath();
       ctx.roundRect(x + 1, y + 1, CELL_SIZE - 2, CELL_SIZE - 2, 5);
       ctx.fill();
       
-      // Écailles (petits détails)
       ctx.fillStyle = '#9ccc5c';
       ctx.beginPath();
       ctx.arc(x + CELL_SIZE/2, y + CELL_SIZE/2, 4, 0, 2 * Math.PI);
       ctx.fill();
       
-      // Yeux sur la tête
       if (i === 0) {
         ctx.fillStyle = 'white';
         ctx.beginPath();
@@ -528,15 +595,7 @@
         ctx.beginPath();
         ctx.arc(x + 6.5, y + 6.5, 1.2, 0, 2 * Math.PI);
         ctx.fill();
-        ctx.fillStyle = 'white';
-        ctx.beginPath();
-        ctx.arc(x + 15, y + 5, 0.6, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(x + 7, y + 5, 0.6, 0, 2 * Math.PI);
-        ctx.fill();
         
-        // langue (optionnelle)
         if (direction === 'right') {
           ctx.fillStyle = '#e85d04';
           ctx.beginPath();
@@ -547,32 +606,31 @@
         }
       }
     }
-    
     ctx.shadowBlur = 0;
     
-    // Message de pause / game over
     if (isPaused && isGameRunning) {
       ctx.font = 'bold 20px "Segoe UI"';
       ctx.fillStyle = '#ffd966';
-      ctx.shadowBlur = 0;
       ctx.fillText('⏸ PAUSE', 155, 190);
-      ctx.font = '12px sans-serif';
-      ctx.fillStyle = '#bcbc8c';
-      ctx.fillText('Appuie sur ESPACE', 148, 230);
     }
     
     if (!isGameRunning && !isGameOverDisplay) {
-      ctx.font = 'bold 24px "Segoe UI"';
+      ctx.font = 'bold 22px "Segoe UI"';
       ctx.fillStyle = '#ffaa44';
-      ctx.shadowBlur = 0;
       ctx.fillText('GAME OVER', 140, 190);
-      ctx.font = '12px sans-serif';
-      ctx.fillStyle = '#ddcc88';
-      ctx.fillText('Clique sur "Nouvelle partie"', 130, 230);
+    }
+    
+    // Effet visuel de difficulté (coin)
+    ctx.font = 'bold 10px monospace';
+    ctx.fillStyle = DIFFICULTY[currentDifficulty].color;
+    ctx.fillText(DIFFICULTY[currentDifficulty].name, 10, 25);
+    if (wallTeleport) {
+      ctx.fillStyle = '#88aa66';
+      ctx.fillText('🌀 Téléportation', 10, 40);
     }
   }
   
-  // Helper pour roundRect
+  // Helper roundRect
   if (!CanvasRenderingContext2D.prototype.roundRect) {
     CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
       if (w < 2 * r) r = w / 2;
@@ -590,7 +648,7 @@
     };
   }
   
-  // Gestion des événements
+  // === ÉVÉNEMENTS ===
   window.addEventListener('keydown', (e) => {
     const key = e.key;
     if (key === 'ArrowUp') changeDirection('up');
@@ -599,57 +657,52 @@
     else if (key === 'ArrowRight') changeDirection('right');
     else if (key === ' ' || key === 'Space') {
       e.preventDefault();
-      if (!isGameRunning) {
-        resetGame();
-      } else {
+      if (!isGameRunning) resetGame();
+      else {
         isPaused = !isPaused;
         pauseBtn.textContent = isPaused ? '▶ JOUER' : '⏸ PAUSE';
-        statusElement.textContent = isPaused ? '⏸ PAUSE' : '▶ EN COURS';
+        statusElement.textContent = isPaused ? '⏸ PAUSE' : `▶ ${DIFFICULTY[currentDifficulty].name}`;
         drawBoard();
       }
-    } else if (key === 'r' || key === 'R') {
-      resetGame();
-    }
+    } else if (key === 'r' || key === 'R') resetGame();
   });
   
-  // Boutons tactiles
   document.querySelectorAll('.arrow-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const dir = btn.getAttribute('data-dir');
       if (dir) changeDirection(dir);
-      // Petit effet haptique (vibration si supporté)
       if (navigator.vibrate) navigator.vibrate(20);
     });
   });
   
-  restartBtn.addEventListener('click', () => {
-    initAudio();
-    resetGame();
+  document.querySelectorAll('.difficulty-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const diff = btn.getAttribute('data-diff');
+      setDifficulty(diff);
+    });
   });
   
+  restartBtn.addEventListener('click', () => { initAudio(); resetGame(); });
   pauseBtn.addEventListener('click', () => {
-    if (!isGameRunning) {
-      resetGame();
-    } else {
+    if (!isGameRunning) resetGame();
+    else {
       isPaused = !isPaused;
       pauseBtn.textContent = isPaused ? '▶ JOUER' : '⏸ PAUSE';
-      statusElement.textContent = isPaused ? '⏸ PAUSE' : '▶ EN COURS';
+      statusElement.textContent = isPaused ? '⏸ PAUSE' : `▶ ${DIFFICULTY[currentDifficulty].name}`;
       drawBoard();
-      if (!isPaused && !gameLoop) {
+      if (!isPaused && !gameLoop && isGameRunning) {
         gameLoop = setInterval(gameTick, gameSpeed);
       } else if (isPaused && gameLoop) {
         clearInterval(gameLoop);
         gameLoop = null;
-      } else if (!isPaused && !gameLoop && isGameRunning) {
-        gameLoop = setInterval(gameTick, gameSpeed);
       }
     }
   });
   
-  // Démarrer le jeu
+  // LANCEMENT
   function startGame() {
     initAudio();
-    resetGame();
+    setDifficulty('medium');
   }
   
   startGame();
