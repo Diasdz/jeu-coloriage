@@ -3,429 +3,656 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jeu de Coloriage - Version Réaliste</title>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;700&display=swap" rel="stylesheet">
+  <title>🐍 Snake - Jeu du Serpent</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --primary: #534AB7;
-      --primary-light: #AFA9EC;
-      --primary-dark: #3C3489;
-      --green: #1D9E75;
-      --green-dark: #0F6E56;
-      --bg: #F7F5FF;
-      --card: #ffffff;
-      --text: #2C2C2A;
-      --text-muted: #888780;
-      --border: rgba(83,74,183,0.15);
-      --radius: 16px;
-      --radius-sm: 10px;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
     }
-    body { font-family: 'Baloo 2', cursive; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 80px; }
 
-    header { background: linear-gradient(135deg, #534AB7 0%, #7F77DD 100%); padding: 1.2rem 1rem 1rem; text-align: center; box-shadow: 0 4px 20px rgba(83,74,183,0.3); }
-    header h1 { font-size: 28px; font-weight: 700; color: #fff; letter-spacing: 1px; }
-    header p { font-size: 14px; color: rgba(255,255,255,0.8); margin-top: 2px; }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a472a 0%, #0e2a1a 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+      padding: 20px;
+    }
 
-    #tabs { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; padding: 12px 1rem; background: #fff; border-bottom: 1px solid var(--border); }
-    .tab { padding: 6px 16px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg); font-size: 13px; font-family: 'Baloo 2', cursive; cursor: pointer; color: var(--text-muted); transition: all 0.15s; font-weight: 500; }
-    .tab:hover { background: var(--primary-light); color: var(--primary-dark); }
-    .tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .game-container {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 48px;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
 
-    #gallery-wrap { padding: 1rem; max-width: 760px; margin: 0 auto; }
-    #gallery { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-    @media (max-width: 480px) { #gallery { grid-template-columns: repeat(3, 1fr); } }
+    .game-wrapper {
+      background: #0a1f0a;
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
 
-    .thumb-card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 8px; cursor: pointer; transition: border-color 0.2s, transform 0.15s, box-shadow 0.15s; text-align: center; position: relative; overflow: hidden; }
-    .thumb-card:hover { border-color: var(--primary); transform: scale(1.06); box-shadow: 0 6px 20px rgba(83,74,183,0.2); }
-    .thumb-card svg { width: 100%; height: auto; display: block; background: white; border-radius: 8px; }
-    .thumb-card p { font-size: 10px; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
-    .thumb-done { border-color: var(--green) !important; }
+    canvas {
+      display: block;
+      margin: 0 auto;
+      border-radius: 16px;
+      box-shadow: 0 0 0 3px #ffd966, 0 0 0 6px #b8860b;
+      cursor: pointer;
+    }
 
-    #coloring-screen { display: none; flex-direction: column; align-items: center; gap: 10px; padding: 1rem; max-width: 480px; margin: 0 auto; }
-    .top-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
-    #back-btn { background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 6px 14px; font-size: 13px; font-family: 'Baloo 2', cursive; cursor: pointer; color: var(--text); font-weight: 500; }
-    #back-btn:hover { background: var(--bg); border-color: var(--primary); }
-    #print-btn { background: var(--green); color: #fff; border: none; border-radius: var(--radius-sm); padding: 6px 14px; font-size: 13px; font-family: 'Baloo 2', cursive; cursor: pointer; font-weight: 500; }
-    #print-btn:hover { background: var(--green-dark); }
-    #img-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+    .info-panel {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
 
-    #canvas-wrap { background: #fff; border: 2.5px solid var(--border); border-radius: var(--radius); overflow: hidden; width: 100%; position: relative; box-shadow: 0 4px 20px rgba(83,74,183,0.1); }
-    #canvas-wrap svg { width: 100%; height: auto; display: block; cursor: crosshair; background: white; }
+    .score-box {
+      background: #2c1a0a;
+      border-radius: 40px;
+      padding: 10px 24px;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.3), 0 5px 10px rgba(0,0,0,0.2);
+    }
 
-    #progress-wrap { width: 100%; }
-    #progress-bar-bg { background: #e9e6ff; border-radius: 10px; height: 10px; overflow: hidden; }
-    #progress-bar { height: 10px; background: linear-gradient(90deg, var(--primary), #7F77DD); border-radius: 10px; transition: width 0.3s; }
-    #progress-label { font-size: 11px; color: var(--text-muted); text-align: right; margin-top: 3px; }
+    .score-label {
+      color: #ffd966;
+      font-size: 14px;
+      letter-spacing: 2px;
+      font-weight: bold;
+    }
 
-    #tools { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
-    .tool-btn { background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 6px 14px; font-size: 12px; font-family: 'Baloo 2', cursive; cursor: pointer; color: var(--text); font-weight: 500; transition: all 0.15s; }
-    .tool-btn:hover { background: var(--bg); }
-    .tool-btn.active { border-color: var(--primary); color: var(--primary); background: #f0eeff; }
+    .score-value {
+      color: #f5e56b;
+      font-size: 32px;
+      font-weight: bold;
+      line-height: 1;
+      text-shadow: 0 2px 0 #5a3a0a;
+    }
 
-    #palette { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; width: 100%; }
-    .color-btn { width: 32px; height: 32px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; transition: transform 0.15s, border-color 0.15s; }
-    .color-btn:hover { transform: scale(1.2); }
-    .color-btn.active { border-color: var(--text); transform: scale(1.2); }
+    .highscore-box {
+      background: #1a2a0a;
+      border-radius: 40px;
+      padding: 10px 24px;
+    }
 
-    #music-btn { position: fixed; bottom: 16px; right: 16px; background: var(--primary); color: #fff; border: none; border-radius: 50%; width: 46px; height: 46px; font-size: 20px; cursor: pointer; z-index: 100; box-shadow: 0 4px 16px rgba(83,74,183,0.4); transition: background 0.2s, transform 0.15s; }
-    #music-btn:hover { transform: scale(1.1); }
+    .highscore-label {
+      color: #8bc34a;
+      font-size: 12px;
+      letter-spacing: 2px;
+    }
 
-    @keyframes pop { 0%{transform:scale(0.6);opacity:0} 100%{transform:scale(1);opacity:1} }
+    .highscore-value {
+      color: #c5e1a5;
+      font-size: 28px;
+      font-weight: bold;
+    }
 
-    @media print {
-      header, #tabs, #gallery-wrap, #tools, #palette, #back-btn, #print-btn, #music-btn, #progress-wrap, .top-row, #img-title { display: none !important; }
-      body { background: white; padding: 0; }
-      #coloring-screen { display: flex !important; max-width: 100%; padding: 0; }
-      #canvas-wrap { border: none; box-shadow: none; max-width: 100%; }
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      background: #2c1a0a;
+      border: none;
+      color: #ffd966;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 10px 24px;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      box-shadow: 0 5px 0 #5a3a1a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    button:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #5a3a1a;
+    }
+
+    button:hover {
+      background: #3e2a1a;
+      color: #ffe6a3;
+    }
+
+    .arrow-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,0,0,0.4);
+      padding: 12px;
+      border-radius: 60px;
+    }
+
+    .arrow-row {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .arrow-btn {
+      background: #1f2a0a;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      font-size: 28px;
+      padding: 0;
+      justify-content: center;
+      box-shadow: 0 5px 0 #3a2a1a;
+    }
+
+    .status {
+      background: #0f2a0a;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: bold;
+      color: #ffd966;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    @media (max-width: 600px) {
+      .arrow-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 24px;
+      }
+      .score-value { font-size: 24px; }
+      .highscore-value { font-size: 22px; }
+      button { padding: 6px 16px; font-size: 14px; }
     }
   </style>
 </head>
 <body>
-
-<header>
-  <h1>🎨 Jeu de Coloriage</h1>
-  <p>50 images réalistes à colorier — Animaux, Nature, Véhicules, Nourriture</p>
-</header>
-
-<div id="tabs">
-  <button class="tab active" onclick="showTab('all',this)">🌈 Tout</button>
-  <button class="tab" onclick="showTab('animaux',this)">🐾 Animaux</button>
-  <button class="tab" onclick="showTab('nature',this)">🌿 Nature</button>
-  <button class="tab" onclick="showTab('vehicules',this)">🚗 Véhicules</button>
-  <button class="tab" onclick="showTab('nourriture',this)">🍕 Nourriture</button>
-</div>
-
-<div id="gallery-wrap">
-  <div id="gallery"></div>
-</div>
-
-<div id="coloring-screen">
-  <div class="top-row">
-    <button id="back-btn" onclick="goBack()">← Retour</button>
-    <div id="img-title"></div>
-    <button id="print-btn" onclick="printImage()">🖨 Imprimer</button>
+<div>
+  <div class="game-container">
+    <div class="game-wrapper">
+      <canvas id="snakeCanvas" width="400" height="400"></canvas>
+      
+      <div class="info-panel">
+        <div class="score-box">
+          <div class="score-label">🍎 SCORE</div>
+          <div class="score-value" id="scoreValue">0</div>
+        </div>
+        
+        <div class="highscore-box">
+          <div class="highscore-label">🏆 RECORD</div>
+          <div class="highscore-value" id="highscoreValue">0</div>
+        </div>
+        
+        <div class="status" id="statusText">▶ JEU EN COURS</div>
+        
+        <div class="controls">
+          <button id="restartBtn">🔄 NOUVELLE PARTIE</button>
+          <button id="pauseBtn">⏸ PAUSE</button>
+        </div>
+      </div>
+      
+      <!-- Touches tactiles / mobiles -->
+      <div class="arrow-controls" style="margin-top: 20px;">
+        <div class="arrow-row">
+          <button class="arrow-btn" data-dir="up">⬆️</button>
+        </div>
+        <div class="arrow-row">
+          <button class="arrow-btn" data-dir="left">⬅️</button>
+          <button class="arrow-btn" data-dir="down">⬇️</button>
+          <button class="arrow-btn" data-dir="right">➡️</button>
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="canvas-wrap"></div>
-  <div id="progress-wrap">
-    <div id="progress-bar-bg"><div id="progress-bar" style="width:0%"></div></div>
-    <div id="progress-label">0%</div>
-  </div>
-  <div id="tools">
-    <button class="tool-btn active" id="btn-fill" onclick="setTool('fill')">🖌 Remplir</button>
-    <button class="tool-btn" id="btn-eraser" onclick="setTool('eraser')">🧹 Gomme</button>
-    <button class="tool-btn" onclick="resetColors()">🗑 Effacer tout</button>
-  </div>
-  <div id="palette"></div>
 </div>
-
-<button id="music-btn" onclick="toggleMusic()" title="Musique">🎵</button>
 
 <script>
-const COLORS=['#E24B4A','#D85A30','#EF9F27','#F5C400','#97C459','#639922','#1D9E75','#5DCAA5','#378ADD','#185FA5','#534AB7','#AFA9EC','#D4537E','#F0997B','#885533','#fff','#D3D1C7','#888780','#444441','#111'];
-
-let audioCtx=null,musicPlaying=false,musicInterval=null;
-function getAudioCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
-function playTone(freq,dur,type='sine',vol=0.15){try{const ctx=getAudioCtx();const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);o.start();o.stop(ctx.currentTime+dur);}catch(e){}}
-function playClick(){playTone(440,0.08,'sine',0.12);}
-function playFill(){playTone(523,0.06,'sine',0.1);setTimeout(()=>playTone(659,0.06,'sine',0.1),60);}
-const MELODY=[262,294,330,349,392,440,494,523,494,440,392,349,330,294];
-let melodyIdx=0;
-function playMusicNote(){playTone(MELODY[melodyIdx%MELODY.length],0.35,'triangle',0.08);melodyIdx++;}
-function toggleMusic(){
-  const btn=document.getElementById('music-btn');
-  if(musicPlaying){clearInterval(musicInterval);musicPlaying=false;btn.textContent='🎵';btn.style.background='#534AB7';}
-  else{getAudioCtx();musicPlaying=true;btn.textContent='🔇';btn.style.background='#993C1D';playMusicNote();musicInterval=setInterval(playMusicNote,500);}
-}
-
-let savedFills = {};
-let currentColor=COLORS[0],currentTool='fill',currentIdx=null,fills={},currentTab='all';
-
-// ==================== TOUS LES DESSINS RÉALISTES AVEC CONTOURS NOIRS ====================
-
-const IMAGES = [
-
-// === LION RÉALISTE ===
-{cat:'animaux', title:'Lion', clickable:['criniere','visage','museau','nez','oeilG','oeilD','pupilleG','pupilleD','sourcilG','sourcilD','bouche','moustacheG1','moustacheG2','moustacheG3','moustacheD1','moustacheD2','moustacheD3','mèche1','mèche2','joueG','joueD'], full:`
-<ellipse cx="50" cy="88" rx="38" ry="12" fill="#CCCCCC" opacity="0.3" stroke="none"/>
-<path id="criniere" d="M50 28 Q20 24 15 40 Q10 55 18 72 Q26 88 50 88 Q74 88 82 72 Q90 55 85 40 Q80 24 50 28Z" fill="white" stroke="#000000" stroke-width="2"/>
-<ellipse id="visage" cx="50" cy="54" rx="22" ry="24" fill="white" stroke="#000000" stroke-width="1.8"/>
-<ellipse id="museau" cx="50" cy="60" rx="14" ry="12" fill="white" stroke="#000000" stroke-width="1.5"/>
-<path id="nez" d="M46 60 L50 66 L54 60 L50 62 Z" fill="white" stroke="#000000" stroke-width="1.2"/>
-<ellipse id="oeilG" cx="38" cy="48" rx="4.5" ry="5.5" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="pupilleG" cx="37" cy="48" r="2" fill="white" stroke="#000000" stroke-width="1"/>
-<circle id="refletG" cx="36" cy="46.5" r="0.8" fill="white" stroke="none"/>
-<ellipse id="oeilD" cx="62" cy="48" rx="4.5" ry="5.5" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="pupilleD" cx="61" cy="48" r="2" fill="white" stroke="#000000" stroke-width="1"/>
-<circle id="refletD" cx="60" cy="46.5" r="0.8" fill="white" stroke="none"/>
-<path id="sourcilG" d="M32 42 L38 44 L32 46" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round"/>
-<path id="sourcilD" d="M68 42 L62 44 L68 46" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round"/>
-<path id="bouche" d="M44 67 Q50 73 56 67" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
-<path id="moustacheG1" d="M26 57 L38 56" stroke="#000000" stroke-width="1.2" stroke-linecap="round"/>
-<path id="moustacheG2" d="M26 60 L38 59" stroke="#000000" stroke-width="1.2" stroke-linecap="round"/>
-<path id="moustacheG3" d="M26 63 L38 62" stroke="#000000" stroke-width="1.2" stroke-linecap="round"/>
-<path id="moustacheD1" d="M74 57 L62 56" stroke="#000000" stroke-width="1.2" stroke-linecap="round"/>
-<path id="moustacheD2" d="M74 60 L62 59" stroke="#000000" stroke-width="1.2" stroke-linecap="round"/>
-<path id="moustacheD3" d="M74 63 L62 62" stroke="#000000" stroke-width="1.2" stroke-linecap="round"/>
-<circle id="joueG" cx="42" cy="62" r="1.5" fill="white" stroke="#000000" stroke-width="0.8"/>
-<circle id="joueD" cx="58" cy="62" r="1.5" fill="white" stroke="#000000" stroke-width="0.8"/>
-<path id="mèche1" d="M42 34 L44 28 L48 32" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round"/>
-<path id="mèche2" d="M58 34 L56 28 L52 32" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round"/>
-`},
-
-// === GRENOUILLE RÉALISTE ===
-{cat:'animaux', title:'Grenouille', clickable:['corps','ventre','oeilG','oeilD','pupilleG','pupilleD','bouche','tache1','tache2'], full:`
-<ellipse cx="50" cy="88" rx="32" ry="10" fill="#CCCCCC" opacity="0.3" stroke="none"/>
-<ellipse id="corps" cx="50" cy="62" rx="30" ry="24" fill="white" stroke="#000000" stroke-width="2"/>
-<ellipse id="ventre" cx="50" cy="68" rx="20" ry="14" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="oeilG" cx="34" cy="38" r="12" fill="white" stroke="#000000" stroke-width="2"/>
-<circle id="oeilD" cx="66" cy="38" r="12" fill="white" stroke="#000000" stroke-width="2"/>
-<circle id="pupilleG" cx="34" cy="38" r="5" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="pupilleD" cx="66" cy="38" r="5" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="refletG" cx="31" cy="35" r="1.5" fill="white" stroke="none"/>
-<circle id="refletD" cx="63" cy="35" r="1.5" fill="white" stroke="none"/>
-<path id="bouche" d="M44 72 Q50 78 56 72" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
-<circle id="tache1" cx="42" cy="52" r="3" fill="white" stroke="#000000" stroke-width="1"/>
-<circle id="tache2" cx="58" cy="52" r="3" fill="white" stroke="#000000" stroke-width="1"/>
-`},
-
-// === CHIEN RÉALISTE ===
-{cat:'animaux', title:'Chien', clickable:['tete','museau','oreilleG','oreilleD','oeilG','oeilD','nez','langue','collier'], full:`
-<ellipse cx="50" cy="85" rx="30" ry="10" fill="#CCCCCC" opacity="0.3" stroke="none"/>
-<ellipse id="tete" cx="50" cy="52" rx="28" ry="24" fill="white" stroke="#000000" stroke-width="2"/>
-<ellipse id="museau" cx="50" cy="58" rx="18" ry="14" fill="white" stroke="#000000" stroke-width="1.8"/>
-<ellipse id="oreilleG" cx="30" cy="34" rx="10" ry="14" fill="white" stroke="#000000" stroke-width="1.8"/>
-<ellipse id="oreilleD" cx="70" cy="34" rx="10" ry="14" fill="white" stroke="#000000" stroke-width="1.8"/>
-<circle id="oeilG" cx="40" cy="45" r="4" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="pupG" cx="39" cy="44" r="2" fill="white" stroke="#000000" stroke-width="1"/>
-<circle id="oeilD" cx="60" cy="45" r="4" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="pupD" cx="59" cy="44" r="2" fill="white" stroke="#000000" stroke-width="1"/>
-<ellipse id="nez" cx="50" cy="62" rx="5" ry="4" fill="white" stroke="#000000" stroke-width="1.2"/>
-<path id="langue" d="M48 66 L52 66 L50 72 Z" fill="white" stroke="#000000" stroke-width="1"/>
-<ellipse id="collier" cx="50" cy="78" rx="22" ry="6" fill="white" stroke="#000000" stroke-width="1.5"/>
-`},
-
-// === ÉLÉPHANT RÉALISTE ===
-{cat:'animaux', title:'Éléphant', clickable:['corps','tete','trompe','oreilleG','oreilleD','oeilG','oeilD','defenseG','defenseD'], full:`
-<ellipse cx="50" cy="88" rx="35" ry="12" fill="#CCCCCC" opacity="0.3" stroke="none"/>
-<ellipse id="corps" cx="50" cy="60" rx="34" ry="28" fill="white" stroke="#000000" stroke-width="2"/>
-<ellipse id="tete" cx="50" cy="42" rx="22" ry="20" fill="white" stroke="#000000" stroke-width="2"/>
-<path id="trompe" d="M44 48 L32 72 L38 74 L44 56" fill="white" stroke="#000000" stroke-width="1.8"/>
-<ellipse id="oreilleG" cx="28" cy="38" rx="14" ry="18" fill="white" stroke="#000000" stroke-width="1.8"/>
-<ellipse id="oreilleD" cx="72" cy="38" rx="14" ry="18" fill="white" stroke="#000000" stroke-width="1.8"/>
-<circle id="oeilG" cx="42" cy="38" r="3.5" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="pupG" cx="41" cy="37" r="1.8" fill="white" stroke="#000000" stroke-width="1"/>
-<circle id="oeilD" cx="58" cy="38" r="3.5" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="pupD" cx="57" cy="37" r="1.8" fill="white" stroke="#000000" stroke-width="1"/>
-<path id="defenseG" d="M44 52 L36 70 L44 68 Z" fill="white" stroke="#000000" stroke-width="1.5"/>
-<path id="defenseD" d="M56 52 L64 70 L56 68 Z" fill="white" stroke="#000000" stroke-width="1.5"/>
-`},
-
-// === LAPIN RÉALISTE ===
-{cat:'animaux', title:'Lapin', clickable:['tete','joues','oreilleG','oreilleD','oeilG','oeilD','nez','moustaches'], full:`
-<ellipse cx="50" cy="88" rx="28" ry="10" fill="#CCCCCC" opacity="0.3" stroke="none"/>
-<ellipse id="tete" cx="50" cy="58" rx="24" ry="26" fill="white" stroke="#000000" stroke-width="2"/>
-<ellipse id="joues" cx="50" cy="64" rx="16" ry="12" fill="white" stroke="#000000" stroke-width="1.5"/>
-<ellipse id="oreilleG" cx="36" cy="28" rx="8" ry="22" fill="white" stroke="#000000" stroke-width="2"/>
-<ellipse id="oreilleD" cx="64" cy="28" rx="8" ry="22" fill="white" stroke="#000000" stroke-width="2"/>
-<circle id="oeilG" cx="42" cy="52" r="3.5" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="pupG" cx="41" cy="51" r="1.8" fill="white" stroke="#000000" stroke-width="1"/>
-<circle id="oeilD" cx="58" cy="52" r="3.5" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="pupD" cx="57" cy="51" r="1.8" fill="white" stroke="#000000" stroke-width="1"/>
-<ellipse id="nez" cx="50" cy="60" rx="4" ry="3" fill="white" stroke="#000000" stroke-width="1.2"/>
-<path id="moustaches" d="M38 61 L28 60 M38 63 L28 62 M62 61 L72 60 M62 63 L72 62" stroke="#000000" stroke-width="1" stroke-linecap="round"/>
-`},
-
-// === POISSON RÉALISTE ===
-{cat:'animaux', title:'Poisson', clickable:['corps','queue','oeil','nageoireD','nageoireG'], full:`
-<ellipse id="corps" cx="48" cy="52" rx="32" ry="20" fill="white" stroke="#000000" stroke-width="2"/>
-<path id="queue" d="M80 52 L95 42 L95 62 Z" fill="white" stroke="#000000" stroke-width="2"/>
-<circle id="oeil" cx="25" cy="48" r="5" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="pupille" cx="23" cy="46" r="2.5" fill="white" stroke="#000000" stroke-width="1"/>
-<circle id="reflet" cx="21.5" cy="44.5" r="1" fill="white" stroke="none"/>
-<path id="nageoireD" d="M58 40 L68 32 L66 44 Z" fill="white" stroke="#000000" stroke-width="1.5"/>
-<path id="nageoireG" d="M38 40 L28 32 L30 44 Z" fill="white" stroke="#000000" stroke-width="1.5"/>
-`},
-
-// === OISEAU RÉALISTE ===
-{cat:'animaux', title:'Oiseau', clickable:['corps','tete','aile','bec','oeil','plumes'], full:`
-<ellipse id="corps" cx="50" cy="58" rx="28" ry="22" fill="white" stroke="#000000" stroke-width="2"/>
-<circle id="tete" cx="50" cy="38" r="16" fill="white" stroke="#000000" stroke-width="2"/>
-<ellipse id="aile" cx="32" cy="52" rx="14" ry="10" fill="white" stroke="#000000" stroke-width="1.8"/>
-<path id="bec" d="M58 36 L68 34 L62 42 Z" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="oeil" cx="46" cy="35" r="3" fill="white" stroke="#000000" stroke-width="1.2"/>
-<circle id="pupille" cx="45" cy="34" r="1.5" fill="white" stroke="#000000" stroke-width="1"/>
-<path id="plumes" d="M54 26 L58 22 L62 26 M62 30 L66 26 L70 30" stroke="#000000" stroke-width="1.2" fill="none"/>
-`},
-
-// === TORTUE RÉALISTE ===
-{cat:'animaux', title:'Tortue', clickable:['carapace','tete','oeil','patteG','patteD','queue'], full:`
-<ellipse id="carapace" cx="50" cy="54" rx="32" ry="26" fill="white" stroke="#000000" stroke-width="2.5"/>
-<ellipse id="tete" cx="50" cy="32" rx="12" ry="10" fill="white" stroke="#000000" stroke-width="1.8"/>
-<circle id="oeil" cx="47" cy="30" r="2" fill="white" stroke="#000000" stroke-width="1"/>
-<circle id="pupille" cx="46.5" cy="29.5" r="1" fill="white" stroke="#000000" stroke-width="0.8"/>
-<ellipse id="patteG" cx="28" cy="64" rx="8" ry="6" fill="white" stroke="#000000" stroke-width="1.5"/>
-<ellipse id="patteD" cx="72" cy="64" rx="8" ry="6" fill="white" stroke="#000000" stroke-width="1.5"/>
-<path id="queue" d="M70 78 L78 76 L74 82 Z" fill="white" stroke="#000000" stroke-width="1.2"/>
-`},
-
-// === CANARD RÉALISTE ===
-{cat:'animaux', title:'Canard', clickable:['corps','tete','bec','oeil','aile'], full:`
-<ellipse id="corps" cx="50" cy="62" rx="30" ry="22" fill="white" stroke="#000000" stroke-width="2"/>
-<circle id="tete" cx="38" cy="40" r="14" fill="white" stroke="#000000" stroke-width="2"/>
-<path id="bec" d="M26 38 L18 35 L24 42 Z" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="oeil" cx="34" cy="36" r="2.5" fill="white" stroke="#000000" stroke-width="1.2"/>
-<circle id="pupille" cx="33" cy="35.5" r="1.2" fill="white" stroke="#000000" stroke-width="0.8"/>
-<ellipse id="aile" cx="64" cy="58" rx="14" ry="8" fill="white" stroke="#000000" stroke-width="1.5"/>
-`}
-];
-
-// === AJOUT DES AUTRES IMAGES (NATURE, VÉHICULES, NOURRITURE) AVEC CONTOURS NOIRS ===
-const categoriesRestantes = ['nature','nature','vehicules','vehicules','nourriture','nourriture','nature','vehicules','nourriture'];
-const titresRestants = ['Arc-en-ciel','Arbre','Voiture','Avion','Glace','Pizza','Fleur','Bateau','Gâteau','Nuage','Montagne','Vélo','Fusée','Cupcake','Pomme','Banane','Pastèque','Bonbon','Ananas'];
-
-for(let i = IMAGES.length; i < 50; i++) {
-  const cat = categoriesRestantes[i % categoriesRestantes.length];
-  const title = titresRestants[i % titresRestants.length];
-  IMAGES.push({
-    cat: cat,
-    title: title,
-    clickable: ['z1','z2','z3','z4','z5','z6'],
-    full: `<ellipse id="z1" cx="50" cy="55" rx="28" ry="24" fill="white" stroke="#000000" stroke-width="2.5"/>
-<circle id="z2" cx="35" cy="42" r="12" fill="white" stroke="#000000" stroke-width="2"/>
-<circle id="z3" cx="65" cy="42" r="12" fill="white" stroke="#000000" stroke-width="2"/>
-<rect id="z4" x="42" y="68" width="16" height="18" rx="4" fill="white" stroke="#000000" stroke-width="2"/>
-<ellipse id="z5" cx="28" cy="68" rx="8" ry="5" fill="white" stroke="#000000" stroke-width="1.5"/>
-<ellipse id="z6" cx="72" cy="68" rx="8" ry="5" fill="white" stroke="#000000" stroke-width="1.5"/>`
-  });
-}
-
-// Build colored SVG string for thumbnail
-function buildColoredSvg(idx){
-  const img=IMAGES[idx];
-  const f=savedFills[idx]||{};
-  let svg=img.full;
-  img.clickable.forEach(id=>{
-    if(f[id]&&f[id]!=='white'){
-      const re=new RegExp(`(id="${id}"[^>]*fill=")[^"]*(")`,'g');
-      svg=svg.replace(re,`$1${f[id]}$2`);
+  // Configuration
+  const BOARD_SIZE = 20;    // 20x20 grille
+  const CELL_SIZE = 20;      // pixels (400/20)
+  const canvas = document.getElementById('snakeCanvas');
+  const ctx = canvas.getContext('2d');
+  
+  // État du jeu
+  let snake = [
+    {x: 10, y: 10},
+    {x: 9, y: 10},
+    {x: 8, y: 10},
+    {x: 7, y: 10}
+  ];
+  let direction = 'right';    // direction actuelle
+  let nextDirection = 'right';
+  let food = {x: 15, y: 10};
+  let score = 0;
+  let highScore = localStorage.getItem('snakeHighScore') || 0;
+  let gameLoop = null;
+  let isGameRunning = true;
+  let isPaused = false;
+  let gameSpeed = 100;        // ms par frame
+  
+  // Sons (Web Audio API)
+  let audioCtx = null;
+  
+  // DOM elements
+  const scoreElement = document.getElementById('scoreValue');
+  const highscoreElement = document.getElementById('highscoreValue');
+  const statusElement = document.getElementById('statusText');
+  const restartBtn = document.getElementById('restartBtn');
+  const pauseBtn = document.getElementById('pauseBtn');
+  
+  highscoreElement.textContent = highScore;
+  
+  // Initialisation audio
+  function initAudio() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+  }
+  
+  function playSound(type) {
+    try {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      const oscillator = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      oscillator.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      if (type === 'eat') {
+        oscillator.frequency.value = 523.25; // Do
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        oscillator.start();
+        oscillator.stop(now + 0.2);
+      } else if (type === 'gameover') {
+        oscillator.frequency.value = 220;
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        oscillator.start();
+        oscillator.stop(now + 0.5);
+        
+        const osc2 = audioCtx.createOscillator();
+        const gain2 = audioCtx.createGain();
+        osc2.connect(gain2);
+        gain2.connect(audioCtx.destination);
+        osc2.frequency.value = 174.61;
+        gain2.gain.setValueAtTime(0.2, now + 0.2);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+        osc2.start(now + 0.2);
+        osc2.stop(now + 0.7);
+      }
+    } catch(e) {}
+  }
+  
+  // Générer une nouvelle pomme à un endroit libre
+  function generateRandomFood() {
+    const maxAttempts = 2000;
+    for (let i = 0; i < maxAttempts; i++) {
+      const randX = Math.floor(Math.random() * BOARD_SIZE);
+      const randY = Math.floor(Math.random() * BOARD_SIZE);
+      if (!snake.some(segment => segment.x === randX && segment.y === randY)) {
+        food = {x: randX, y: randY};
+        return true;
+      }
+    }
+    // Si presque plus de place, recherche exhaustive
+    for (let y = 0; y < BOARD_SIZE; y++) {
+      for (let x = 0; x < BOARD_SIZE; x++) {
+        if (!snake.some(s => s.x === x && s.y === y)) {
+          food = {x, y};
+          return true;
+        }
+      }
+    }
+    return false; // Victoire ! partie gagnée
+  }
+  
+  // Mise à jour du score affiché
+  function updateUI() {
+    scoreElement.textContent = score;
+    if (score > highScore) {
+      highScore = score;
+      highscoreElement.textContent = highScore;
+      localStorage.setItem('snakeHighScore', highScore);
+    }
+  }
+  
+  // Mouvement du serpent
+  function moveSnake() {
+    if (!isGameRunning || isPaused) return false;
+    
+    // Appliquer la direction
+    direction = nextDirection;
+    
+    // Calcul de la nouvelle tête
+    let newHead = { ...snake[0] };
+    switch (direction) {
+      case 'right': newHead.x += 1; break;
+      case 'left': newHead.x -= 1; break;
+      case 'up': newHead.y -= 1; break;
+      case 'down': newHead.y += 1; break;
+    }
+    
+    // Vérifier si on mange la pomme
+    const willEat = (newHead.x === food.x && newHead.y === food.y);
+    
+    // Ajouter la nouvelle tête
+    snake.unshift(newHead);
+    if (!willEat) {
+      snake.pop();
+    } else {
+      // Augmenter score et générer nouvelle pomme
+      score++;
+      updateUI();
+      playSound('eat');
+      const success = generateRandomFood();
+      if (!success) {
+        // Victoire : le serpent remplit tout le plateau !
+        gameOver(true);
+        return false;
+      }
+      // Augmenter légèrement la vitesse (max speed = 60ms)
+      if (gameSpeed > 60) {
+        gameSpeed = Math.max(60, gameSpeed - 1.5);
+        clearInterval(gameLoop);
+        gameLoop = setInterval(gameTick, gameSpeed);
+      }
+    }
+    
+    // Vérifier collision avec les murs
+    if (newHead.x < 0 || newHead.x >= BOARD_SIZE || newHead.y < 0 || newHead.y >= BOARD_SIZE) {
+      gameOver(false);
+      return false;
+    }
+    
+    // Vérifier collision avec soi-même
+    const selfCollision = snake.slice(1).some(segment => segment.x === newHead.x && segment.y === newHead.y);
+    if (selfCollision) {
+      gameOver(false);
+      return false;
+    }
+    
+    return true;
+  }
+  
+  // Game Over
+  function gameOver(isVictory = false) {
+    if (!isGameRunning) return;
+    isGameRunning = false;
+    if (gameLoop) clearInterval(gameLoop);
+    gameLoop = null;
+    playSound('gameover');
+    if (isVictory) {
+      statusElement.textContent = '🏆 VICTOIRE ! TU AS GAGNÉ ! 🏆';
+    } else {
+      statusElement.textContent = '💀 GAME OVER 💀';
+    }
+    drawBoard(true);
+  }
+  
+  // Réinitialiser la partie
+  function resetGame() {
+    // Réinitialiser les variables
+    snake = [
+      {x: 10, y: 10},
+      {x: 9, y: 10},
+      {x: 8, y: 10},
+      {x: 7, y: 10}
+    ];
+    direction = 'right';
+    nextDirection = 'right';
+    score = 0;
+    gameSpeed = 100;
+    isGameRunning = true;
+    isPaused = false;
+    pauseBtn.textContent = '⏸ PAUSE';
+    statusElement.textContent = '▶ JEU EN COURS';
+    
+    updateUI();
+    
+    // Générer une pomme valide
+    generateRandomFood();
+    
+    // Nettoyer l'ancien intervalle
+    if (gameLoop) clearInterval(gameLoop);
+    gameLoop = setInterval(gameTick, gameSpeed);
+    
+    // Redessiner
+    drawBoard();
+  }
+  
+  // Tick du jeu (appelé à intervalle)
+  function gameTick() {
+    if (!isGameRunning || isPaused) return;
+    moveSnake();
+    drawBoard();
+  }
+  
+  // Gestion des touches clavier
+  function changeDirection(newDir) {
+    if (!isGameRunning || isPaused) return;
+    
+    const opposite = {
+      'up': 'down',
+      'down': 'up',
+      'left': 'right',
+      'right': 'left'
+    };
+    
+    if (opposite[newDir] !== direction) {
+      nextDirection = newDir;
+    }
+  }
+  
+  // DESSIN : graphismes réalistes et joyeux
+  function drawBoard(isGameOverDisplay = false) {
+    ctx.clearRect(0, 0, 400, 400);
+    
+    // Grille de fond
+    for (let i = 0; i <= BOARD_SIZE; i++) {
+      ctx.beginPath();
+      ctx.strokeStyle = '#2c4a2c';
+      ctx.lineWidth = 0.5;
+      ctx.moveTo(i * CELL_SIZE, 0);
+      ctx.lineTo(i * CELL_SIZE, 400);
+      ctx.stroke();
+      ctx.moveTo(0, i * CELL_SIZE);
+      ctx.lineTo(400, i * CELL_SIZE);
+      ctx.stroke();
+    }
+    
+    // Dessin de la pomme (avec reflet)
+    ctx.shadowBlur = 0;
+    ctx.beginPath();
+    ctx.arc(food.x * CELL_SIZE + CELL_SIZE/2, food.y * CELL_SIZE + CELL_SIZE/2, 8, 0, 2 * Math.PI);
+    ctx.fillStyle = '#e84118';
+    ctx.fill();
+    ctx.fillStyle = '#c92a0a';
+    ctx.beginPath();
+    ctx.arc(food.x * CELL_SIZE + CELL_SIZE/2 - 2, food.y * CELL_SIZE + CELL_SIZE/2 - 2, 2, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = '#f9a825';
+    ctx.beginPath();
+    ctx.rect(food.x * CELL_SIZE + 8, food.y * CELL_SIZE + 5, 3, 5);
+    ctx.fill();
+    ctx.fillStyle = 'white';
+    ctx.beginPath();
+    ctx.arc(food.x * CELL_SIZE + CELL_SIZE/2 - 3, food.y * CELL_SIZE + CELL_SIZE/2 - 3, 1.5, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Dessin du serpent avec dégradé et yeux
+    for (let i = 0; i < snake.length; i++) {
+      const seg = snake[i];
+      const x = seg.x * CELL_SIZE;
+      const y = seg.y * CELL_SIZE;
+      
+      // Corps avec effet arrondi
+      ctx.fillStyle = i === 0 ? '#7cb518' : '#5a9e2e';
+      ctx.shadowBlur = 2;
+      ctx.shadowColor = '#1a3a0a';
+      ctx.beginPath();
+      ctx.roundRect(x + 1, y + 1, CELL_SIZE - 2, CELL_SIZE - 2, 5);
+      ctx.fill();
+      
+      // Écailles (petits détails)
+      ctx.fillStyle = '#9ccc5c';
+      ctx.beginPath();
+      ctx.arc(x + CELL_SIZE/2, y + CELL_SIZE/2, 4, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      // Yeux sur la tête
+      if (i === 0) {
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.arc(x + 14, y + 7, 2.5, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(x + 6, y + 7, 2.5, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.fillStyle = '#1a2a0a';
+        ctx.beginPath();
+        ctx.arc(x + 14.5, y + 6.5, 1.2, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(x + 6.5, y + 6.5, 1.2, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.arc(x + 15, y + 5, 0.6, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(x + 7, y + 5, 0.6, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // langue (optionnelle)
+        if (direction === 'right') {
+          ctx.fillStyle = '#e85d04';
+          ctx.beginPath();
+          ctx.moveTo(x + 19, y + 10);
+          ctx.lineTo(x + 24, y + 12);
+          ctx.lineTo(x + 19, y + 14);
+          ctx.fill();
+        }
+      }
+    }
+    
+    ctx.shadowBlur = 0;
+    
+    // Message de pause / game over
+    if (isPaused && isGameRunning) {
+      ctx.font = 'bold 20px "Segoe UI"';
+      ctx.fillStyle = '#ffd966';
+      ctx.shadowBlur = 0;
+      ctx.fillText('⏸ PAUSE', 155, 190);
+      ctx.font = '12px sans-serif';
+      ctx.fillStyle = '#bcbc8c';
+      ctx.fillText('Appuie sur ESPACE', 148, 230);
+    }
+    
+    if (!isGameRunning && !isGameOverDisplay) {
+      ctx.font = 'bold 24px "Segoe UI"';
+      ctx.fillStyle = '#ffaa44';
+      ctx.shadowBlur = 0;
+      ctx.fillText('GAME OVER', 140, 190);
+      ctx.font = '12px sans-serif';
+      ctx.fillStyle = '#ddcc88';
+      ctx.fillText('Clique sur "Nouvelle partie"', 130, 230);
+    }
+  }
+  
+  // Helper pour roundRect
+  if (!CanvasRenderingContext2D.prototype.roundRect) {
+    CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+      if (w < 2 * r) r = w / 2;
+      if (h < 2 * r) r = h / 2;
+      this.moveTo(x+r, y);
+      this.lineTo(x+w-r, y);
+      this.quadraticCurveTo(x+w, y, x+w, y+r);
+      this.lineTo(x+w, y+h-r);
+      this.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+      this.lineTo(x+r, y+h);
+      this.quadraticCurveTo(x, y+h, x, y+h-r);
+      this.lineTo(x, y+r);
+      this.quadraticCurveTo(x, y, x+r, y);
+      return this;
+    };
+  }
+  
+  // Gestion des événements
+  window.addEventListener('keydown', (e) => {
+    const key = e.key;
+    if (key === 'ArrowUp') changeDirection('up');
+    else if (key === 'ArrowDown') changeDirection('down');
+    else if (key === 'ArrowLeft') changeDirection('left');
+    else if (key === 'ArrowRight') changeDirection('right');
+    else if (key === ' ' || key === 'Space') {
+      e.preventDefault();
+      if (!isGameRunning) {
+        resetGame();
+      } else {
+        isPaused = !isPaused;
+        pauseBtn.textContent = isPaused ? '▶ JOUER' : '⏸ PAUSE';
+        statusElement.textContent = isPaused ? '⏸ PAUSE' : '▶ EN COURS';
+        drawBoard();
+      }
+    } else if (key === 'r' || key === 'R') {
+      resetGame();
     }
   });
-  return svg;
-}
-
-function showTab(tab,el){
-  currentTab=tab;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  renderGallery();
-}
-
-function renderGallery(){
-  const g=document.getElementById('gallery');
-  const filtered=currentTab==='all'?IMAGES:IMAGES.filter(i=>i.cat===currentTab);
-  g.innerHTML='';
-  filtered.forEach(img=>{
-    const realIdx=IMAGES.indexOf(img);
-    const f=savedFills[realIdx]||{};
-    const isDone=img.clickable.every(id=>f[id]&&f[id]!=='white');
-    const card=document.createElement('div');
-    card.className='thumb-card'+(isDone?' thumb-done':'');
-    card.onclick=()=>openImage(realIdx);
-    const coloredSvg=buildColoredSvg(realIdx);
-    card.innerHTML=`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${coloredSvg}</svg><p>${img.title}</p>`;
-    g.appendChild(card);
+  
+  // Boutons tactiles
+  document.querySelectorAll('.arrow-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const dir = btn.getAttribute('data-dir');
+      if (dir) changeDirection(dir);
+      // Petit effet haptique (vibration si supporté)
+      if (navigator.vibrate) navigator.vibrate(20);
+    });
   });
-}
-
-function openImage(idx){
-  currentIdx=idx;
-  fills=Object.assign({},savedFills[idx]||{});
-  playClick();
-  document.getElementById('gallery-wrap').style.display='none';
-  document.getElementById('tabs').style.display='none';
-  document.getElementById('coloring-screen').style.display='flex';
-  document.getElementById('img-title').textContent=IMAGES[idx].title;
-  renderCanvas();
-  updateProgress();
-}
-
-function goBack(){
-  savedFills[currentIdx]=Object.assign({},fills);
-  document.getElementById('gallery-wrap').style.display='block';
-  document.getElementById('tabs').style.display='flex';
-  document.getElementById('coloring-screen').style.display='none';
-  renderGallery();
-}
-
-function renderCanvas(){
-  const img=IMAGES[currentIdx];
-  const wrap=document.getElementById('canvas-wrap');
-  wrap.innerHTML=`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" id="main-svg">${img.full}</svg>`;
-  applyFills();
-  document.getElementById('main-svg').addEventListener('click',onSVGClick);
-}
-
-function applyFills(){
-  IMAGES[currentIdx].clickable.forEach(id=>{
-    const el=document.getElementById(id);
-    if(el)el.setAttribute('fill',fills[id]||'white');
+  
+  restartBtn.addEventListener('click', () => {
+    initAudio();
+    resetGame();
   });
-}
-
-function onSVGClick(e){
-  const el=e.target;
-  const img=IMAGES[currentIdx];
-  if(!el.id||!img.clickable.includes(el.id))return;
-  fills[el.id]=currentTool==='fill'?currentColor:'white';
-  el.setAttribute('fill',fills[el.id]);
-  savedFills[currentIdx]=Object.assign({},fills);
-  playFill();
-  updateProgress();
-}
-
-function updateProgress(){
-  const img=IMAGES[currentIdx];
-  const filled=img.clickable.filter(id=>fills[id]&&fills[id]!=='white').length;
-  const pct=Math.round((filled/img.clickable.length)*100);
-  document.getElementById('progress-bar').style.width=pct+'%';
-  document.getElementById('progress-label').textContent=pct+'%';
-}
-
-function resetColors(){
-  fills={};
-  savedFills[currentIdx]={};
-  applyFills();
-  updateProgress();
-}
-
-function setTool(t){
-  currentTool=t;
-  document.getElementById('btn-fill').classList.toggle('active',t==='fill');
-  document.getElementById('btn-eraser').classList.toggle('active',t==='eraser');
-}
-
-function printImage(){window.print();}
-
-function buildPalette(){
-  const p=document.getElementById('palette');
-  COLORS.forEach((c,i)=>{
-    const btn=document.createElement('button');
-    btn.className='color-btn'+(i===0?' active':'');
-    btn.style.background=c;
-    if(c==='#fff')btn.style.boxShadow='inset 0 0 0 1.5px #ccc';
-    btn.onclick=()=>{
-      document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      currentColor=c;
-      setTool('fill');
-    };
-    p.appendChild(btn);
+  
+  pauseBtn.addEventListener('click', () => {
+    if (!isGameRunning) {
+      resetGame();
+    } else {
+      isPaused = !isPaused;
+      pauseBtn.textContent = isPaused ? '▶ JOUER' : '⏸ PAUSE';
+      statusElement.textContent = isPaused ? '⏸ PAUSE' : '▶ EN COURS';
+      drawBoard();
+      if (!isPaused && !gameLoop) {
+        gameLoop = setInterval(gameTick, gameSpeed);
+      } else if (isPaused && gameLoop) {
+        clearInterval(gameLoop);
+        gameLoop = null;
+      } else if (!isPaused && !gameLoop && isGameRunning) {
+        gameLoop = setInterval(gameTick, gameSpeed);
+      }
+    }
   });
-}
-
-buildPalette();
-renderGallery();
+  
+  // Démarrer le jeu
+  function startGame() {
+    initAudio();
+    resetGame();
+  }
+  
+  startGame();
 </script>
 </body>
 </html>
