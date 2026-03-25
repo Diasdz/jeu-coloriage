@@ -26,7 +26,6 @@
       padding: 20px;
     }
 
-    /* MENU PRINCIPAL */
     .menu-container {
       max-width: 550px;
       width: 100%;
@@ -39,7 +38,6 @@
       animation: fadeIn 0.5s ease;
     }
 
-    /* ZONE DE JEU (cachée par défaut) */
     .game-container {
       display: none;
       max-width: 500px;
@@ -128,9 +126,7 @@
       width: 100%;
       box-shadow: 0 4px 0 #3a2a1a;
     }
-    .back-btn:hover {
-      background: #7a5a3a;
-    }
+    .back-btn:hover { background: #7a5a3a; }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.95); }
@@ -234,6 +230,46 @@
       cursor: pointer;
       width: 100%;
     }
+
+    .start-message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 20px 30px;
+      border-radius: 60px;
+      text-align: center;
+      z-index: 10;
+      pointer-events: none;
+      border: 2px solid #ffd966;
+      animation: pulse 1.5s infinite;
+      white-space: nowrap;
+    }
+
+    .start-message span {
+      font-size: 48px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .start-message p {
+      color: #ffd966;
+      font-size: 18px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+      100% { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .canvas-wrapper {
+      position: relative;
+    }
   </style>
 </head>
 <body>
@@ -282,11 +318,18 @@
   <div id="gameContainer" class="game-container">
     <div class="game-wrapper">
       <button class="back-btn" id="backToMenuBtn">← RETOUR AU MENU</button>
-      <canvas id="snakeCanvas" width="400" height="400"></canvas>
+      <div class="canvas-wrapper">
+        <canvas id="snakeCanvas" width="400" height="400"></canvas>
+        <div id="startMessage" class="start-message" style="display: none;">
+          <span>🎮</span>
+          <p>APPUIE SUR ESPACE</p>
+          <p style="font-size: 12px; margin-top: 8px;">pour commencer</p>
+        </div>
+      </div>
       <div class="info-panel">
         <div class="score-box"><div class="score-label">🍎 SCORE</div><div class="score-value" id="scoreValue">0</div></div>
         <div class="highscore-box"><div class="highscore-label">🏆 RECORD</div><div class="highscore-value" id="highscoreValue">0</div></div>
-        <div class="status" id="statusText">▶ EN JEU</div>
+        <div class="status" id="statusText">⏸ PRÊT</div>
         <div class="controls"><button id="restartBtn">🔄 NOUVEAU</button><button id="pauseBtn">⏸ PAUSE</button></div>
       </div>
       <div class="speed-info" id="speedInfo"></div>
@@ -317,8 +360,7 @@
       hard: { speed: 65, wallTeleport: false, color: '#c92a2a', name: '🔥 DIFFICILE', desc: 'Murs mortels • Rapide' }
     };
 
-    let currentDifficulty = null;
-    let snake, direction, nextDirection, food, score, highScore, gameLoop, isGameRunning, isPaused;
+    let snake, direction, nextDirection, food, score, highScore, gameLoop, isGameRunning, isPaused, isWaitingForStart;
     let gameSpeed, wallTeleport, diffColor, diffName, diffDesc;
     
     const canvas = document.getElementById('snakeCanvas');
@@ -336,6 +378,7 @@
     const restartBtn = document.getElementById('restartBtn');
     const pauseBtn = document.getElementById('pauseBtn');
     const backToMenuBtn = document.getElementById('backToMenuBtn');
+    const startMessage = document.getElementById('startMessage');
 
     // Empêcher le défilement avec les flèches
     function preventArrowScroll(e) {
@@ -347,18 +390,12 @@
     }
     window.addEventListener('keydown', preventArrowScroll);
 
-    // Fonction pour scroller en haut de la page
     function scrollToTop() {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-      // Forcer le focus sur le body pour éviter tout décalage
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       document.body.scrollTop = 0;
       document.documentElement.scrollTop = 0;
     }
 
-    // Générer de la nourriture
     function generateRandomFood() {
       for (let i = 0; i < 2000; i++) {
         const randX = Math.floor(Math.random() * BOARD_SIZE);
@@ -379,7 +416,6 @@
       return false;
     }
 
-    // Mise à jour UI
     function updateUI() {
       scoreElement.textContent = score;
       if (score > highScore) {
@@ -389,7 +425,6 @@
       }
     }
 
-    // Gestion des murs
     function handleWallCollision(head) {
       if (!wallTeleport) {
         if (head.x < 0 || head.x >= BOARD_SIZE || head.y < 0 || head.y >= BOARD_SIZE) return null;
@@ -404,9 +439,8 @@
       }
     }
 
-    // Mouvement du serpent
     function moveSnake() {
-      if (!isGameRunning || isPaused) return false;
+      if (!isGameRunning || isPaused || isWaitingForStart) return false;
       direction = nextDirection;
       let newHead = { ...snake[0] };
       switch (direction) {
@@ -429,9 +463,24 @@
     function gameOver() {
       if (!isGameRunning) return;
       isGameRunning = false;
+      isWaitingForStart = false;
       if (gameLoop) clearInterval(gameLoop);
       gameLoop = null;
       statusElement.textContent = '💀 GAME OVER 💀';
+      startMessage.style.display = 'none';
+      drawBoard();
+    }
+
+    function startGame() {
+      if (!isWaitingForStart) return;
+      isWaitingForStart = false;
+      isGameRunning = true;
+      isPaused = false;
+      statusElement.textContent = '▶ EN JEU';
+      pauseBtn.textContent = '⏸ PAUSE';
+      startMessage.style.display = 'none';
+      if (gameLoop) clearInterval(gameLoop);
+      gameLoop = setInterval(gameTick, gameSpeed);
       drawBoard();
     }
 
@@ -440,19 +489,21 @@
       direction = 'right';
       nextDirection = 'right';
       score = 0;
-      isGameRunning = true;
+      isGameRunning = false;
       isPaused = false;
+      isWaitingForStart = true;
       pauseBtn.textContent = '⏸ PAUSE';
-      statusElement.textContent = '▶ EN JEU';
+      statusElement.textContent = '⏸ PRÊT';
       updateUI();
       generateRandomFood();
       if (gameLoop) clearInterval(gameLoop);
-      gameLoop = setInterval(gameTick, gameSpeed);
+      gameLoop = null;
       drawBoard();
+      startMessage.style.display = 'flex';
     }
 
     function gameTick() {
-      if (isGameRunning && !isPaused) {
+      if (isGameRunning && !isPaused && !isWaitingForStart) {
         moveSnake();
         drawBoard();
       }
@@ -460,7 +511,7 @@
 
     function changeDirection(newDir, e) {
       if (e) { e.preventDefault(); e.stopPropagation(); }
-      if (!isGameRunning || isPaused) return;
+      if (!isGameRunning || isPaused || isWaitingForStart) return;
       const opposite = { 'up': 'down', 'down': 'up', 'left': 'right', 'right': 'left' };
       if (opposite[newDir] !== direction) nextDirection = newDir;
     }
@@ -476,14 +527,16 @@
         ctx.moveTo(0, i * CELL_SIZE); ctx.lineTo(400, i * CELL_SIZE); ctx.stroke();
       }
       // Pomme
-      ctx.beginPath();
-      ctx.arc(food.x * CELL_SIZE + 10, food.y * CELL_SIZE + 10, 8, 0, 2 * Math.PI);
-      ctx.fillStyle = '#e84118'; ctx.fill();
-      ctx.fillStyle = '#c92a0a';
-      ctx.beginPath();
-      ctx.arc(food.x * CELL_SIZE + 8, food.y * CELL_SIZE + 8, 2, 0, 2 * Math.PI); ctx.fill();
-      ctx.fillStyle = '#f9a825';
-      ctx.fillRect(food.x * CELL_SIZE + 8, food.y * CELL_SIZE + 5, 3, 5);
+      if (food) {
+        ctx.beginPath();
+        ctx.arc(food.x * CELL_SIZE + 10, food.y * CELL_SIZE + 10, 8, 0, 2 * Math.PI);
+        ctx.fillStyle = '#e84118'; ctx.fill();
+        ctx.fillStyle = '#c92a0a';
+        ctx.beginPath();
+        ctx.arc(food.x * CELL_SIZE + 8, food.y * CELL_SIZE + 8, 2, 0, 2 * Math.PI); ctx.fill();
+        ctx.fillStyle = '#f9a825';
+        ctx.fillRect(food.x * CELL_SIZE + 8, food.y * CELL_SIZE + 5, 3, 5);
+      }
       // Serpent
       for (let i = 0; i < snake.length; i++) {
         const s = snake[i];
@@ -515,12 +568,12 @@
         }
       }
       ctx.shadowBlur = 0;
-      if (isPaused && isGameRunning) {
+      if (isPaused && isGameRunning && !isWaitingForStart) {
         ctx.font = 'bold 20px "Segoe UI"';
         ctx.fillStyle = '#ffd966';
         ctx.fillText('⏸ PAUSE', 155, 190);
       }
-      if (!isGameRunning) {
+      if (!isGameRunning && !isWaitingForStart) {
         ctx.font = 'bold 22px "Segoe UI"';
         ctx.fillStyle = '#ffaa44';
         ctx.fillText('GAME OVER', 140, 190);
@@ -533,7 +586,6 @@
       ctx.fillText('⚡ ' + gameSpeed + 'ms fixe', 10, 55);
     }
 
-    // Initialiser le jeu avec une difficulté
     function initGame(difficultyKey) {
       const diff = difficulties[difficultyKey];
       gameSpeed = diff.speed;
@@ -542,14 +594,14 @@
       diffName = diff.name;
       diffDesc = diff.desc;
       
-      // Initialiser les variables
       snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }, { x: 7, y: 10 }];
       direction = 'right';
       nextDirection = 'right';
       score = 0;
       highScore = localStorage.getItem('snakeHighScore') || 0;
-      isGameRunning = true;
+      isGameRunning = false;
       isPaused = false;
+      isWaitingForStart = true;
       
       highscoreElement.textContent = highScore;
       speedInfo.innerHTML = `${diff.name} • Vitesse fixe : ${gameSpeed}ms • ${diffDesc}`;
@@ -558,24 +610,24 @@
       updateUI();
       
       if (gameLoop) clearInterval(gameLoop);
-      gameLoop = setInterval(gameTick, gameSpeed);
+      gameLoop = null;
       
       drawBoard();
       
-      // Afficher le jeu, cacher le menu
       menuContainer.style.display = 'none';
       gameContainer.style.display = 'block';
       
-      // SCROLLER EN HAUT DE LA PAGE pour voir le jeu en entier !
       scrollToTop();
       
-      // Donner le focus au canvas pour capter les touches immédiatement
+      startMessage.style.display = 'flex';
+      statusElement.textContent = '⏸ PRÊT';
+      pauseBtn.textContent = '⏸ PAUSE';
+      
       canvas.focus();
       canvas.setAttribute('tabindex', '0');
       canvas.style.outline = 'none';
     }
 
-    // Retour au menu
     function backToMenu() {
       if (gameLoop) clearInterval(gameLoop);
       gameLoop = null;
@@ -593,10 +645,21 @@
     });
 
     backToMenuBtn.onclick = backToMenu;
-    restartBtn.onclick = () => resetGame();
+    
+    restartBtn.onclick = () => {
+      if (isWaitingForStart) {
+        resetGame();
+      } else {
+        resetGame();
+      }
+    };
+    
     pauseBtn.onclick = () => {
-      if (!isGameRunning) resetGame();
-      else {
+      if (isWaitingForStart) {
+        startGame();
+      } else if (!isGameRunning) {
+        resetGame();
+      } else {
         isPaused = !isPaused;
         pauseBtn.textContent = isPaused ? '▶ JOUER' : '⏸ PAUSE';
         statusElement.textContent = isPaused ? '⏸ PAUSE' : '▶ EN JEU';
@@ -604,7 +667,6 @@
       }
     };
 
-    // Contrôles clavier
     window.addEventListener('keydown', (e) => {
       const key = e.key;
       if (key === 'ArrowUp') changeDirection('up', e);
@@ -613,8 +675,11 @@
       else if (key === 'ArrowRight') changeDirection('right', e);
       else if (key === ' ' || key === 'Space') {
         e.preventDefault();
-        if (!isGameRunning) resetGame();
-        else {
+        if (isWaitingForStart) {
+          startGame();
+        } else if (!isGameRunning) {
+          resetGame();
+        } else {
           isPaused = !isPaused;
           pauseBtn.textContent = isPaused ? '▶ JOUER' : '⏸ PAUSE';
           statusElement.textContent = isPaused ? '⏸ PAUSE' : '▶ EN JEU';
@@ -626,7 +691,6 @@
       }
     });
 
-    // Helper roundRect
     if (!CanvasRenderingContext2D.prototype.roundRect) {
       CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
         if (w < 2 * r) r = w / 2;
@@ -644,7 +708,6 @@
       };
     }
 
-    // Modal règles
     const modal = document.getElementById('rulesModal');
     const rulesBtn = document.getElementById('rulesBtn');
     const closeModal = document.querySelector('.close-modal');
