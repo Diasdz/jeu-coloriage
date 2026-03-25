@@ -21,7 +21,6 @@
       padding: 20px;
     }
 
-    /* MENU PRINCIPAL */
     .menu-container {
       max-width: 550px;
       width: 100%;
@@ -62,7 +61,6 @@
       margin-bottom: 10px;
     }
 
-    /* CARTES DE DIFFICULTÉ */
     .difficulty-cards {
       display: flex;
       flex-direction: column;
@@ -135,7 +133,6 @@
     .card.medium .stat { background: rgba(224, 157, 62, 0.3); }
     .card.hard .stat { background: rgba(201, 42, 42, 0.3); }
 
-    /* BOUTON RÈGLES */
     .rules-btn {
       width: 100%;
       background: rgba(30, 40, 25, 0.8);
@@ -157,7 +154,6 @@
       transform: scale(1.02);
     }
 
-    /* MODAL DES RÈGLES */
     .modal {
       display: none;
       position: fixed;
@@ -278,7 +274,6 @@
     </div>
   </div>
 
-  <!-- MODAL RÈGLES -->
   <div id="rulesModal" class="modal">
     <div class="modal-content">
       <h3>📜 RÈGLES</h3>
@@ -295,45 +290,44 @@
   </div>
 
   <script>
-    // Ouvrir le jeu dans une nouvelle fenêtre avec la difficulté choisie
-    function openGameWithDifficulty(difficulty) {
-      // Créer une nouvelle fenêtre centrée
+    // Configuration des difficultés
+    const difficulties = {
+      easy: { speed: 150, wallTeleport: true, color: '#5a9e4e', name: 'FACILE', emoji: '🌿', desc: 'Téléportation • Lent' },
+      medium: { speed: 100, wallTeleport: false, color: '#e09d3e', name: 'MOYEN', emoji: '⚡', desc: 'Murs mortels • Normal' },
+      hard: { speed: 65, wallTeleport: false, color: '#c92a2a', name: 'DIFFICILE', emoji: '🔥', desc: 'Murs mortels • Rapide' }
+    };
+
+    function openGameWithDifficulty(difficultyKey) {
+      const diff = difficulties[difficultyKey];
+      if (!diff) return;
+
+      // Calculer la position centrée
       const width = 550;
       const height = 700;
       const left = (screen.width - width) / 2;
       const top = (screen.height - height) / 2;
-      
+
       // Ouvrir une nouvelle fenêtre
       const gameWindow = window.open('', '_blank', `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=no`);
-      
+
       if (!gameWindow) {
         alert("Veuillez autoriser les pop-ups pour jouer !");
         return;
       }
-      
-      // Générer le code HTML du jeu avec la difficulté choisie
-      const gameHTML = generateGameHTML(difficulty);
+
+      // Générer le HTML du jeu
+      const gameHTML = generateGameHTML(diff);
       gameWindow.document.write(gameHTML);
       gameWindow.document.close();
     }
-    
-    // Générer le jeu complet avec la difficulté sélectionnée
-    function generateGameHTML(difficulty) {
-      // Configuration selon la difficulté
-      const diffConfig = {
-        easy: { speed: 150, wallTeleport: true, color: '#5a9e4e', name: '🌿 FACILE', description: 'Téléportation • Lent' },
-        medium: { speed: 100, wallTeleport: false, color: '#e09d3e', name: '⚡ MOYEN', description: 'Murs mortels • Normal' },
-        hard: { speed: 65, wallTeleport: false, color: '#c92a2a', name: '🔥 DIFFICILE', description: 'Murs mortels • Rapide' }
-      };
-      
-      const config = diffConfig[difficulty];
-      
+
+    function generateGameHTML(diff) {
       return `<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>🐍 Snake - ${config.name}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐍 Snake - ${diff.name}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
     body {
@@ -420,23 +414,22 @@
       background: #c92a2a;
       box-shadow: none;
       padding: 8px 16px;
+      z-index: 100;
     }
     .close-btn:hover { background: #a01a1a; transform: scale(1.05); }
   </style>
 </head>
 <body>
-<div>
-  <button class="close-btn" onclick="window.close()">✖ FERMER</button>
-  <div class="game-wrapper">
-    <canvas id="snakeCanvas" width="400" height="400"></canvas>
-    <div class="info-panel">
-      <div class="score-box"><div class="score-label">🍎 SCORE</div><div class="score-value" id="scoreValue">0</div></div>
-      <div class="highscore-box"><div class="highscore-label">🏆 RECORD</div><div class="highscore-value" id="highscoreValue">${localStorage.getItem('snakeHighScore') || 0}</div></div>
-      <div class="status" id="statusText">▶ EN JEU</div>
-      <div class="controls"><button id="restartBtn">🔄 NOUVEAU</button><button id="pauseBtn">⏸ PAUSE</button></div>
-    </div>
-    <div class="speed-info">⚡ ${config.name} • Vitesse fixe : ${config.speed}ms • ${config.description}</div>
+<button class="close-btn" onclick="window.close()">✖ FERMER</button>
+<div class="game-wrapper">
+  <canvas id="snakeCanvas" width="400" height="400"></canvas>
+  <div class="info-panel">
+    <div class="score-box"><div class="score-label">🍎 SCORE</div><div class="score-value" id="scoreValue">0</div></div>
+    <div class="highscore-box"><div class="highscore-label">🏆 RECORD</div><div class="highscore-value" id="highscoreValue">0</div></div>
+    <div class="status" id="statusText">▶ EN JEU</div>
+    <div class="controls"><button id="restartBtn">🔄 NOUVEAU</button><button id="pauseBtn">⏸ PAUSE</button></div>
   </div>
+  <div class="speed-info">${diff.emoji} ${diff.name} • Vitesse fixe : ${diff.speed}ms • ${diff.desc}</div>
 </div>
 
 <script>
@@ -451,9 +444,11 @@
   let highScore = localStorage.getItem('snakeHighScore') || 0;
   let gameLoop = null;
   let isGameRunning = true, isPaused = false;
-  const gameSpeed = ${config.speed};
-  const wallTeleport = ${config.wallTeleport};
-  const diffColor = '${config.color}';
+  const GAME_SPEED = ${diff.speed};
+  const WALL_TELEPORT = ${diff.wallTeleport};
+  const DIFF_COLOR = '${diff.color}';
+  const DIFF_NAME = '${diff.name}';
+  const DIFF_EMOJI = '${diff.emoji}';
   
   document.getElementById('highscoreValue').textContent = highScore;
   
@@ -475,9 +470,14 @@
         return true;
       }
     }
-    for (let y = 0; y < BOARD_SIZE; y++)
-      for (let x = 0; x < BOARD_SIZE; x++)
-        if (!snake.some(s => s.x === x && s.y === y)) { food = {x,y}; return true; }
+    for (let y = 0; y < BOARD_SIZE; y++) {
+      for (let x = 0; x < BOARD_SIZE; x++) {
+        if (!snake.some(s => s.x === x && s.y === y)) {
+          food = {x, y};
+          return true;
+        }
+      }
+    }
     return false;
   }
   
@@ -491,7 +491,7 @@
   }
   
   function handleWallCollision(head) {
-    if (!wallTeleport) {
+    if (!WALL_TELEPORT) {
       if (head.x < 0 || head.x >= BOARD_SIZE || head.y < 0 || head.y >= BOARD_SIZE) return null;
       return head;
     } else {
@@ -543,7 +543,7 @@
     updateUI();
     generateRandomFood();
     if (gameLoop) clearInterval(gameLoop);
-    gameLoop = setInterval(gameTick, gameSpeed);
+    gameLoop = setInterval(gameTick, GAME_SPEED);
     drawBoard();
   }
   
@@ -577,8 +577,9 @@
     for (let i=0; i<snake.length; i++) {
       const s = snake[i];
       const x = s.x*CELL_SIZE, y = s.y*CELL_SIZE;
-      ctx.fillStyle = i===0 ? diffColor : '#5a9e2e';
+      ctx.fillStyle = i===0 ? DIFF_COLOR : '#5a9e2e';
       ctx.shadowBlur = 2;
+      ctx.shadowColor = '#1a3a0a';
       ctx.beginPath();
       ctx.roundRect(x+1, y+1, 18, 18, 5); ctx.fill();
       ctx.fillStyle = '#9ccc5c';
@@ -614,11 +615,11 @@
       ctx.fillText('GAME OVER', 140, 190);
     }
     ctx.font = 'bold 10px monospace';
-    ctx.fillStyle = diffColor;
-    ctx.fillText('${config.name}', 10, 25);
-    if (wallTeleport) { ctx.fillStyle = '#88aa66'; ctx.fillText('🌀 Téléportation', 10, 40); }
+    ctx.fillStyle = DIFF_COLOR;
+    ctx.fillText(DIFF_EMOJI + ' ' + DIFF_NAME, 10, 25);
+    if (WALL_TELEPORT) { ctx.fillStyle = '#88aa66'; ctx.fillText('🌀 Téléportation', 10, 40); }
     ctx.fillStyle = '#aac88a';
-    ctx.fillText('⚡ ${gameSpeed}ms fixe', 10, 55);
+    ctx.fillText('⚡ ' + GAME_SPEED + 'ms fixe', 10, 55);
   }
   
   if (!CanvasRenderingContext2D.prototype.roundRect) {
@@ -660,7 +661,7 @@
 </body>
 </html>`;
     }
-    
+
     // Événements du menu
     document.querySelectorAll('.card').forEach(card => {
       card.addEventListener('click', () => {
@@ -668,12 +669,12 @@
         openGameWithDifficulty(difficulty);
       });
     });
-    
+
     // Modal règles
     const modal = document.getElementById('rulesModal');
     const rulesBtn = document.getElementById('rulesBtn');
     const closeModal = document.querySelector('.close-modal');
-    
+
     rulesBtn.onclick = () => { modal.style.display = 'flex'; };
     closeModal.onclick = () => { modal.style.display = 'none'; };
     modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
