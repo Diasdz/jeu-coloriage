@@ -231,12 +231,12 @@
       width: 100%;
     }
 
-    .start-message {
+    .overlay-message {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.9);
       backdrop-filter: blur(8px);
       padding: 20px 30px;
       border-radius: 60px;
@@ -248,17 +248,23 @@
       white-space: nowrap;
     }
 
-    .start-message span {
+    .overlay-message span {
       font-size: 48px;
       display: block;
       margin-bottom: 10px;
     }
 
-    .start-message p {
+    .overlay-message p {
       color: #ffd966;
       font-size: 18px;
       font-weight: bold;
       letter-spacing: 2px;
+    }
+
+    .overlay-message .small {
+      font-size: 12px;
+      margin-top: 8px;
+      opacity: 0.8;
     }
 
     @keyframes pulse {
@@ -320,10 +326,15 @@
       <button class="back-btn" id="backToMenuBtn">← RETOUR AU MENU</button>
       <div class="canvas-wrapper">
         <canvas id="snakeCanvas" width="400" height="400"></canvas>
-        <div id="startMessage" class="start-message" style="display: none;">
+        <div id="startMessage" class="overlay-message" style="display: none;">
           <span>🎮</span>
           <p>APPUIE SUR ESPACE</p>
-          <p style="font-size: 12px; margin-top: 8px;">pour commencer</p>
+          <p class="small">pour commencer</p>
+        </div>
+        <div id="gameOverMessage" class="overlay-message" style="display: none;">
+          <span>💀</span>
+          <p>GAME OVER</p>
+          <p class="small">Appuie sur ESPACE pour rejouer</p>
         </div>
       </div>
       <div class="info-panel">
@@ -360,7 +371,7 @@
       hard: { speed: 65, wallTeleport: false, color: '#c92a2a', name: '🔥 DIFFICILE', desc: 'Murs mortels • Rapide' }
     };
 
-    let snake, direction, nextDirection, food, score, highScore, gameLoop, isGameRunning, isPaused, isWaitingForStart;
+    let snake, direction, nextDirection, food, score, highScore, gameLoop, isGameRunning, isPaused, isWaitingForStart, isGameOver;
     let gameSpeed, wallTeleport, diffColor, diffName, diffDesc;
     
     const canvas = document.getElementById('snakeCanvas');
@@ -379,6 +390,7 @@
     const pauseBtn = document.getElementById('pauseBtn');
     const backToMenuBtn = document.getElementById('backToMenuBtn');
     const startMessage = document.getElementById('startMessage');
+    const gameOverMessage = document.getElementById('gameOverMessage');
 
     // Empêcher le défilement avec les flèches
     function preventArrowScroll(e) {
@@ -440,7 +452,7 @@
     }
 
     function moveSnake() {
-      if (!isGameRunning || isPaused || isWaitingForStart) return false;
+      if (!isGameRunning || isPaused || isWaitingForStart || isGameOver) return false;
       direction = nextDirection;
       let newHead = { ...snake[0] };
       switch (direction) {
@@ -463,22 +475,26 @@
     function gameOver() {
       if (!isGameRunning) return;
       isGameRunning = false;
+      isGameOver = true;
       isWaitingForStart = false;
       if (gameLoop) clearInterval(gameLoop);
       gameLoop = null;
       statusElement.textContent = '💀 GAME OVER 💀';
       startMessage.style.display = 'none';
+      gameOverMessage.style.display = 'flex';
       drawBoard();
     }
 
     function startGame() {
       if (!isWaitingForStart) return;
       isWaitingForStart = false;
+      isGameOver = false;
       isGameRunning = true;
       isPaused = false;
       statusElement.textContent = '▶ EN JEU';
       pauseBtn.textContent = '⏸ PAUSE';
       startMessage.style.display = 'none';
+      gameOverMessage.style.display = 'none';
       if (gameLoop) clearInterval(gameLoop);
       gameLoop = setInterval(gameTick, gameSpeed);
       drawBoard();
@@ -492,6 +508,7 @@
       isGameRunning = false;
       isPaused = false;
       isWaitingForStart = true;
+      isGameOver = false;
       pauseBtn.textContent = '⏸ PAUSE';
       statusElement.textContent = '⏸ PRÊT';
       updateUI();
@@ -500,10 +517,11 @@
       gameLoop = null;
       drawBoard();
       startMessage.style.display = 'flex';
+      gameOverMessage.style.display = 'none';
     }
 
     function gameTick() {
-      if (isGameRunning && !isPaused && !isWaitingForStart) {
+      if (isGameRunning && !isPaused && !isWaitingForStart && !isGameOver) {
         moveSnake();
         drawBoard();
       }
@@ -511,7 +529,7 @@
 
     function changeDirection(newDir, e) {
       if (e) { e.preventDefault(); e.stopPropagation(); }
-      if (!isGameRunning || isPaused || isWaitingForStart) return;
+      if (!isGameRunning || isPaused || isWaitingForStart || isGameOver) return;
       const opposite = { 'up': 'down', 'down': 'up', 'left': 'right', 'right': 'left' };
       if (opposite[newDir] !== direction) nextDirection = newDir;
     }
@@ -568,15 +586,10 @@
         }
       }
       ctx.shadowBlur = 0;
-      if (isPaused && isGameRunning && !isWaitingForStart) {
+      if (isPaused && isGameRunning && !isWaitingForStart && !isGameOver) {
         ctx.font = 'bold 20px "Segoe UI"';
         ctx.fillStyle = '#ffd966';
         ctx.fillText('⏸ PAUSE', 155, 190);
-      }
-      if (!isGameRunning && !isWaitingForStart) {
-        ctx.font = 'bold 22px "Segoe UI"';
-        ctx.fillStyle = '#ffaa44';
-        ctx.fillText('GAME OVER', 140, 190);
       }
       ctx.font = 'bold 10px monospace';
       ctx.fillStyle = diffColor;
@@ -602,6 +615,7 @@
       isGameRunning = false;
       isPaused = false;
       isWaitingForStart = true;
+      isGameOver = false;
       
       highscoreElement.textContent = highScore;
       speedInfo.innerHTML = `${diff.name} • Vitesse fixe : ${gameSpeed}ms • ${diffDesc}`;
@@ -620,6 +634,7 @@
       scrollToTop();
       
       startMessage.style.display = 'flex';
+      gameOverMessage.style.display = 'none';
       statusElement.textContent = '⏸ PRÊT';
       pauseBtn.textContent = '⏸ PAUSE';
       
@@ -647,16 +662,14 @@
     backToMenuBtn.onclick = backToMenu;
     
     restartBtn.onclick = () => {
-      if (isWaitingForStart) {
-        resetGame();
-      } else {
-        resetGame();
-      }
+      resetGame();
     };
     
     pauseBtn.onclick = () => {
       if (isWaitingForStart) {
         startGame();
+      } else if (isGameOver) {
+        resetGame();
       } else if (!isGameRunning) {
         resetGame();
       } else {
@@ -677,6 +690,8 @@
         e.preventDefault();
         if (isWaitingForStart) {
           startGame();
+        } else if (isGameOver) {
+          resetGame();
         } else if (!isGameRunning) {
           resetGame();
         } else {
