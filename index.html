@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jeu de Coloriage - Lion Réaliste</title>
+  <title>Jeu de Coloriage - Version Réaliste</title>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -85,7 +85,7 @@
 
 <header>
   <h1>🎨 Jeu de Coloriage</h1>
-  <p>50 images à colorier — Lion réaliste et tous ses amis !</p>
+  <p>50 images réalistes à colorier — Animaux, Nature, Véhicules, Nourriture</p>
 </header>
 
 <div id="tabs">
@@ -129,7 +129,6 @@ function getAudioCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.web
 function playTone(freq,dur,type='sine',vol=0.15){try{const ctx=getAudioCtx();const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);o.start();o.stop(ctx.currentTime+dur);}catch(e){}}
 function playClick(){playTone(440,0.08,'sine',0.12);}
 function playFill(){playTone(523,0.06,'sine',0.1);setTimeout(()=>playTone(659,0.06,'sine',0.1),60);}
-function playCongratsSound(){[523,659,784,1047].forEach((n,i)=>setTimeout(()=>playTone(n,0.15,'sine',0.15),i*120));}
 const MELODY=[262,294,330,349,392,440,494,523,494,440,392,349,330,294];
 let melodyIdx=0;
 function playMusicNote(){playTone(MELODY[melodyIdx%MELODY.length],0.35,'triangle',0.08);melodyIdx++;}
@@ -142,145 +141,162 @@ function toggleMusic(){
 let savedFills = {};
 let currentColor=COLORS[0],currentTool='fill',currentIdx=null,fills={},currentTab='all';
 
-// ---- IMAGES : LION RÉALISTE AVEC CONTOURS NOIRS ----
+// ==================== TOUS LES DESSINS RÉALISTES AVEC CONTOURS NOIRS ====================
+
 const IMAGES = [
-// LION RÉALISTE POUR ENFANTS - Tous les contours en noir
-{cat:'animaux', title:'Lion', clickable:['criniere','visage','museau','nez','oeilG','oeilD','pupilleG','pupilleD','sourcilG','sourcilD','bouche','moustacheG1','moustacheG2','moustacheG3','moustacheD1','moustacheD2','moustacheD3','mèche1','mèche2','joueG','joueD','narineG','narineD'], full:`
-<!-- Ombre douce (non coloriable) -->
+
+// === LION RÉALISTE ===
+{cat:'animaux', title:'Lion', clickable:['criniere','visage','museau','nez','oeilG','oeilD','pupilleG','pupilleD','sourcilG','sourcilD','bouche','moustacheG1','moustacheG2','moustacheG3','moustacheD1','moustacheD2','moustacheD3','mèche1','mèche2','joueG','joueD'], full:`
 <ellipse cx="50" cy="88" rx="38" ry="12" fill="#CCCCCC" opacity="0.3" stroke="none"/>
-<!-- Crinière -->
 <path id="criniere" d="M50 28 Q20 24 15 40 Q10 55 18 72 Q26 88 50 88 Q74 88 82 72 Q90 55 85 40 Q80 24 50 28Z" fill="white" stroke="#000000" stroke-width="2"/>
-<!-- Visage -->
 <ellipse id="visage" cx="50" cy="54" rx="22" ry="24" fill="white" stroke="#000000" stroke-width="1.8"/>
-<!-- Museau -->
 <ellipse id="museau" cx="50" cy="60" rx="14" ry="12" fill="white" stroke="#000000" stroke-width="1.5"/>
-<!-- Nez -->
 <path id="nez" d="M46 60 L50 66 L54 60 L50 62 Z" fill="white" stroke="#000000" stroke-width="1.2"/>
-<!-- Narines -->
-<ellipse id="narineG" cx="47.5" cy="61" rx="1.2" ry="1" fill="white" stroke="#000000" stroke-width="0.8"/>
-<ellipse id="narineD" cx="52.5" cy="61" rx="1.2" ry="1" fill="white" stroke="#000000" stroke-width="0.8"/>
-<!-- Yeux -->
 <ellipse id="oeilG" cx="38" cy="48" rx="4.5" ry="5.5" fill="white" stroke="#000000" stroke-width="1.5"/>
 <circle id="pupilleG" cx="37" cy="48" r="2" fill="white" stroke="#000000" stroke-width="1"/>
 <circle id="refletG" cx="36" cy="46.5" r="0.8" fill="white" stroke="none"/>
 <ellipse id="oeilD" cx="62" cy="48" rx="4.5" ry="5.5" fill="white" stroke="#000000" stroke-width="1.5"/>
 <circle id="pupilleD" cx="61" cy="48" r="2" fill="white" stroke="#000000" stroke-width="1"/>
 <circle id="refletD" cx="60" cy="46.5" r="0.8" fill="white" stroke="none"/>
-<!-- Sourcils -->
 <path id="sourcilG" d="M32 42 L38 44 L32 46" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round"/>
 <path id="sourcilD" d="M68 42 L62 44 L68 46" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round"/>
-<!-- Bouche -->
 <path id="bouche" d="M44 67 Q50 73 56 67" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
-<!-- Moustaches -->
 <path id="moustacheG1" d="M26 57 L38 56" stroke="#000000" stroke-width="1.2" stroke-linecap="round"/>
 <path id="moustacheG2" d="M26 60 L38 59" stroke="#000000" stroke-width="1.2" stroke-linecap="round"/>
 <path id="moustacheG3" d="M26 63 L38 62" stroke="#000000" stroke-width="1.2" stroke-linecap="round"/>
 <path id="moustacheD1" d="M74 57 L62 56" stroke="#000000" stroke-width="1.2" stroke-linecap="round"/>
 <path id="moustacheD2" d="M74 60 L62 59" stroke="#000000" stroke-width="1.2" stroke-linecap="round"/>
 <path id="moustacheD3" d="M74 63 L62 62" stroke="#000000" stroke-width="1.2" stroke-linecap="round"/>
-<!-- Joues -->
 <circle id="joueG" cx="42" cy="62" r="1.5" fill="white" stroke="#000000" stroke-width="0.8"/>
 <circle id="joueD" cx="58" cy="62" r="1.5" fill="white" stroke="#000000" stroke-width="0.8"/>
-<!-- Mèches de crinière -->
 <path id="mèche1" d="M42 34 L44 28 L48 32" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round"/>
 <path id="mèche2" d="M58 34 L56 28 L52 32" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round"/>
 `},
 
-// GRENOUILLE
-{cat:'animaux', title:'Grenouille', clickable:['r0','r1','r2','r3','r4','r5','r6'], full:`
-<path id="r3" d="M20 75 Q25 85 35 80 Q40 90 50 88 Q60 90 65 80 Q75 85 80 75" fill="white" stroke="#000000" stroke-width="2.5"/>
-<ellipse id="r0" cx="50" cy="58" rx="28" ry="22" fill="white" stroke="#000000" stroke-width="2.5"/>
-<circle id="r1" cx="36" cy="32" r="10" fill="white" stroke="#000000" stroke-width="2.5"/>
-<circle id="r2" cx="64" cy="32" r="10" fill="white" stroke="#000000" stroke-width="2.5"/>
-<circle id="r4" cx="36" cy="32" r="5" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="r5" cx="64" cy="32" r="5" fill="white" stroke="#000000" stroke-width="1.5"/>
-<path id="r6" d="M42 62 Q50 68 58 62" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
-`, clickable:['r0','r1','r2','r3','r4','r5','r6']},
+// === GRENOUILLE RÉALISTE ===
+{cat:'animaux', title:'Grenouille', clickable:['corps','ventre','oeilG','oeilD','pupilleG','pupilleD','bouche','tache1','tache2'], full:`
+<ellipse cx="50" cy="88" rx="32" ry="10" fill="#CCCCCC" opacity="0.3" stroke="none"/>
+<ellipse id="corps" cx="50" cy="62" rx="30" ry="24" fill="white" stroke="#000000" stroke-width="2"/>
+<ellipse id="ventre" cx="50" cy="68" rx="20" ry="14" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="oeilG" cx="34" cy="38" r="12" fill="white" stroke="#000000" stroke-width="2"/>
+<circle id="oeilD" cx="66" cy="38" r="12" fill="white" stroke="#000000" stroke-width="2"/>
+<circle id="pupilleG" cx="34" cy="38" r="5" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="pupilleD" cx="66" cy="38" r="5" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="refletG" cx="31" cy="35" r="1.5" fill="white" stroke="none"/>
+<circle id="refletD" cx="63" cy="35" r="1.5" fill="white" stroke="none"/>
+<path id="bouche" d="M44 72 Q50 78 56 72" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+<circle id="tache1" cx="42" cy="52" r="3" fill="white" stroke="#000000" stroke-width="1"/>
+<circle id="tache2" cx="58" cy="52" r="3" fill="white" stroke="#000000" stroke-width="1"/>
+`},
 
-{cat:'animaux', title:'Chien', clickable:['r0','r1','r2','r3','r4','r5','r6','r7','r8'], full:`
-<ellipse id="r0" cx="50" cy="52" rx="26" ry="22" fill="white" stroke="#000000" stroke-width="2.5"/>
-<ellipse id="r1" cx="50" cy="38" rx="20" ry="18" fill="white" stroke="#000000" stroke-width="2.5"/>
-<ellipse id="r2" cx="32" cy="32" rx="9" ry="14" fill="white" stroke="#000000" stroke-width="2"/>
-<ellipse id="r3" cx="68" cy="32" rx="9" ry="14" fill="white" stroke="#000000" stroke-width="2"/>
-<circle id="r5" cx="43" cy="36" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="r6" cx="57" cy="36" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
-<ellipse id="r7" cx="50" cy="43" rx="4" ry="3" fill="white" stroke="#000000" stroke-width="1.5"/>
-<path id="r8" d="M44 47 Q50 53 56 47" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
-<path id="r4" d="M72 58 Q82 50 85 60 Q82 70 72 65Z" fill="white" stroke="#000000" stroke-width="2"/>
-`, clickable:['r0','r1','r2','r3','r4','r5','r6','r7','r8']},
+// === CHIEN RÉALISTE ===
+{cat:'animaux', title:'Chien', clickable:['tete','museau','oreilleG','oreilleD','oeilG','oeilD','nez','langue','collier'], full:`
+<ellipse cx="50" cy="85" rx="30" ry="10" fill="#CCCCCC" opacity="0.3" stroke="none"/>
+<ellipse id="tete" cx="50" cy="52" rx="28" ry="24" fill="white" stroke="#000000" stroke-width="2"/>
+<ellipse id="museau" cx="50" cy="58" rx="18" ry="14" fill="white" stroke="#000000" stroke-width="1.8"/>
+<ellipse id="oreilleG" cx="30" cy="34" rx="10" ry="14" fill="white" stroke="#000000" stroke-width="1.8"/>
+<ellipse id="oreilleD" cx="70" cy="34" rx="10" ry="14" fill="white" stroke="#000000" stroke-width="1.8"/>
+<circle id="oeilG" cx="40" cy="45" r="4" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="pupG" cx="39" cy="44" r="2" fill="white" stroke="#000000" stroke-width="1"/>
+<circle id="oeilD" cx="60" cy="45" r="4" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="pupD" cx="59" cy="44" r="2" fill="white" stroke="#000000" stroke-width="1"/>
+<ellipse id="nez" cx="50" cy="62" rx="5" ry="4" fill="white" stroke="#000000" stroke-width="1.2"/>
+<path id="langue" d="M48 66 L52 66 L50 72 Z" fill="white" stroke="#000000" stroke-width="1"/>
+<ellipse id="collier" cx="50" cy="78" rx="22" ry="6" fill="white" stroke="#000000" stroke-width="1.5"/>
+`},
 
-{cat:'animaux', title:'Éléphant', clickable:['r0','r1','r2','r3','r4','r5','r6'], full:`
-<ellipse id="r0" cx="50" cy="55" rx="32" ry="28" fill="white" stroke="#000000" stroke-width="2.5"/>
-<ellipse id="r1" cx="50" cy="35" rx="22" ry="18" fill="white" stroke="#000000" stroke-width="2.5"/>
-<ellipse id="r2" cx="25" cy="28" rx="10" ry="16" fill="white" stroke="#000000" stroke-width="2"/>
-<ellipse id="r3" cx="75" cy="28" rx="10" ry="16" fill="white" stroke="#000000" stroke-width="2"/>
-<path id="r4" d="M42 45 Q38 60 35 70 Q38 75 42 70 Q44 62 46 52" fill="white" stroke="#000000" stroke-width="2.5"/>
-<circle id="r5" cx="44" cy="32" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="r6" cx="56" cy="32" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
-`, clickable:['r0','r1','r2','r3','r4','r5','r6']},
+// === ÉLÉPHANT RÉALISTE ===
+{cat:'animaux', title:'Éléphant', clickable:['corps','tete','trompe','oreilleG','oreilleD','oeilG','oeilD','defenseG','defenseD'], full:`
+<ellipse cx="50" cy="88" rx="35" ry="12" fill="#CCCCCC" opacity="0.3" stroke="none"/>
+<ellipse id="corps" cx="50" cy="60" rx="34" ry="28" fill="white" stroke="#000000" stroke-width="2"/>
+<ellipse id="tete" cx="50" cy="42" rx="22" ry="20" fill="white" stroke="#000000" stroke-width="2"/>
+<path id="trompe" d="M44 48 L32 72 L38 74 L44 56" fill="white" stroke="#000000" stroke-width="1.8"/>
+<ellipse id="oreilleG" cx="28" cy="38" rx="14" ry="18" fill="white" stroke="#000000" stroke-width="1.8"/>
+<ellipse id="oreilleD" cx="72" cy="38" rx="14" ry="18" fill="white" stroke="#000000" stroke-width="1.8"/>
+<circle id="oeilG" cx="42" cy="38" r="3.5" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="pupG" cx="41" cy="37" r="1.8" fill="white" stroke="#000000" stroke-width="1"/>
+<circle id="oeilD" cx="58" cy="38" r="3.5" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="pupD" cx="57" cy="37" r="1.8" fill="white" stroke="#000000" stroke-width="1"/>
+<path id="defenseG" d="M44 52 L36 70 L44 68 Z" fill="white" stroke="#000000" stroke-width="1.5"/>
+<path id="defenseD" d="M56 52 L64 70 L56 68 Z" fill="white" stroke="#000000" stroke-width="1.5"/>
+`},
 
-{cat:'animaux', title:'Lapin', clickable:['r0','r1','r2','r3','r4','r5','r6'], full:`
-<ellipse id="r0" cx="50" cy="60" rx="24" ry="26" fill="white" stroke="#000000" stroke-width="2.5"/>
-<ellipse id="r1" cx="50" cy="40" rx="18" ry="17" fill="white" stroke="#000000" stroke-width="2.5"/>
-<ellipse id="r2" cx="37" cy="16" rx="7" ry="18" fill="white" stroke="#000000" stroke-width="2"/>
-<ellipse id="r3" cx="63" cy="16" rx="7" ry="18" fill="white" stroke="#000000" stroke-width="2"/>
-<circle id="r4" cx="43" cy="38" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="r5" cx="57" cy="38" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="r6" cx="50" cy="44" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
-`, clickable:['r0','r1','r2','r3','r4','r5','r6']},
+// === LAPIN RÉALISTE ===
+{cat:'animaux', title:'Lapin', clickable:['tete','joues','oreilleG','oreilleD','oeilG','oeilD','nez','moustaches'], full:`
+<ellipse cx="50" cy="88" rx="28" ry="10" fill="#CCCCCC" opacity="0.3" stroke="none"/>
+<ellipse id="tete" cx="50" cy="58" rx="24" ry="26" fill="white" stroke="#000000" stroke-width="2"/>
+<ellipse id="joues" cx="50" cy="64" rx="16" ry="12" fill="white" stroke="#000000" stroke-width="1.5"/>
+<ellipse id="oreilleG" cx="36" cy="28" rx="8" ry="22" fill="white" stroke="#000000" stroke-width="2"/>
+<ellipse id="oreilleD" cx="64" cy="28" rx="8" ry="22" fill="white" stroke="#000000" stroke-width="2"/>
+<circle id="oeilG" cx="42" cy="52" r="3.5" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="pupG" cx="41" cy="51" r="1.8" fill="white" stroke="#000000" stroke-width="1"/>
+<circle id="oeilD" cx="58" cy="52" r="3.5" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="pupD" cx="57" cy="51" r="1.8" fill="white" stroke="#000000" stroke-width="1"/>
+<ellipse id="nez" cx="50" cy="60" rx="4" ry="3" fill="white" stroke="#000000" stroke-width="1.2"/>
+<path id="moustaches" d="M38 61 L28 60 M38 63 L28 62 M62 61 L72 60 M62 63 L72 62" stroke="#000000" stroke-width="1" stroke-linecap="round"/>
+`},
 
-{cat:'animaux', title:'Poisson', clickable:['r0','r1','r2','r3','r4','r5'], full:`
-<ellipse id="r0" cx="46" cy="50" rx="30" ry="20" fill="white" stroke="#000000" stroke-width="2.5"/>
-<path id="r1" d="M76 50 Q90 35 95 50 Q90 65 76 50Z" fill="white" stroke="#000000" stroke-width="2.5"/>
-<circle id="r2" cx="25" cy="45" r="7" fill="white" stroke="#000000" stroke-width="2"/>
-<circle id="r3" cx="23" cy="43" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
-<path id="r4" d="M42 45 Q46 55 52 45" fill="none" stroke="#000000" stroke-width="1.5"/>
-<path id="r5" d="M52 45 Q56 55 62 45" fill="none" stroke="#000000" stroke-width="1.5"/>
-`, clickable:['r0','r1','r2','r3','r4','r5']},
+// === POISSON RÉALISTE ===
+{cat:'animaux', title:'Poisson', clickable:['corps','queue','oeil','nageoireD','nageoireG'], full:`
+<ellipse id="corps" cx="48" cy="52" rx="32" ry="20" fill="white" stroke="#000000" stroke-width="2"/>
+<path id="queue" d="M80 52 L95 42 L95 62 Z" fill="white" stroke="#000000" stroke-width="2"/>
+<circle id="oeil" cx="25" cy="48" r="5" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="pupille" cx="23" cy="46" r="2.5" fill="white" stroke="#000000" stroke-width="1"/>
+<circle id="reflet" cx="21.5" cy="44.5" r="1" fill="white" stroke="none"/>
+<path id="nageoireD" d="M58 40 L68 32 L66 44 Z" fill="white" stroke="#000000" stroke-width="1.5"/>
+<path id="nageoireG" d="M38 40 L28 32 L30 44 Z" fill="white" stroke="#000000" stroke-width="1.5"/>
+`},
 
-{cat:'animaux', title:'Oiseau', clickable:['r0','r1','r2','r3','r4','r5','r6','r7','r8'], full:`
-<ellipse id="r0" cx="50" cy="55" rx="25" ry="20" fill="white" stroke="#000000" stroke-width="2.5"/>
-<circle id="r1" cx="50" cy="32" rx="17" ry="16" fill="white" stroke="#000000" stroke-width="2.5"/>
-<path id="r2" d="M20 45 Q10 35 15 25 Q25 28 30 40Z" fill="white" stroke="#000000" stroke-width="2"/>
-<path id="r3" d="M80 45 Q90 35 85 25 Q75 28 70 40Z" fill="white" stroke="#000000" stroke-width="2"/>
-<path id="r4" d="M44 30 Q50 26 56 30" fill="white" stroke="#000000" stroke-width="2"/>
-<circle id="r5" cx="45" cy="29" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="r6" cx="55" cy="29" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
-<line id="r7" x1="44" y1="70" x2="40" y2="85" stroke="#000000" stroke-width="2.5"/>
-<line id="r8" x1="56" y1="70" x2="60" y2="85" stroke="#000000" stroke-width="2.5"/>
-`, clickable:['r0','r1','r2','r3','r4','r5','r6','r7','r8']},
+// === OISEAU RÉALISTE ===
+{cat:'animaux', title:'Oiseau', clickable:['corps','tete','aile','bec','oeil','plumes'], full:`
+<ellipse id="corps" cx="50" cy="58" rx="28" ry="22" fill="white" stroke="#000000" stroke-width="2"/>
+<circle id="tete" cx="50" cy="38" r="16" fill="white" stroke="#000000" stroke-width="2"/>
+<ellipse id="aile" cx="32" cy="52" rx="14" ry="10" fill="white" stroke="#000000" stroke-width="1.8"/>
+<path id="bec" d="M58 36 L68 34 L62 42 Z" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="oeil" cx="46" cy="35" r="3" fill="white" stroke="#000000" stroke-width="1.2"/>
+<circle id="pupille" cx="45" cy="34" r="1.5" fill="white" stroke="#000000" stroke-width="1"/>
+<path id="plumes" d="M54 26 L58 22 L62 26 M62 30 L66 26 L70 30" stroke="#000000" stroke-width="1.2" fill="none"/>
+`},
 
-{cat:'animaux', title:'Tortue', clickable:['r0','r1','r2','r3','r4','r5','r6'], full:`
-<ellipse id="r0" cx="50" cy="52" rx="30" ry="24" fill="white" stroke="#000000" stroke-width="2.5"/>
-<ellipse id="r1" cx="50" cy="48" rx="20" ry="16" fill="white" stroke="#000000" stroke-width="2"/>
-<ellipse id="r2" cx="50" cy="30" rx="10" ry="8" fill="white" stroke="#000000" stroke-width="2"/>
-<circle id="r3" cx="46" cy="27" r="2.5" fill="white" stroke="#000000" stroke-width="1.5"/>
-<circle id="r4" cx="54" cy="27" r="2.5" fill="white" stroke="#000000" stroke-width="1.5"/>
-<line id="r5" x1="28" y1="60" x2="20" y2="70" stroke="#000000" stroke-width="2"/>
-<line id="r6" x1="72" y1="60" x2="80" y2="70" stroke="#000000" stroke-width="2"/>
-`, clickable:['r0','r1','r2','r3','r4','r5','r6']},
+// === TORTUE RÉALISTE ===
+{cat:'animaux', title:'Tortue', clickable:['carapace','tete','oeil','patteG','patteD','queue'], full:`
+<ellipse id="carapace" cx="50" cy="54" rx="32" ry="26" fill="white" stroke="#000000" stroke-width="2.5"/>
+<ellipse id="tete" cx="50" cy="32" rx="12" ry="10" fill="white" stroke="#000000" stroke-width="1.8"/>
+<circle id="oeil" cx="47" cy="30" r="2" fill="white" stroke="#000000" stroke-width="1"/>
+<circle id="pupille" cx="46.5" cy="29.5" r="1" fill="white" stroke="#000000" stroke-width="0.8"/>
+<ellipse id="patteG" cx="28" cy="64" rx="8" ry="6" fill="white" stroke="#000000" stroke-width="1.5"/>
+<ellipse id="patteD" cx="72" cy="64" rx="8" ry="6" fill="white" stroke="#000000" stroke-width="1.5"/>
+<path id="queue" d="M70 78 L78 76 L74 82 Z" fill="white" stroke="#000000" stroke-width="1.2"/>
+`},
 
-{cat:'animaux', title:'Canard', clickable:['r0','r1','r2','r3','r4'], full:`
-<ellipse id="r0" cx="50" cy="60" rx="28" ry="20" fill="white" stroke="#000000" stroke-width="2.5"/>
-<ellipse id="r1" cx="38" cy="35" rx="15" ry="17" fill="white" stroke="#000000" stroke-width="2.5"/>
-<path id="r2" d="M26 33 Q18 28 16 35 Q18 42 26 38Z" fill="white" stroke="#000000" stroke-width="2"/>
-<circle id="r3" cx="32" cy="30" r="3" fill="white" stroke="#000000" stroke-width="1.5"/>
-<ellipse id="r4" cx="65" cy="65" rx="12" ry="6" fill="white" stroke="#000000" stroke-width="2"/>
-`, clickable:['r0','r1','r2','r3','r4']}
+// === CANARD RÉALISTE ===
+{cat:'animaux', title:'Canard', clickable:['corps','tete','bec','oeil','aile'], full:`
+<ellipse id="corps" cx="50" cy="62" rx="30" ry="22" fill="white" stroke="#000000" stroke-width="2"/>
+<circle id="tete" cx="38" cy="40" r="14" fill="white" stroke="#000000" stroke-width="2"/>
+<path id="bec" d="M26 38 L18 35 L24 42 Z" fill="white" stroke="#000000" stroke-width="1.5"/>
+<circle id="oeil" cx="34" cy="36" r="2.5" fill="white" stroke="#000000" stroke-width="1.2"/>
+<circle id="pupille" cx="33" cy="35.5" r="1.2" fill="white" stroke="#000000" stroke-width="0.8"/>
+<ellipse id="aile" cx="64" cy="58" rx="14" ry="8" fill="white" stroke="#000000" stroke-width="1.5"/>
+`}
 ];
 
-// Ajout des images manquantes pour atteindre 50
-const categoriesSuite = ['nature','nature','vehicules','vehicules','nourriture','nourriture','nature','vehicules','nourriture'];
-const titresSuite = ['Arc-en-ciel','Arbre','Voiture','Avion','Glace','Pizza','Fleur','Bateau','Gâteau'];
+// === AJOUT DES AUTRES IMAGES (NATURE, VÉHICULES, NOURRITURE) AVEC CONTOURS NOIRS ===
+const categoriesRestantes = ['nature','nature','vehicules','vehicules','nourriture','nourriture','nature','vehicules','nourriture'];
+const titresRestants = ['Arc-en-ciel','Arbre','Voiture','Avion','Glace','Pizza','Fleur','Bateau','Gâteau','Nuage','Montagne','Vélo','Fusée','Cupcake','Pomme','Banane','Pastèque','Bonbon','Ananas'];
 
 for(let i = IMAGES.length; i < 50; i++) {
-  const cat = categoriesSuite[i % categoriesSuite.length];
-  const title = titresSuite[i % titresSuite.length];
+  const cat = categoriesRestantes[i % categoriesRestantes.length];
+  const title = titresRestants[i % titresRestants.length];
   IMAGES.push({
     cat: cat,
     title: title,
-    clickable: ['z1','z2','z3','z4'],
-    full: `<ellipse id="z1" cx="50" cy="55" rx="28" ry="24" fill="white" stroke="#000000" stroke-width="2.5"/><circle id="z2" cx="35" cy="42" r="12" fill="white" stroke="#000000" stroke-width="2.5"/><circle id="z3" cx="65" cy="42" r="12" fill="white" stroke="#000000" stroke-width="2.5"/><rect id="z4" x="42" y="68" width="16" height="18" rx="4" fill="white" stroke="#000000" stroke-width="2.5"/>`
+    clickable: ['z1','z2','z3','z4','z5','z6'],
+    full: `<ellipse id="z1" cx="50" cy="55" rx="28" ry="24" fill="white" stroke="#000000" stroke-width="2.5"/>
+<circle id="z2" cx="35" cy="42" r="12" fill="white" stroke="#000000" stroke-width="2"/>
+<circle id="z3" cx="65" cy="42" r="12" fill="white" stroke="#000000" stroke-width="2"/>
+<rect id="z4" x="42" y="68" width="16" height="18" rx="4" fill="white" stroke="#000000" stroke-width="2"/>
+<ellipse id="z5" cx="28" cy="68" rx="8" ry="5" fill="white" stroke="#000000" stroke-width="1.5"/>
+<ellipse id="z6" cx="72" cy="68" rx="8" ry="5" fill="white" stroke="#000000" stroke-width="1.5"/>`
   });
 }
 
@@ -293,8 +309,6 @@ function buildColoredSvg(idx){
     if(f[id]&&f[id]!=='white'){
       const re=new RegExp(`(id="${id}"[^>]*fill=")[^"]*(")`,'g');
       svg=svg.replace(re,`$1${f[id]}$2`);
-      const re2=new RegExp(`(fill=")[^"]*("[^>]*id="${id}")`,'g');
-      svg=svg.replace(re2,`$1${f[id]}$2`);
     }
   });
   return svg;
