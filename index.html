@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>🐍 Snake - Édition Équilibrée</title>
+  <title>🐍 Snake - Édition Colorée</title>
   <style>
     * {
       margin: 0;
@@ -18,7 +18,7 @@
 
     body {
       min-height: 100vh;
-      background: #eef0f5;
+      background: linear-gradient(135deg, #e8f0f5 0%, #dce4ec 100%);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -30,11 +30,12 @@
     .menu-container {
       max-width: 580px;
       width: 100%;
-      background: #ffffff;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
       border-radius: 32px;
       padding: 40px 35px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-      border: 1px solid #eef0f2;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(100, 150, 130, 0.2);
       animation: fadeInUp 0.5s ease;
     }
 
@@ -49,18 +50,21 @@
     }
     .snake-icon {
       font-size: 56px;
-      opacity: 0.7;
+      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
       margin-bottom: 8px;
     }
     .menu-header h1 {
       font-size: 42px;
       font-weight: 600;
-      color: #2c3e44;
+      background: linear-gradient(135deg, #2c5a4a, #4a8a6a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
       letter-spacing: -0.5px;
       margin-top: 5px;
     }
     .menu-header p {
-      color: #8f959e;
+      color: #7a8a82;
       font-size: 15px;
       margin-top: 8px;
     }
@@ -73,28 +77,27 @@
     }
 
     .card {
-      background: #f8f9fc;
+      background: #fefefe;
       border-radius: 24px;
       padding: 20px 24px;
       cursor: pointer;
       transition: all 0.25s ease;
-      border: 1px solid #eef0f2;
+      border: 1px solid #e0e8e4;
       display: flex;
       align-items: center;
       gap: 20px;
     }
     .card:hover {
       transform: translateX(6px);
-      border-color: #d0d4dc;
+      border-color: #8ac06a;
       background: #ffffff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 4px 12px rgba(100, 150, 100, 0.15);
     }
     
     .card-icon {
       font-size: 44px;
       width: 70px;
       text-align: center;
-      opacity: 0.8;
     }
     .card-info { flex: 1; }
     .card-title {
@@ -102,12 +105,12 @@
       font-weight: 600;
       margin-bottom: 6px;
     }
-    .card.easy .card-title { color: #6b8c5c; }
-    .card.medium .card-title { color: #d98c2b; }
-    .card.hard .card-title { color: #c95a42; }
+    .card.easy .card-title { color: #6a9a5a; }
+    .card.medium .card-title { color: #e89a3a; }
+    .card.hard .card-title { color: #e56a4a; }
     .card-desc {
       font-size: 13px;
-      color: #9ba0a8;
+      color: #9aa8a0;
       margin-bottom: 8px;
     }
     .card-stats {
@@ -116,21 +119,21 @@
       font-size: 12px;
     }
     .stat {
-      background: #eff1f4;
+      background: #f0f4f0;
       padding: 4px 12px;
       border-radius: 20px;
-      color: #6c727c;
+      color: #6a7a6e;
       font-weight: 500;
     }
-    .card.easy .stat { background: #eef4ea; color: #6b8c5c; }
-    .card.medium .stat { background: #fef2e4; color: #d98c2b; }
-    .card.hard .stat { background: #feede8; color: #c95a42; }
+    .card.easy .stat { background: #e8f4e0; color: #6a9a5a; }
+    .card.medium .stat { background: #fff0e0; color: #e89a3a; }
+    .card.hard .stat { background: #ffe8e0; color: #e56a4a; }
 
     .rules-btn {
       width: 100%;
-      background: #f8f9fc;
-      border: 1px solid #eef0f2;
-      color: #6c727c;
+      background: #f0f4f0;
+      border: 1px solid #d0dcd4;
+      color: #6a8a6a;
       padding: 14px;
       border-radius: 48px;
       font-size: 15px;
@@ -140,18 +143,18 @@
       font-family: inherit;
     }
     .rules-btn:hover {
-      background: #ffffff;
-      border-color: #d0d4dc;
-      color: #2c3e44;
+      background: #e8f0e8;
+      border-color: #8ac06a;
+      color: #4a6a4a;
     }
     .footer {
       text-align: center;
       margin-top: 28px;
       font-size: 12px;
-      color: #b2b8c2;
+      color: #9aaea2;
     }
 
-    /* ZONE DE JEU */
+    /* ZONE DE JEU - COLORÉE */
     .game-container {
       display: none;
       max-width: 550px;
@@ -160,20 +163,20 @@
     }
 
     .game-wrapper {
-      background: #ffffff;
+      background: rgba(255, 255, 255, 0.95);
       border-radius: 32px;
       padding: 24px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-      border: 1px solid #eef0f2;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(100, 150, 130, 0.2);
     }
 
     canvas {
       display: block;
       margin: 0 auto;
       border-radius: 16px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       cursor: pointer;
-      background: #eceef2;
+      background: #fafef8;
     }
 
     .info-panel {
@@ -186,39 +189,39 @@
     }
 
     .score-box, .highscore-box {
-      background: #f8f9fc;
+      background: linear-gradient(135deg, #f0f8f0, #e8f0e8);
       border-radius: 40px;
       padding: 8px 20px;
       text-align: center;
-      border: 1px solid #eef0f2;
+      border: 1px solid #c8dcc8;
     }
     .score-label, .highscore-label {
-      color: #9ba0a8;
+      color: #7a9a7a;
       font-size: 11px;
       letter-spacing: 1px;
       text-transform: uppercase;
     }
     .score-value, .highscore-value {
-      color: #2c3e44;
+      color: #3a6a4a;
       font-size: 28px;
       font-weight: 600;
       line-height: 1.2;
     }
 
     .status {
-      background: #f8f9fc;
+      background: linear-gradient(135deg, #f0f8f0, #e8f0e8);
       padding: 8px 20px;
       border-radius: 40px;
       font-weight: 500;
-      color: #6c727c;
+      color: #5a8a5a;
       font-size: 13px;
-      border: 1px solid #eef0f2;
+      border: 1px solid #c8dcc8;
     }
 
     button {
-      background: #f8f9fc;
-      border: 1px solid #eef0f2;
-      color: #6c727c;
+      background: #f0f4f0;
+      border: 1px solid #d0dcd4;
+      color: #6a8a6a;
       font-size: 13px;
       font-weight: 500;
       padding: 8px 20px;
@@ -228,61 +231,60 @@
       font-family: inherit;
     }
     button:hover {
-      background: #ffffff;
-      border-color: #d0d4dc;
-      color: #2c3e44;
+      background: #e8f0e8;
+      border-color: #8ac06a;
+      color: #4a6a4a;
     }
     .controls { display: flex; gap: 10px; }
     .speed-info {
-      background: #f8f9fc;
+      background: #f0f4f0;
       padding: 6px 14px;
       border-radius: 30px;
       font-size: 11px;
-      color: #9ba0a8;
+      color: #7a9a7a;
       text-align: center;
       margin-top: 16px;
-      border: 1px solid #eef0f2;
+      border: 1px solid #d0dcd4;
     }
     .back-btn {
-      background: #f8f9fc;
+      background: #f0f4f0;
       margin-bottom: 20px;
       width: 100%;
-      border: 1px solid #eef0f2;
+      border: 1px solid #d0dcd4;
     }
-    .back-btn:hover { background: #ffffff; }
+    .back-btn:hover { background: #e8f0e8; }
 
     .overlay-message {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(236, 238, 242, 0.98);
-      backdrop-filter: blur(4px);
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
       padding: 20px 32px;
       border-radius: 60px;
       text-align: center;
       z-index: 10;
       pointer-events: none;
-      border: 1px solid #d0d4dc;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      border: 2px solid #8ac06a;
+      box-shadow: 0 4px 20px rgba(100, 150, 100, 0.2);
       white-space: nowrap;
     }
     .overlay-message span {
       font-size: 44px;
       display: block;
       margin-bottom: 8px;
-      opacity: 0.8;
     }
     .overlay-message p {
-      color: #4a505a;
+      color: #4a7a5a;
       font-size: 18px;
-      font-weight: 500;
+      font-weight: 600;
       letter-spacing: -0.2px;
     }
     .overlay-message .small {
       font-size: 12px;
       margin-top: 6px;
-      opacity: 0.6;
+      opacity: 0.7;
     }
     .canvas-wrapper {
       position: relative;
@@ -307,46 +309,45 @@
       padding: 32px;
       max-width: 400px;
       width: 90%;
-      border: 1px solid #eef0f2;
-      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.05);
+      border: 1px solid #d0dcd4;
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
     }
     .modal-content h3 {
-      color: #2c3e44;
+      color: #4a7a5a;
       font-size: 28px;
       margin-bottom: 24px;
       text-align: center;
       font-weight: 600;
     }
     .modal-content ul {
-      color: #6c727c;
+      color: #6a8a6a;
       list-style: none;
       margin-bottom: 28px;
     }
     .modal-content li {
       padding: 10px 0;
-      border-bottom: 1px solid #eef0f2;
+      border-bottom: 1px solid #e0ece0;
       display: flex;
       align-items: center;
       gap: 12px;
       font-size: 15px;
     }
-    .modal-content li span { font-size: 22px; opacity: 0.7; }
+    .modal-content li span { font-size: 22px; }
     .close-modal {
-      background: #f8f9fc;
-      border: 1px solid #eef0f2;
-      color: #6c727c;
+      background: #8ac06a;
+      border: none;
+      color: white;
       padding: 12px;
       border-radius: 40px;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
       width: 100%;
       font-size: 15px;
       transition: all 0.2s;
     }
     .close-modal:hover {
-      background: #ffffff;
-      border-color: #d0d4dc;
-      color: #2c3e44;
+      background: #6aa64a;
+      transform: scale(1.02);
     }
   </style>
 </head>
@@ -436,11 +437,11 @@
   </div>
 
   <script>
-    // Configuration des difficultés
+    // Configuration des difficultés avec couleurs vives
     const difficulties = {
-      easy: { speed: 150, wallTeleport: true, color: '#7faa6a', name: '🌿 FACILE', desc: 'Téléportation • Lent' },
-      medium: { speed: 100, wallTeleport: false, color: '#e59a3a', name: '⚡ MOYEN', desc: 'Murs mortels • Normal' },
-      hard: { speed: 65, wallTeleport: false, color: '#d96c4a', name: '🔥 DIFFICILE', desc: 'Murs mortels • Rapide' }
+      easy: { speed: 150, wallTeleport: true, color: '#8bc86a', name: '🌿 FACILE', desc: 'Téléportation • Lent' },
+      medium: { speed: 100, wallTeleport: false, color: '#f5b642', name: '⚡ MOYEN', desc: 'Murs mortels • Normal' },
+      hard: { speed: 65, wallTeleport: false, color: '#e87a5a', name: '🔥 DIFFICILE', desc: 'Murs mortels • Rapide' }
     };
 
     let snake, direction, nextDirection, food, score, highScore, gameLoop, isGameRunning, isPaused, isWaitingForStart, isGameOver;
@@ -620,19 +621,22 @@
       if (opposite[newDir] !== direction) nextDirection = newDir;
     }
 
-    // DESSIN FINAL : fond plus gris, grille bien visible et marquée
+    // DESSIN COLORÉ ET VIBRANT
     function drawBoard() {
       ctx.clearRect(0, 0, 400, 400);
       
-      // Fond gris moyen-doux
-      ctx.fillStyle = '#E8EAEE';
+      // Fond dégradé doux
+      const grad = ctx.createLinearGradient(0, 0, 400, 400);
+      grad.addColorStop(0, '#F0F9F0');
+      grad.addColorStop(1, '#E8F2E8');
+      ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 400, 400);
       
-      // Grille bien visible avec traits plus épais
+      // Grille colorée
       for (let i = 0; i <= BOARD_SIZE; i++) {
         ctx.beginPath();
-        ctx.strokeStyle = '#C8CCD4';
-        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = '#C8DCC8';
+        ctx.lineWidth = 1;
         ctx.moveTo(i * CELL_SIZE, 0);
         ctx.lineTo(i * CELL_SIZE, 400);
         ctx.stroke();
@@ -641,13 +645,13 @@
         ctx.stroke();
       }
       
-      // Lignes plus foncées sur les bords pour délimiter
+      // Bordure décorative
       ctx.beginPath();
-      ctx.strokeStyle = '#A8B0BC';
-      ctx.lineWidth = 1.5;
-      ctx.strokeRect(0, 0, 400, 400);
+      ctx.strokeStyle = '#8AC06A';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(2, 2, 396, 396);
       
-      // Pomme vive avec reflet
+      // Pomme avec effet brillant
       ctx.beginPath();
       ctx.arc(food.x * CELL_SIZE + 10, food.y * CELL_SIZE + 10, 7.5, 0, 2 * Math.PI);
       ctx.fillStyle = '#E85A3A';
@@ -658,36 +662,45 @@
       ctx.fill();
       ctx.fillStyle = '#7FAA6A';
       ctx.fillRect(food.x * CELL_SIZE + 13, food.y * CELL_SIZE + 5, 3, 5);
-      ctx.fillStyle = '#FFFFFFCC';
+      ctx.fillStyle = '#FFFFFFDD';
       ctx.beginPath();
       ctx.arc(food.x * CELL_SIZE + 6, food.y * CELL_SIZE + 6, 1.5, 0, 2 * Math.PI);
       ctx.fill();
       
-      // Serpent contrasté
+      // Serpent coloré selon difficulté
       for (let i = 0; i < snake.length; i++) {
         const s = snake[i];
         const x = s.x * CELL_SIZE, y = s.y * CELL_SIZE;
         
-        // Corps avec ombre légère
-        ctx.fillStyle = i === 0 ? '#3A4C56' : '#5C6E7C';
+        // Couleur de la tête = couleur de difficulté, corps dégradé
+        let headColor, bodyColor;
+        if (i === 0) {
+          headColor = diffColor;
+        } else {
+          // Dégradé du vert au jaune-vert pour le corps
+          const intensity = 0.7 - (i / snake.length) * 0.3;
+          bodyColor = '#6aa84a';
+        }
+        
+        ctx.fillStyle = i === 0 ? headColor : bodyColor;
         ctx.shadowBlur = 0;
         ctx.beginPath();
         ctx.roundRect(x + 1.5, y + 1.5, 17, 17, 6);
         ctx.fill();
         
-        // Texture (écailles)
-        ctx.fillStyle = i === 0 ? '#8EA0AC' : '#9EB0BC';
+        // Texture dorée
+        ctx.fillStyle = i === 0 ? '#FFE0A0' : '#C0E0A0';
         ctx.beginPath();
         ctx.arc(x + 10, y + 10, 3.2, 0, 2 * Math.PI);
         ctx.fill();
         
-        // Détail plus foncé sur le dos
-        ctx.fillStyle = i === 0 ? '#2C3E48' : '#4C5E6C';
+        // Détail plus foncé
+        ctx.fillStyle = i === 0 ? '#B86A3A' : '#4A8A2A';
         ctx.beginPath();
         ctx.ellipse(x + 10, y + 8, 3, 1.8, 0, 0, 2 * Math.PI);
         ctx.fill();
         
-        // Yeux expressifs
+        // Yeux expressifs avec reflet
         if (i === 0) {
           ctx.fillStyle = '#FFFFFF';
           ctx.beginPath();
@@ -696,7 +709,7 @@
           ctx.beginPath();
           ctx.arc(x + 7, y + 7, 2.2, 0, 2 * Math.PI);
           ctx.fill();
-          ctx.fillStyle = '#0A1A20';
+          ctx.fillStyle = '#1A2A20';
           ctx.beginPath();
           ctx.arc(x + 13.2, y + 6.5, 1.2, 0, 2 * Math.PI);
           ctx.fill();
@@ -713,30 +726,30 @@
           ctx.arc(x + 7.8, y + 5.8, 0.7, 0, 2 * Math.PI);
           ctx.fill();
           
-          // Langue
+          // Langue rouge
           if (direction === 'right') {
-            ctx.fillStyle = '#E56A4A';
+            ctx.fillStyle = '#E85A3A';
             ctx.beginPath();
             ctx.moveTo(x + 18, y + 10);
             ctx.lineTo(x + 23, y + 11);
             ctx.lineTo(x + 18, y + 12);
             ctx.fill();
           } else if (direction === 'left') {
-            ctx.fillStyle = '#E56A4A';
+            ctx.fillStyle = '#E85A3A';
             ctx.beginPath();
             ctx.moveTo(x + 2, y + 10);
             ctx.lineTo(x - 3, y + 11);
             ctx.lineTo(x + 2, y + 12);
             ctx.fill();
           } else if (direction === 'up') {
-            ctx.fillStyle = '#E56A4A';
+            ctx.fillStyle = '#E85A3A';
             ctx.beginPath();
             ctx.moveTo(x + 10, y + 2);
             ctx.lineTo(x + 11, y - 3);
             ctx.lineTo(x + 12, y + 2);
             ctx.fill();
           } else if (direction === 'down') {
-            ctx.fillStyle = '#E56A4A';
+            ctx.fillStyle = '#E85A3A';
             ctx.beginPath();
             ctx.moveTo(x + 10, y + 18);
             ctx.lineTo(x + 11, y + 23);
@@ -749,16 +762,16 @@
       // Message pause
       if (isPaused && isGameRunning && !isWaitingForStart && !isGameOver) {
         ctx.font = '500 20px "Segoe UI", system-ui';
-        ctx.fillStyle = '#98A0AC';
+        ctx.fillStyle = '#8AC06A';
         ctx.fillText('⏸ PAUSE', 160, 195);
       }
       
-      // Informations
+      // Infos colorées
       ctx.font = '400 10px monospace';
-      ctx.fillStyle = '#A8B0BC';
+      ctx.fillStyle = diffColor;
       ctx.fillText(diffName, 10, 22);
-      if (wallTeleport) { ctx.fillStyle = '#8FB08C'; ctx.fillText('🌀', 10, 38); }
-      ctx.fillStyle = '#B0B8C4';
+      if (wallTeleport) { ctx.fillStyle = '#8AC06A'; ctx.fillText('🌀 Téléportation', 10, 38); }
+      ctx.fillStyle = '#9AB87A';
       ctx.fillText(gameSpeed + 'ms', 10, 52);
     }
 
