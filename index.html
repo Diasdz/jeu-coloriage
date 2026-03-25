@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>🐍 Snake - Édition Colorée</title>
+  <title>🐍 Snake - Édition Finale</title>
   <style>
     * {
       margin: 0;
@@ -18,7 +18,7 @@
 
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, #e8f0f5 0%, #dce4ec 100%);
+      background: linear-gradient(135deg, #d4e0d4 0%, #c4d4c4 100%);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -30,12 +30,12 @@
     .menu-container {
       max-width: 580px;
       width: 100%;
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(250, 252, 248, 0.95);
       backdrop-filter: blur(8px);
       border-radius: 32px;
       padding: 40px 35px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-      border: 1px solid rgba(100, 150, 130, 0.2);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(100, 130, 100, 0.3);
       animation: fadeInUp 0.5s ease;
     }
 
@@ -64,7 +64,7 @@
       margin-top: 5px;
     }
     .menu-header p {
-      color: #7a8a82;
+      color: #7a8a7a;
       font-size: 15px;
       margin-top: 8px;
     }
@@ -77,12 +77,12 @@
     }
 
     .card {
-      background: #fefefe;
+      background: #ffffff;
       border-radius: 24px;
       padding: 20px 24px;
       cursor: pointer;
       transition: all 0.25s ease;
-      border: 1px solid #e0e8e4;
+      border: 1px solid #d0e0d0;
       display: flex;
       align-items: center;
       gap: 20px;
@@ -91,7 +91,7 @@
       transform: translateX(6px);
       border-color: #8ac06a;
       background: #ffffff;
-      box-shadow: 0 4px 12px rgba(100, 150, 100, 0.15);
+      box-shadow: 0 4px 12px rgba(100, 150, 100, 0.2);
     }
     
     .card-icon {
@@ -110,7 +110,7 @@
     .card.hard .card-title { color: #e56a4a; }
     .card-desc {
       font-size: 13px;
-      color: #9aa8a0;
+      color: #9aae9a;
       margin-bottom: 8px;
     }
     .card-stats {
@@ -119,10 +119,10 @@
       font-size: 12px;
     }
     .stat {
-      background: #f0f4f0;
+      background: #f0f8f0;
       padding: 4px 12px;
       border-radius: 20px;
-      color: #6a7a6e;
+      color: #6a8a6a;
       font-weight: 500;
     }
     .card.easy .stat { background: #e8f4e0; color: #6a9a5a; }
@@ -131,8 +131,8 @@
 
     .rules-btn {
       width: 100%;
-      background: #f0f4f0;
-      border: 1px solid #d0dcd4;
+      background: #f0f8f0;
+      border: 1px solid #d0e0d0;
       color: #6a8a6a;
       padding: 14px;
       border-radius: 48px;
@@ -151,10 +151,10 @@
       text-align: center;
       margin-top: 28px;
       font-size: 12px;
-      color: #9aaea2;
+      color: #9aae9a;
     }
 
-    /* ZONE DE JEU - COLORÉE */
+    /* ZONE DE JEU */
     .game-container {
       display: none;
       max-width: 550px;
@@ -163,18 +163,19 @@
     }
 
     .game-wrapper {
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(250, 252, 248, 0.95);
+      backdrop-filter: blur(4px);
       border-radius: 32px;
       padding: 24px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-      border: 1px solid rgba(100, 150, 130, 0.2);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(100, 130, 100, 0.3);
     }
 
     canvas {
       display: block;
       margin: 0 auto;
       border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       cursor: pointer;
       background: #fafef8;
     }
@@ -219,8 +220,8 @@
     }
 
     button {
-      background: #f0f4f0;
-      border: 1px solid #d0dcd4;
+      background: #f0f8f0;
+      border: 1px solid #d0e0d0;
       color: #6a8a6a;
       font-size: 13px;
       font-weight: 500;
@@ -234,23 +235,24 @@
       background: #e8f0e8;
       border-color: #8ac06a;
       color: #4a6a4a;
+      transform: translateY(-1px);
     }
     .controls { display: flex; gap: 10px; }
     .speed-info {
-      background: #f0f4f0;
+      background: #f0f8f0;
       padding: 6px 14px;
       border-radius: 30px;
       font-size: 11px;
       color: #7a9a7a;
       text-align: center;
       margin-top: 16px;
-      border: 1px solid #d0dcd4;
+      border: 1px solid #d0e0d0;
     }
     .back-btn {
-      background: #f0f4f0;
+      background: #f0f8f0;
       margin-bottom: 20px;
       width: 100%;
-      border: 1px solid #d0dcd4;
+      border: 1px solid #d0e0d0;
     }
     .back-btn:hover { background: #e8f0e8; }
 
@@ -259,7 +261,7 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(255, 255, 255, 0.96);
+      background: rgba(250, 252, 248, 0.96);
       backdrop-filter: blur(8px);
       padding: 20px 32px;
       border-radius: 60px;
@@ -309,7 +311,7 @@
       padding: 32px;
       max-width: 400px;
       width: 90%;
-      border: 1px solid #d0dcd4;
+      border: 1px solid #d0e0d0;
       box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
     }
     .modal-content h3 {
@@ -437,15 +439,15 @@
   </div>
 
   <script>
-    // Configuration des difficultés avec couleurs vives
+    // Configuration des difficultés
     const difficulties = {
-      easy: { speed: 150, wallTeleport: true, color: '#8bc86a', name: '🌿 FACILE', desc: 'Téléportation • Lent' },
-      medium: { speed: 100, wallTeleport: false, color: '#f5b642', name: '⚡ MOYEN', desc: 'Murs mortels • Normal' },
-      hard: { speed: 65, wallTeleport: false, color: '#e87a5a', name: '🔥 DIFFICILE', desc: 'Murs mortels • Rapide' }
+      easy: { speed: 150, wallTeleport: true, bodyColor: '#6a9a5a', name: '🌿 FACILE', desc: 'Téléportation • Lent' },
+      medium: { speed: 100, wallTeleport: false, bodyColor: '#e89a3a', name: '⚡ MOYEN', desc: 'Murs mortels • Normal' },
+      hard: { speed: 65, wallTeleport: false, bodyColor: '#e56a4a', name: '🔥 DIFFICILE', desc: 'Murs mortels • Rapide' }
     };
 
     let snake, direction, nextDirection, food, score, highScore, gameLoop, isGameRunning, isPaused, isWaitingForStart, isGameOver;
-    let gameSpeed, wallTeleport, diffColor, diffName, diffDesc;
+    let gameSpeed, wallTeleport, bodyColor, diffName, diffDesc;
     
     const canvas = document.getElementById('snakeCanvas');
     const ctx = canvas.getContext('2d');
@@ -621,21 +623,21 @@
       if (opposite[newDir] !== direction) nextDirection = newDir;
     }
 
-    // DESSIN COLORÉ ET VIBRANT
+    // DESSIN FINAL - fond chaleureux, serpent uniforme
     function drawBoard() {
       ctx.clearRect(0, 0, 400, 400);
       
-      // Fond dégradé doux
+      // Fond dégradé chaleureux (beige/vert très doux)
       const grad = ctx.createLinearGradient(0, 0, 400, 400);
-      grad.addColorStop(0, '#F0F9F0');
-      grad.addColorStop(1, '#E8F2E8');
+      grad.addColorStop(0, '#e8eae0');
+      grad.addColorStop(1, '#dde4da');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 400, 400);
       
-      // Grille colorée
+      // Grille discrète mais visible
       for (let i = 0; i <= BOARD_SIZE; i++) {
         ctx.beginPath();
-        ctx.strokeStyle = '#C8DCC8';
+        ctx.strokeStyle = '#c8d0c0';
         ctx.lineWidth = 1;
         ctx.moveTo(i * CELL_SIZE, 0);
         ctx.lineTo(i * CELL_SIZE, 400);
@@ -647,7 +649,7 @@
       
       // Bordure décorative
       ctx.beginPath();
-      ctx.strokeStyle = '#8AC06A';
+      ctx.strokeStyle = '#9ab87a';
       ctx.lineWidth = 2;
       ctx.strokeRect(2, 2, 396, 396);
       
@@ -667,40 +669,32 @@
       ctx.arc(food.x * CELL_SIZE + 6, food.y * CELL_SIZE + 6, 1.5, 0, 2 * Math.PI);
       ctx.fill();
       
-      // Serpent coloré selon difficulté
+      // Serpent - MÊME COULEUR pour tête et corps
       for (let i = 0; i < snake.length; i++) {
         const s = snake[i];
         const x = s.x * CELL_SIZE, y = s.y * CELL_SIZE;
         
-        // Couleur de la tête = couleur de difficulté, corps dégradé
-        let headColor, bodyColor;
-        if (i === 0) {
-          headColor = diffColor;
-        } else {
-          // Dégradé du vert au jaune-vert pour le corps
-          const intensity = 0.7 - (i / snake.length) * 0.3;
-          bodyColor = '#6aa84a';
-        }
-        
-        ctx.fillStyle = i === 0 ? headColor : bodyColor;
-        ctx.shadowBlur = 0;
+        // Tête et corps ont la même couleur
+        ctx.fillStyle = bodyColor;
+        ctx.shadowBlur = 2;
+        ctx.shadowColor = 'rgba(0,0,0,0.1)';
         ctx.beginPath();
         ctx.roundRect(x + 1.5, y + 1.5, 17, 17, 6);
         ctx.fill();
         
-        // Texture dorée
-        ctx.fillStyle = i === 0 ? '#FFE0A0' : '#C0E0A0';
+        // Texture plus claire
+        ctx.fillStyle = i === 0 ? '#FFE8C0' : '#E0F0C0';
         ctx.beginPath();
         ctx.arc(x + 10, y + 10, 3.2, 0, 2 * Math.PI);
         ctx.fill();
         
         // Détail plus foncé
-        ctx.fillStyle = i === 0 ? '#B86A3A' : '#4A8A2A';
+        ctx.fillStyle = i === 0 ? '#C88A4A' : '#6A9A4A';
         ctx.beginPath();
         ctx.ellipse(x + 10, y + 8, 3, 1.8, 0, 0, 2 * Math.PI);
         ctx.fill();
         
-        // Yeux expressifs avec reflet
+        // Yeux expressifs
         if (i === 0) {
           ctx.fillStyle = '#FFFFFF';
           ctx.beginPath();
@@ -758,20 +752,21 @@
           }
         }
       }
+      ctx.shadowBlur = 0;
       
       // Message pause
       if (isPaused && isGameRunning && !isWaitingForStart && !isGameOver) {
         ctx.font = '500 20px "Segoe UI", system-ui';
-        ctx.fillStyle = '#8AC06A';
+        ctx.fillStyle = '#9ab87a';
         ctx.fillText('⏸ PAUSE', 160, 195);
       }
       
-      // Infos colorées
+      // Infos
       ctx.font = '400 10px monospace';
-      ctx.fillStyle = diffColor;
+      ctx.fillStyle = bodyColor;
       ctx.fillText(diffName, 10, 22);
-      if (wallTeleport) { ctx.fillStyle = '#8AC06A'; ctx.fillText('🌀 Téléportation', 10, 38); }
-      ctx.fillStyle = '#9AB87A';
+      if (wallTeleport) { ctx.fillStyle = '#9ab87a'; ctx.fillText('🌀 Téléportation', 10, 38); }
+      ctx.fillStyle = '#aac09a';
       ctx.fillText(gameSpeed + 'ms', 10, 52);
     }
 
@@ -779,7 +774,7 @@
       const diff = difficulties[difficultyKey];
       gameSpeed = diff.speed;
       wallTeleport = diff.wallTeleport;
-      diffColor = diff.color;
+      bodyColor = diff.bodyColor;
       diffName = diff.name;
       diffDesc = diff.desc;
       
