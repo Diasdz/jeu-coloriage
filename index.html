@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>🐍 Snake - Édition Minimaliste Foncé</title>
+  <title>🐍 Snake - Édition Minimaliste Équilibrée</title>
   <style>
     * {
       margin: 0;
@@ -18,7 +18,7 @@
 
     body {
       min-height: 100vh;
-      background: #1a1a1a;
+      background: #e8e9ed;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -26,15 +26,15 @@
       padding: 20px;
     }
 
-    /* MENU PRINCIPAL - Minimaliste foncé */
+    /* MENU PRINCIPAL - Épuré et doux */
     .menu-container {
       max-width: 580px;
       width: 100%;
-      background: #242424;
+      background: #ffffff;
       border-radius: 32px;
       padding: 40px 35px;
-      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.3);
-      border: 1px solid #3a3a3a;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+      border: 1px solid #eef0f2;
       animation: fadeInUp 0.5s ease;
     }
 
@@ -49,21 +49,20 @@
     }
     .snake-icon {
       font-size: 56px;
-      opacity: 0.8;
+      opacity: 0.7;
       margin-bottom: 8px;
     }
     .menu-header h1 {
       font-size: 42px;
       font-weight: 600;
-      color: #e8e8e8;
+      color: #2c2e33;
       letter-spacing: -0.5px;
       margin-top: 5px;
     }
     .menu-header p {
-      color: #8a8a8a;
+      color: #8f959e;
       font-size: 15px;
       margin-top: 8px;
-      font-weight: 400;
     }
 
     .difficulty-cards {
@@ -74,28 +73,28 @@
     }
 
     .card {
-      background: #2a2a2a;
+      background: #f8f9fc;
       border-radius: 24px;
       padding: 20px 24px;
       cursor: pointer;
       transition: all 0.25s ease;
-      border: 1px solid #3a3a3a;
+      border: 1px solid #eef0f2;
       display: flex;
       align-items: center;
       gap: 20px;
     }
     .card:hover {
       transform: translateX(6px);
-      border-color: #5a5a5a;
-      background: #2f2f2f;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      border-color: #d0d4dc;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
     }
     
     .card-icon {
       font-size: 44px;
       width: 70px;
       text-align: center;
-      opacity: 0.9;
+      opacity: 0.8;
     }
     .card-info { flex: 1; }
     .card-title {
@@ -103,12 +102,12 @@
       font-weight: 600;
       margin-bottom: 6px;
     }
-    .card.easy .card-title { color: #8bc87a; }
-    .card.medium .card-title { color: #e8b86a; }
-    .card.hard .card-title { color: #e88a6a; }
+    .card.easy .card-title { color: #6b8c5c; }
+    .card.medium .card-title { color: #d98c2b; }
+    .card.hard .card-title { color: #c95a42; }
     .card-desc {
       font-size: 13px;
-      color: #8a8a8a;
+      color: #9ba0a8;
       margin-bottom: 8px;
     }
     .card-stats {
@@ -117,21 +116,21 @@
       font-size: 12px;
     }
     .stat {
-      background: #1e1e1e;
+      background: #eff1f4;
       padding: 4px 12px;
       border-radius: 20px;
-      color: #b8b8b8;
+      color: #6c727c;
       font-weight: 500;
     }
-    .card.easy .stat { background: #2a3a2a; color: #8bc87a; }
-    .card.medium .stat { background: #3a2e1e; color: #e8b86a; }
-    .card.hard .stat { background: #3a2a26; color: #e88a6a; }
+    .card.easy .stat { background: #eef4ea; color: #6b8c5c; }
+    .card.medium .stat { background: #fef2e4; color: #d98c2b; }
+    .card.hard .stat { background: #feede8; color: #c95a42; }
 
     .rules-btn {
       width: 100%;
-      background: #2a2a2a;
-      border: 1px solid #3a3a3a;
-      color: #b8b8b8;
+      background: #f8f9fc;
+      border: 1px solid #eef0f2;
+      color: #6c727c;
       padding: 14px;
       border-radius: 48px;
       font-size: 15px;
@@ -141,18 +140,18 @@
       font-family: inherit;
     }
     .rules-btn:hover {
-      background: #353535;
-      border-color: #5a5a5a;
-      color: #e8e8e8;
+      background: #ffffff;
+      border-color: #d0d4dc;
+      color: #2c2e33;
     }
     .footer {
       text-align: center;
       margin-top: 28px;
       font-size: 12px;
-      color: #6a6a6a;
+      color: #b2b8c2;
     }
 
-    /* ZONE DE JEU - Minimaliste FONCÉ */
+    /* ZONE DE JEU - Épurée, douce et lumineuse */
     .game-container {
       display: none;
       max-width: 550px;
@@ -161,20 +160,20 @@
     }
 
     .game-wrapper {
-      background: #242424;
+      background: #ffffff;
       border-radius: 32px;
       padding: 24px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-      border: 1px solid #3a3a3a;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+      border: 1px solid #eef0f2;
     }
 
     canvas {
       display: block;
       margin: 0 auto;
       border-radius: 16px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 0 0 1px #3a3a3a;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), inset 0 0 0 1px #eef0f2;
       cursor: pointer;
-      background: #1e1e1e;
+      background: #ffffff;
     }
 
     .info-panel {
@@ -187,39 +186,39 @@
     }
 
     .score-box, .highscore-box {
-      background: #2a2a2a;
+      background: #f8f9fc;
       border-radius: 40px;
       padding: 8px 20px;
       text-align: center;
-      border: 1px solid #3a3a3a;
+      border: 1px solid #eef0f2;
     }
     .score-label, .highscore-label {
-      color: #8a8a8a;
+      color: #9ba0a8;
       font-size: 11px;
       letter-spacing: 1px;
       text-transform: uppercase;
     }
     .score-value, .highscore-value {
-      color: #e8e8e8;
+      color: #2c2e33;
       font-size: 28px;
       font-weight: 600;
       line-height: 1.2;
     }
 
     .status {
-      background: #2a2a2a;
+      background: #f8f9fc;
       padding: 8px 20px;
       border-radius: 40px;
       font-weight: 500;
-      color: #b8b8b8;
+      color: #6c727c;
       font-size: 13px;
-      border: 1px solid #3a3a3a;
+      border: 1px solid #eef0f2;
     }
 
     button {
-      background: #2a2a2a;
-      border: 1px solid #3a3a3a;
-      color: #b8b8b8;
+      background: #f8f9fc;
+      border: 1px solid #eef0f2;
+      color: #6c727c;
       font-size: 13px;
       font-weight: 500;
       padding: 8px 20px;
@@ -229,53 +228,53 @@
       font-family: inherit;
     }
     button:hover {
-      background: #353535;
-      border-color: #5a5a5a;
-      color: #e8e8e8;
+      background: #ffffff;
+      border-color: #d0d4dc;
+      color: #2c2e33;
     }
     .controls { display: flex; gap: 10px; }
     .speed-info {
-      background: #2a2a2a;
+      background: #f8f9fc;
       padding: 6px 14px;
       border-radius: 30px;
       font-size: 11px;
-      color: #8a8a8a;
+      color: #9ba0a8;
       text-align: center;
       margin-top: 16px;
-      border: 1px solid #3a3a3a;
+      border: 1px solid #eef0f2;
     }
     .back-btn {
-      background: #2a2a2a;
+      background: #f8f9fc;
       margin-bottom: 20px;
       width: 100%;
-      border: 1px solid #3a3a3a;
+      border: 1px solid #eef0f2;
     }
-    .back-btn:hover { background: #353535; }
+    .back-btn:hover { background: #ffffff; }
 
     .overlay-message {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(30, 30, 30, 0.98);
+      background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(4px);
       padding: 20px 32px;
       border-radius: 60px;
       text-align: center;
       z-index: 10;
       pointer-events: none;
-      border: 1px solid #4a4a4a;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      border: 1px solid #eef0f2;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
       white-space: nowrap;
     }
     .overlay-message span {
       font-size: 44px;
       display: block;
       margin-bottom: 8px;
-      opacity: 0.9;
+      opacity: 0.8;
     }
     .overlay-message p {
-      color: #c8c8c8;
+      color: #4a505a;
       font-size: 18px;
       font-weight: 500;
       letter-spacing: -0.2px;
@@ -283,7 +282,7 @@
     .overlay-message .small {
       font-size: 12px;
       margin-top: 6px;
-      opacity: 0.7;
+      opacity: 0.6;
     }
     .canvas-wrapper {
       position: relative;
@@ -296,46 +295,46 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.4);
       backdrop-filter: blur(4px);
       justify-content: center;
       align-items: center;
       z-index: 1000;
     }
     .modal-content {
-      background: #242424;
+      background: #ffffff;
       border-radius: 32px;
       padding: 32px;
       max-width: 400px;
       width: 90%;
-      border: 1px solid #3a3a3a;
-      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.4);
+      border: 1px solid #eef0f2;
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.05);
     }
     .modal-content h3 {
-      color: #e8e8e8;
+      color: #2c2e33;
       font-size: 28px;
       margin-bottom: 24px;
       text-align: center;
       font-weight: 600;
     }
     .modal-content ul {
-      color: #b8b8b8;
+      color: #6c727c;
       list-style: none;
       margin-bottom: 28px;
     }
     .modal-content li {
       padding: 10px 0;
-      border-bottom: 1px solid #3a3a3a;
+      border-bottom: 1px solid #eef0f2;
       display: flex;
       align-items: center;
       gap: 12px;
       font-size: 15px;
     }
-    .modal-content li span { font-size: 22px; opacity: 0.8; }
+    .modal-content li span { font-size: 22px; opacity: 0.7; }
     .close-modal {
-      background: #2a2a2a;
-      border: 1px solid #3a3a3a;
-      color: #c8c8c8;
+      background: #f8f9fc;
+      border: 1px solid #eef0f2;
+      color: #6c727c;
       padding: 12px;
       border-radius: 40px;
       font-weight: 500;
@@ -345,9 +344,9 @@
       transition: all 0.2s;
     }
     .close-modal:hover {
-      background: #353535;
-      border-color: #5a5a5a;
-      color: #e8e8e8;
+      background: #ffffff;
+      border-color: #d0d4dc;
+      color: #2c2e33;
     }
   </style>
 </head>
@@ -393,7 +392,7 @@
     <div class="footer">🎮 Utilise les flèches du clavier | ⏸ Espace pour pause | 🔄 R pour redémarrer</div>
   </div>
 
-  <!-- ZONE DE JEU - STYLE MINIMALISTE FONCÉ -->
+  <!-- ZONE DE JEU - STYLE ÉPURÉ -->
   <div id="gameContainer" class="game-container">
     <div class="game-wrapper">
       <button class="back-btn" id="backToMenuBtn">← RETOUR AU MENU</button>
@@ -437,11 +436,11 @@
   </div>
 
   <script>
-    // Configuration des difficultés - couleurs sobres sur fond foncé
+    // Configuration des difficultés
     const difficulties = {
-      easy: { speed: 150, wallTeleport: true, color: '#7ab86a', name: '🌿 FACILE', desc: 'Téléportation • Lent' },
-      medium: { speed: 100, wallTeleport: false, color: '#e8a85a', name: '⚡ MOYEN', desc: 'Murs mortels • Normal' },
-      hard: { speed: 65, wallTeleport: false, color: '#e87a5a', name: '🔥 DIFFICILE', desc: 'Murs mortels • Rapide' }
+      easy: { speed: 150, wallTeleport: true, color: '#7faa6a', name: '🌿 FACILE', desc: 'Téléportation • Lent' },
+      medium: { speed: 100, wallTeleport: false, color: '#e59a3a', name: '⚡ MOYEN', desc: 'Murs mortels • Normal' },
+      hard: { speed: 65, wallTeleport: false, color: '#d96c4a', name: '🔥 DIFFICILE', desc: 'Murs mortels • Rapide' }
     };
 
     let snake, direction, nextDirection, food, score, highScore, gameLoop, isGameRunning, isPaused, isWaitingForStart, isGameOver;
@@ -621,18 +620,18 @@
       if (opposite[newDir] !== direction) nextDirection = newDir;
     }
 
-    // DESSIN MINIMALISTE FONCÉ : fond gris foncé, serpent gris clair
+    // DESSIN ÉPURÉ ET ÉQUILIBRÉ : fond blanc, serpent gris doux
     function drawBoard() {
       ctx.clearRect(0, 0, 400, 400);
       
-      // Fond gris foncé
-      ctx.fillStyle = '#1e1e1e';
+      // Fond blanc pur
+      ctx.fillStyle = '#FFFFFF';
       ctx.fillRect(0, 0, 400, 400);
       
-      // Grille discrète (gris moyen)
+      // Grille très légère
       for (let i = 0; i <= BOARD_SIZE; i++) {
         ctx.beginPath();
-        ctx.strokeStyle = '#2e2e2e';
+        ctx.strokeStyle = '#ECEDEF';
         ctx.lineWidth = 0.8;
         ctx.moveTo(i * CELL_SIZE, 0);
         ctx.lineTo(i * CELL_SIZE, 400);
@@ -642,79 +641,87 @@
         ctx.stroke();
       }
       
-      // Pomme minimaliste (rouge sobre)
+      // Pomme avec volume subtil
       ctx.beginPath();
-      ctx.arc(food.x * CELL_SIZE + 10, food.y * CELL_SIZE + 10, 7, 0, 2 * Math.PI);
-      ctx.fillStyle = '#d65a3a';
+      ctx.arc(food.x * CELL_SIZE + 10, food.y * CELL_SIZE + 10, 7.5, 0, 2 * Math.PI);
+      ctx.fillStyle = '#E56A4A';
       ctx.fill();
-      ctx.fillStyle = '#b84a2a';
+      ctx.fillStyle = '#C85A3A';
       ctx.beginPath();
-      ctx.arc(food.x * CELL_SIZE + 7, food.y * CELL_SIZE + 7, 2, 0, 2 * Math.PI);
+      ctx.arc(food.x * CELL_SIZE + 7, food.y * CELL_SIZE + 7, 2.2, 0, 2 * Math.PI);
       ctx.fill();
-      ctx.fillStyle = '#6a9a4a';
+      ctx.fillStyle = '#7FAA6A';
       ctx.fillRect(food.x * CELL_SIZE + 13, food.y * CELL_SIZE + 5, 3, 5);
       
-      // Serpent minimaliste (gris clair)
+      // Serpent avec nuances douces
       for (let i = 0; i < snake.length; i++) {
         const s = snake[i];
         const x = s.x * CELL_SIZE, y = s.y * CELL_SIZE;
         
-        // Corps avec légère variation
-        ctx.fillStyle = i === 0 ? '#b8b8b8' : '#8a8a8a';
+        // Corps avec dégradé doux
+        ctx.fillStyle = i === 0 ? '#6F7E8C' : '#8F9EAC';
         ctx.shadowBlur = 0;
         ctx.beginPath();
-        ctx.roundRect(x + 1.5, y + 1.5, 17, 17, 5);
+        ctx.roundRect(x + 1.5, y + 1.5, 17, 17, 6);
         ctx.fill();
         
-        // Texture discrète
-        ctx.fillStyle = i === 0 ? '#d8d8d8' : '#aaaaaa';
+        // Texture subtile
+        ctx.fillStyle = i === 0 ? '#AFC0CC' : '#BFD0DC';
         ctx.beginPath();
         ctx.arc(x + 10, y + 10, 3, 0, 2 * Math.PI);
         ctx.fill();
         
-        // Yeux sur la tête
+        // Yeux expressifs
         if (i === 0) {
-          ctx.fillStyle = '#1e1e1e';
+          ctx.fillStyle = '#FFFFFF';
           ctx.beginPath();
           ctx.arc(x + 13, y + 7, 2, 0, 2 * Math.PI);
           ctx.fill();
           ctx.beginPath();
           ctx.arc(x + 7, y + 7, 2, 0, 2 * Math.PI);
           ctx.fill();
-          ctx.fillStyle = '#e8e8e8';
+          ctx.fillStyle = '#2C3E44';
           ctx.beginPath();
-          ctx.arc(x + 13.2, y + 6.5, 0.8, 0, 2 * Math.PI);
+          ctx.arc(x + 13.2, y + 6.5, 1, 0, 2 * Math.PI);
           ctx.fill();
           ctx.beginPath();
-          ctx.arc(x + 7.2, y + 6.5, 0.8, 0, 2 * Math.PI);
+          ctx.arc(x + 7.2, y + 6.5, 1, 0, 2 * Math.PI);
           ctx.fill();
           
-          // Langue
+          // Petit reflet
+          ctx.fillStyle = '#FFFFFFCC';
+          ctx.beginPath();
+          ctx.arc(x + 13.8, y + 5.8, 0.5, 0, 2 * Math.PI);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(x + 7.8, y + 5.8, 0.5, 0, 2 * Math.PI);
+          ctx.fill();
+          
+          // Langue discrète
           if (direction === 'right') {
-            ctx.fillStyle = '#d85a4a';
+            ctx.fillStyle = '#E56A4A';
             ctx.beginPath();
             ctx.moveTo(x + 18, y + 10);
-            ctx.lineTo(x + 22, y + 11);
+            ctx.lineTo(x + 23, y + 11);
             ctx.lineTo(x + 18, y + 12);
             ctx.fill();
           }
         }
       }
-      ctx.shadowBlur = 0;
       
-      // Message pause minimaliste
+      // Message pause
       if (isPaused && isGameRunning && !isWaitingForStart && !isGameOver) {
         ctx.font = '500 20px "Segoe UI", system-ui';
-        ctx.fillStyle = '#6a6a6a';
+        ctx.fillStyle = '#B8C0C8';
         ctx.fillText('⏸ PAUSE', 160, 195);
       }
       
-      // Informations de difficulté (discrètes)
+      // Informations discrètes
       ctx.font = '400 10px monospace';
-      ctx.fillStyle = '#5a5a5a';
+      ctx.fillStyle = '#BCC4CC';
       ctx.fillText(diffName, 10, 22);
-      if (wallTeleport) { ctx.fillStyle = '#6a8a6a'; ctx.fillText('🌀', 10, 38); }
-      ctx.fillStyle = '#5a5a5a';
+      if (wallTeleport) { ctx.fillStyle = '#8FB08C'; ctx.fillText('🌀', 10, 38); }
+      ctx.fillStyle = '#C8D0D8';
       ctx.fillText(gameSpeed + 'ms', 10, 52);
     }
 
