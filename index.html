@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>🐍 Snake - 3 Niveaux de Difficulté</title>
+  <title>🐍 Snake - 3 Niveaux (Vitesse Constante)</title>
   <style>
     * {
       margin: 0;
@@ -187,6 +187,15 @@
       box-shadow: 0 4px 0 #3a2a1a;
     }
 
+    .speed-info {
+      background: #0a1a0a;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      color: #aac88a;
+      text-align: center;
+    }
+
     @media (max-width: 650px) {
       .info-panel { justify-content: center; }
       .difficulty-selector { order: 1; }
@@ -226,6 +235,10 @@
         </div>
       </div>
       
+      <div class="speed-info" id="speedInfo">
+        🐢 Vitesse constante • Le jeu ne s'accélère pas !
+      </div>
+      
       <div class="arrow-controls">
         <div class="arrow-row">
           <button class="arrow-btn" data-dir="up">⬆️</button>
@@ -247,11 +260,29 @@
   const canvas = document.getElementById('snakeCanvas');
   const ctx = canvas.getContext('2d');
   
-  // Niveaux de difficulté
+  // Niveaux de difficulté avec VITESSE CONSTANTE (n'augmente jamais)
   const DIFFICULTY = {
-    easy: { speed: 140, wallCollision: false, speedIncrease: 1.2, color: '#5a9e4e', name: '🌿 FACILE' },
-    medium: { speed: 100, wallCollision: true, speedIncrease: 1.5, color: '#e09d3e', name: '⚡ MOYEN' },
-    hard: { speed: 70, wallCollision: true, speedIncrease: 2.2, color: '#c92a2a', name: '🔥 DIFFICILE' }
+    easy: { 
+      speed: 150,           // lent
+      wallCollision: false, // téléportation
+      color: '#5a9e4e', 
+      name: '🌿 FACILE',
+      description: 'Téléportation • Lent'
+    },
+    medium: { 
+      speed: 100,           // normal
+      wallCollision: true,  // collision mur = mort
+      color: '#e09d3e', 
+      name: '⚡ MOYEN',
+      description: 'Murs mortels • Normal'
+    },
+    hard: { 
+      speed: 65,            // rapide
+      wallCollision: true,  // collision mur = mort
+      color: '#c92a2a', 
+      name: '🔥 DIFFICILE',
+      description: 'Murs mortels • Rapide'
+    }
   };
   
   let currentDifficulty = 'medium';
@@ -272,8 +303,6 @@
   let gameLoop = null;
   let isGameRunning = true;
   let isPaused = false;
-  
-  // Murs spéciaux pour mode facile (téléportation)
   let wallTeleport = false;
   
   // Sons
@@ -283,6 +312,7 @@
   const scoreElement = document.getElementById('scoreValue');
   const highscoreElement = document.getElementById('highscoreValue');
   const statusElement = document.getElementById('statusText');
+  const speedInfo = document.getElementById('speedInfo');
   const restartBtn = document.getElementById('restartBtn');
   const pauseBtn = document.getElementById('pauseBtn');
   
@@ -368,30 +398,27 @@
     }
   }
   
-  // === GESTION DES MURS (téléportation pour mode facile) ===
+  // === GESTION DES MURS ===
   function handleWallCollision(head) {
     if (!wallTeleport) {
-      // Mode normal : collision = game over
       if (head.x < 0 || head.x >= BOARD_SIZE || head.y < 0 || head.y >= BOARD_SIZE) {
         return null;
       }
       return head;
     } else {
-      // Mode facile : téléportation
       let newHead = { ...head };
-      if (newHead.x < 0) newHead.x = BOARD_SIZE - 1;
-      if (newHead.x >= BOARD_SIZE) newHead.x = 0;
-      if (newHead.y < 0) newHead.y = BOARD_SIZE - 1;
-      if (newHead.y >= BOARD_SIZE) newHead.y = 0;
+      let teleported = false;
+      if (newHead.x < 0) { newHead.x = BOARD_SIZE - 1; teleported = true; }
+      if (newHead.x >= BOARD_SIZE) { newHead.x = 0; teleported = true; }
+      if (newHead.y < 0) { newHead.y = BOARD_SIZE - 1; teleported = true; }
+      if (newHead.y >= BOARD_SIZE) { newHead.y = 0; teleported = true; }
       
-      if (newHead.x !== head.x || newHead.y !== head.y) {
-        playSound('teleport');
-      }
+      if (teleported) playSound('teleport');
       return newHead;
     }
   }
   
-  // === MOUVEMENT DU SERPENT ===
+  // === MOUVEMENT DU SERPENT (vitesse constante, pas d'accélération) ===
   function moveSnake() {
     if (!isGameRunning || isPaused) return false;
     
@@ -405,7 +432,6 @@
       case 'down': newHead.y += 1; break;
     }
     
-    // Gestion des murs (téléportation facile / collision difficile)
     const processedHead = handleWallCollision(newHead);
     if (processedHead === null) {
       gameOver(false);
@@ -427,18 +453,9 @@
         gameOver(true);
         return false;
       }
-      
-      // Augmentation de vitesse selon difficulté
-      const speedIncrease = DIFFICULTY[currentDifficulty].speedIncrease;
-      const minSpeed = currentDifficulty === 'easy' ? 90 : (currentDifficulty === 'medium' ? 60 : 45);
-      if (gameSpeed > minSpeed) {
-        gameSpeed = Math.max(minSpeed, gameSpeed - speedIncrease);
-        clearInterval(gameLoop);
-        gameLoop = setInterval(gameTick, gameSpeed);
-      }
+      // ⚠️ AUCUNE AUGMENTATION DE VITESSE ICI !!!
     }
     
-    // Auto-collision
     const selfCollision = snake.slice(1).some(segment => segment.x === newHead.x && segment.y === newHead.y);
     if (selfCollision) {
       gameOver(false);
@@ -464,7 +481,7 @@
     drawBoard(true);
   }
   
-  // === RÉINITIALISATION COMPLÈTE ===
+  // === RÉINITIALISATION ===
   function resetGame() {
     snake = [
       {x: 10, y: 10},
@@ -479,7 +496,7 @@
     isPaused = false;
     pauseBtn.textContent = '⏸ PAUSE';
     
-    // Appliquer la vitesse selon difficulté
+    // Vitesse constante selon difficulté (ne change jamais)
     gameSpeed = DIFFICULTY[currentDifficulty].speed;
     wallTeleport = (currentDifficulty === 'easy');
     
@@ -490,6 +507,7 @@
     gameLoop = setInterval(gameTick, gameSpeed);
     
     statusElement.textContent = `▶ ${DIFFICULTY[currentDifficulty].name}`;
+    speedInfo.innerHTML = `⚡ Vitesse fixe : ${gameSpeed}ms • ${DIFFICULTY[currentDifficulty].description}`;
     drawBoard();
   }
   
@@ -497,8 +515,8 @@
   function setDifficulty(level) {
     currentDifficulty = level;
     wallTeleport = (level === 'easy');
+    gameSpeed = DIFFICULTY[level].speed;
     
-    // Mise à jour visuelle des boutons
     document.querySelectorAll('.difficulty-btn').forEach(btn => {
       btn.classList.remove('active');
       if (btn.getAttribute('data-diff') === level) {
@@ -516,7 +534,7 @@
     drawBoard();
   }
   
-  // === DIRECTION (avec anti-retour) ===
+  // === DIRECTION ===
   function changeDirection(newDir) {
     if (!isGameRunning || isPaused) return;
     const opposite = {
@@ -527,7 +545,7 @@
     }
   }
   
-  // === DESSIN (effet réaliste avec couleurs de difficulté) ===
+  // === DESSIN ===
   function drawBoard(isGameOverDisplay = false) {
     ctx.clearRect(0, 0, 400, 400);
     
@@ -620,7 +638,7 @@
       ctx.fillText('GAME OVER', 140, 190);
     }
     
-    // Effet visuel de difficulté (coin)
+    // Affichage info difficulté
     ctx.font = 'bold 10px monospace';
     ctx.fillStyle = DIFFICULTY[currentDifficulty].color;
     ctx.fillText(DIFFICULTY[currentDifficulty].name, 10, 25);
@@ -628,6 +646,8 @@
       ctx.fillStyle = '#88aa66';
       ctx.fillText('🌀 Téléportation', 10, 40);
     }
+    ctx.fillStyle = '#aac88a';
+    ctx.fillText(`⚡ ${gameSpeed}ms fixe`, 10, 55);
   }
   
   // Helper roundRect
@@ -690,12 +710,6 @@
       pauseBtn.textContent = isPaused ? '▶ JOUER' : '⏸ PAUSE';
       statusElement.textContent = isPaused ? '⏸ PAUSE' : `▶ ${DIFFICULTY[currentDifficulty].name}`;
       drawBoard();
-      if (!isPaused && !gameLoop && isGameRunning) {
-        gameLoop = setInterval(gameTick, gameSpeed);
-      } else if (isPaused && gameLoop) {
-        clearInterval(gameLoop);
-        gameLoop = null;
-      }
     }
   });
   
